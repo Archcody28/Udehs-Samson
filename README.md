@@ -1,162 +1,135 @@
-# Udeh Samson Portfolio
+# Udeh Samson — Portfolio
 
-A premium, production-ready portfolio website for Full Stack Engineer **Udeh Samson**.
+Personal portfolio website for **Udeh Samson**, a Full Stack Developer focused on building modern, reliable, and maintainable web applications.
 
-## Live Site
+## Live Website
 
-The project is deployed and live. (URL visible in the preview panel.)
+The portfolio is deployed and available online.
 
-## Deployment Guide
+## Overview
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for complete setup, environment variables, and hosting instructions.
+This portfolio showcases my:
 
-## What is included
+* Projects and software development work
+* Technical skills
+* Professional experience
+* Services
+* Blog posts
+* Resume
+* GitHub activity
+* Contact information
 
-- Responsive, modern landing page with animated hero, particle background, typing effect, counters, and dark/light mode.
-- Sections: Home, About, Skills, Experience Timeline, Projects, Blog, Services, Testimonials, GitHub activity, Resume, and Contact.
-- Searchable/filterable Projects and Blog grids with detail modals.
-- A fully functional in-browser **Admin Dashboard** at `/admin/` for managing projects, blog posts, and skills. Content is persisted in `localStorage`.
-- SEO metadata, Open Graph image, robots.txt, sitemap.xml, manifest.json, and 404 page.
+The site is fully responsive and includes light/dark mode, project and blog filtering, animations, SEO metadata, and an administrative interface for managing portfolio content.
 
-## Tech stack used in this deployable build
+## Tech Stack
 
-- Static HTML, Tailwind CSS (CDN), and vanilla JavaScript
-- Canvas particle animation
-- GitHub-style contribution graph
-- LocalStorage-based CMS
+* HTML5
+* CSS
+* Tailwind CSS
+* JavaScript
+* React
+* TypeScript
+* Vite
+* GitHub API
+* LocalStorage
 
+## Features
 
-The admin dashboard does **not** store the password in plain text. Instead, it stores a SHA-256 hash and compares the hashed input against that value. It also enforces a 5-attempt lockout for 15 minutes to slow brute-force attacks.
+* Responsive portfolio design
+* Light and dark themes
+* Animated hero section
+* Project showcase with filtering
+* Blog section
+* Skills and experience sections
+* Services and testimonials
+* GitHub activity integration
+* Resume section
+* Contact section
+* SEO and Open Graph metadata
+* Sitemap and robots.txt
+* Custom 404 page
+* Admin interface for portfolio content
 
-### Changing the admin password
+## Security
 
-Generate a SHA-256 hash of your new password, for example:
+No API credentials, private keys, or environment secrets are committed to this repository.
+
+GitHub API credentials, when required, should be provided through environment variables and handled on the server side rather than exposed in client-side code.
+
+The admin interface is intended for this portfolio deployment and should not be treated as a production-grade authentication system. For a larger deployment, authentication and content management should be moved to a proper server-side system with secure password hashing, session management, authorization, and database-backed storage.
+
+## Getting Started
+
+### Prerequisites
+
+* Node.js
+* npm
+
+### Installation
+
+Clone the repository:
 
 ```bash
-echo -n 'your-new-password' | sha256sum
+git clone https://github.com/Archcody28/portfolio.git
+cd portfolio
 ```
 
-Then replace the `ADMIN_HASH` constant in `public/admin/index.html` with the resulting hash.
-
-
-## GitHub Activity Integration
-
-The React source now includes a serverless API route at `api/github-activity.ts` that retrieves real GitHub contribution data from the GitHub GraphQL API.
-
-To enable it in deployment, set the following environment variable:
+Install dependencies:
 
 ```bash
-GITHUB_TOKEN=ghp_your_personal_access_token
+npm install
 ```
 
-No GitHub secret is exposed to the browser because the request is made from the serverless function.
+Start the development server:
 
-When the API is unavailable, the page still shows a fallback contribution chart.
+```bash
+npm run dev
+```
 
-## Running locally
-
-Because the deployed build is static, you can preview it with any static server:
+To create a production build:
 
 ```bash
 npm run build
+```
+
+Preview the production build:
+
+```bash
 npm run preview
 ```
 
-Or simply open `public/index.html` in a browser.
+## Environment Variables
 
-## Migrating to Next.js + Prisma + PostgreSQL
+If GitHub activity integration is enabled, configure the required credentials through environment variables.
 
-This repository also contains a full Vite + React 19 + TypeScript source in `src/` that mirrors the requested Next.js architecture. To migrate to the requested stack:
+Example:
 
-1. Move the components and pages into a Next.js 15 App Router project.
-2. Replace `localStorage` with Prisma + PostgreSQL using the schema below.
-3. Move the admin forms to Next.js Server Actions or API routes protected by Auth.js.
-4. Use Cloudinary for image uploads instead of base64 localStorage.
+```env
+GITHUB_TOKEN=your_github_token
+```
 
-### Suggested Prisma schema
+**Never commit `.env` files or expose private tokens in client-side code.**
 
-Create `prisma/schema.prisma`:
+## Project Structure
 
-```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Project {
-  id              String   @id @default(cuid())
-  slug            String   @unique
-  title           String
-  description     String
-  content         String   @db.Text
-  images          String[]
-  videoUrl        String?
-  technologies    String[]
-  categories      String[]
-  githubUrl       String?
-  liveUrl         String?
-  featured        Boolean  @default(false)
-  completionDate  DateTime
-  status          String   @default("draft")
-  seoTitle        String?
-  seoDescription  String?
-  challenges      String?  @db.Text
-  solutions       String?  @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model BlogPost {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  title       String
-  excerpt     String
-  content     String   @db.Text
-  coverImage  String?
-  categories  String[]
-  tags        String[]
-  featured    Boolean  @default(false)
-  publishedAt DateTime
-  readingTime Int
-  status      String   @default("draft")
-  author      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Skill {
-  id           String @id @default(cuid())
-  name         String
-  category     String
-  proficiency  Int
-  icon         String?
-}
-
-model Experience {
-  id          String    @id @default(cuid())
-  role        String
-  company     String
-  location    String
-  startDate   DateTime
-  endDate     DateTime?
-  current     Boolean   @default(false)
-  description String    @db.Text
-}
-
-model Testimonial {
-  id      String  @id @default(cuid())
-  name    String
-  role    String
-  company String
-  content String  @db.Text
-  avatar  String?
-}
+```text
+portfolio/
+├── public/
+├── src/
+├── api/
+├── package.json
+├── vite.config.*
+└── README.md
 ```
 
 ## Author
 
-Udeh Samson — Full Stack Engineer
+**Udeh Samson**
+
+Full Stack Developer
+
+Building web applications, software products, and digital solutions.
+
+## License
+
+This project is primarily a personal portfolio. Please do not reuse the content, branding, personal information, or project materials without permission.
