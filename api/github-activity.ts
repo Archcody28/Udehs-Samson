@@ -1,4 +1,3 @@
-```ts
 const GITHUB_API = 'https://api.github.com/graphql';
 const DEFAULT_USERNAME = 'udehsamson';
 
@@ -183,4 +182,3 @@ export default async function handler(req: any, res: any) {
     });
   }
 }
-```
