@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  description    String
+  content        String   @db.Text
+  images         String[]
+  videoUrl       String?
+  technologies   String[]
+  categories     String[]
+  githubUrl      String?
+  liveUrl        String?
+  featured       Boolean  @default(false)
+  completionDate DateTime
+  status         Status   @default(draft)
+  seoTitle       String?
+  seoDescription String?
+  challenges     String?  @db.Text
+  solutions      String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String   @db.Text
+  coverImage  String?
+  categories  String[]
+  tags        String[]
+  featured    Boolean  @default(false)
+  publishedAt DateTime
+  readingTime Int
+  status      Status   @default(draft)
+  author      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skill {
+  id          String @id @default(cuid())
+  name        String
+  category    String
+  proficiency Int
+  icon        String?
+}
+
+model Experience {
+  id          String    @id @default(cuid())
+  role        String
+  company     String
+  location    String
+  startDate   DateTime
+  endDate     DateTime?
+  current     Boolean   @default(false)
+  description String    @db.Text
+}
+
+model Testimonial {
+  id      String  @id @default(cuid())
+  name    String
+  role    String
+  company String
+  content String  @db.Text
+  avatar  String?
+}
+
+model Profile {
+  id        String @id @default("profile")
+  name      String
+  title     String
+  tagline   String
+  bio       String @db.Text
+  shortBio  String
+  email     String
+  phone     String
+  location  String
+  website   String
+  github    String
+  linkedin  String
+  x         String
+  whatsapp  String
+  avatar    String
+  cvUrl     String
+}
+
+enum Status {
+  draft
+  published
+}

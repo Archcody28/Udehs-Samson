@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Udeh Samson | Full Stack Engineer</title>
+    <meta name="description" content="Portfolio of Udeh Samson, a Full Stack Engineer building scalable, accessible, and visually stunning digital products." />
+    <meta name="theme-color" content="#0F172A" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter','sans-serif'], display: ['Manrope','sans-serif'] },
+            colors: { brand: { blue: '#3B82F6', purple: '#7C3AED', emerald: '#10B981' } }
+          }
+        }
+      };
+    </script>
+    <style>
+      ::selection { background: rgba(59,130,246,0.3); }
+      .gradient-text { background: linear-gradient(135deg,#3B82F6,#7C3AED,#10B981); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+      .glass { background: rgba(15,23,42,0.6); backdrop-filter: blur(12px); border:1px solid rgba(255,255,255,0.08); }
+      .reveal { opacity:0; transform:translateY(24px); transition: all 0.7s cubic-bezier(0.16,1,0.3,1); }
+      .reveal.visible { opacity:1; transform:translateY(0); }
+      @media print { .no-print { display:none !important; } body { background:#fff !important; color:#000 !important; } }
+    </style>
+  </head>
+  <body class="bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors">
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/50 bg-white/80 backdrop-blur-xl dark:border-slate-800/50 dark:bg-slate-950/80 transition-all">
+      <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <a href="#home" class="flex items-center gap-2 text-xl font-bold font-display">
+          <svg class="h-7 w-7 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+          <span id="navName">Udeh Samson</span>
+        </a>
+        <div class="hidden items-center gap-8 md:flex">
+          <a href="#home" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Home</a>
+          <a href="#about" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">About</a>
+          <a href="#projects" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Projects</a>
+          <a href="#blog" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Blog</a>
+          <a href="#services" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Services</a>
+          <a href="#contact" class="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Contact</a>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="themeToggle" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+          <a href="#contact" class="hidden rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-purple-500 md:inline-block">Hire Me</a>
+          <button id="mobileMenuBtn" class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 md:hidden" aria-label="Menu">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="mobileMenu" class="hidden border-t border-slate-200 bg-white px-4 py-4 dark:border-slate-800 dark:bg-slate-950 md:hidden">
+        <a href="#home" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
+        <a href="#about" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
+        <a href="#projects" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Projects</a>
+        <a href="#blog" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Blog</a>
+        <a href="#services" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Services</a>
+        <a href="#contact" class="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Contact</a>
+      </div>
+    </nav>
+
+    <canvas id="particleCanvas" class="pointer-events-none fixed inset-0 -z-10"></canvas>
+
+    <main class="pt-20">
+      <section id="home" class="relative flex min-h-[calc(100vh-5rem)] items-center px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto grid max-w-7xl items-center gap-12 py-20 lg:grid-cols-2">
+          <div class="space-y-8 reveal">
+            <div class="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+              <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-blue-500"></span></span>
+              Available for freelance & full-time roles
+            </div>
+            <h1 class="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+              Hi, I'm <span id="heroName" class="gradient-text">Udeh Samson</span><br>
+              <span class="text-slate-700 dark:text-slate-300"><span id="typing"></span><span class="animate-pulse text-brand-blue">|</span></span>
+            </h1>
+            <p id="heroTagline" class="max-w-xl text-lg leading-relaxed text-slate-600 dark:text-slate-400">Building scalable digital experiences that blend performance, design, and intelligence.</p>
+            <div class="flex flex-wrap gap-4">
+              <a href="#contact" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-purple-500">Hire Me <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+              <a id="heroCvBtn" href="#resume" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-6 py-3 text-sm font-medium text-slate-900 hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:bg-slate-800">Download CV <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg></a>
+            </div>
+            <div class="flex items-center gap-4" id="heroSocials"></div>
+          </div>
+          <div class="relative mx-auto max-w-md reveal lg:max-w-full">
+            <div class="absolute -inset-4 rounded-full bg-gradient-to-tr from-blue-500/20 via-purple-500/20 to-emerald-500/20 blur-2xl"></div>
+            <div class="relative aspect-square overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+              <img id="heroAvatar" src="/images/profile.jpg" alt="Udeh Samson" class="h-full w-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="border-y border-slate-200 bg-slate-50/50 py-10 dark:border-slate-800 dark:bg-slate-900/30">
+        <div class="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 sm:px-6 md:grid-cols-4 lg:px-8" id="statsRow"></div>
+      </div>
+
+      <section id="about" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">About <span class="gradient-text">Me</span></h2>
+            <p class="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">A glimpse into my journey, values, and the expertise I bring to every project.</p>
+          </div>
+          <div class="grid gap-12 lg:grid-cols-3">
+            <div class="lg:col-span-2 space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300 reveal" id="aboutBio"></div>
+            <div class="space-y-4 reveal" id="aboutHighlights"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">Technical <span class="gradient-text">Skills</span></h2>
+            <p class="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">Tools and technologies I use to build scalable, performant products.</p>
+          </div>
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" id="skillsGrid"></div>
+        </div>
+      </section>
+
+      <section class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-4xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">Experience <span class="gradient-text">Timeline</span></h2>
+          </div>
+          <div class="relative" id="timeline"></div>
+        </div>
+      </section>
+
+      <section id="projects" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end reveal">
+            <div>
+              <h2 class="font-display text-3xl font-bold sm:text-4xl">Featured <span class="gradient-text">Projects</span></h2>
+              <p class="mt-4 max-w-2xl text-slate-600 dark:text-slate-400">A selection of production-grade applications I've designed, built, and shipped.</p>
+            </div>
+            <div class="relative w-full max-w-xs">
+              <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+              <input id="projectSearch" type="text" placeholder="Search projects..." class="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-4 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" />
+            </div>
+          </div>
+          <div class="mb-6 flex flex-wrap gap-2" id="projectCategories"></div>
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" id="projectsGrid"></div>
+        </div>
+      </section>
+
+      <section id="blog" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end reveal">
+            <div><h2 class="font-display text-3xl font-bold sm:text-4xl">Latest <span class="gradient-text">Articles</span></h2></div>
+            <div class="relative w-full max-w-xs">
+              <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+              <input id="blogSearch" type="text" placeholder="Search articles..." class="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-9 pr-4 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" />
+            </div>
+          </div>
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" id="blogGrid"></div>
+        </div>
+      </section>
+
+      <section id="services" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">What I <span class="gradient-text">Offer</span></h2>
+            <p class="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">End-to-end engineering services tailored to help startups and enterprises scale.</p>
+          </div>
+          <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" id="servicesGrid"></div>
+        </div>
+      </section>
+
+      <section id="testimonials" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">Client <span class="gradient-text">Testimonials</span></h2>
+          </div>
+          <div class="grid gap-6 md:grid-cols-3" id="testimonialsGrid"></div>
+        </div>
+      </section>
+
+      <section class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">GitHub <span class="gradient-text">Activity</span></h2>
+          </div>
+          <div class="grid gap-8 lg:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60 lg:col-span-2">
+              <h3 class="mb-4 font-display font-semibold">Contribution Graph</h3>
+              <div class="grid grid-cols-12 gap-1 sm:grid-cols-18 md:grid-cols-24" id="contribGrid"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center dark:border-slate-800 dark:bg-slate-900/60"><p class="font-display text-2xl font-bold">2,847+</p><p class="text-xs text-slate-500">Commits</p></div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center dark:border-slate-800 dark:bg-slate-900/60"><p class="font-display text-2xl font-bold">342+</p><p class="text-xs text-slate-500">Pull Requests</p></div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center dark:border-slate-800 dark:bg-slate-900/60"><p class="font-display text-2xl font-bold">1,289+</p><p class="text-xs text-slate-500">Stars</p></div>
+              <div class="rounded-2xl border border-slate-200 bg-white p-4 text-center dark:border-slate-800 dark:bg-slate-900/60"><p class="font-display text-2xl font-bold">416+</p><p class="text-xs text-slate-500">Forks</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resume" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl">
+          <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center reveal">
+            <div>
+              <h2 class="font-display text-3xl font-bold sm:text-4xl">Resume</h2>
+              <p class="text-slate-600 dark:text-slate-400">View, print, or download my professional resume.</p>
+            </div>
+            <div class="flex gap-3 no-print">
+              <button onclick="window.print()" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"/></svg>Print</button>
+              <a id="resumeDownload" href="#" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1m-4-4-4 4m0 0-4-4m4 4V4"/></svg>Download CV</a>
+            </div>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/60 sm:p-12">
+            <header class="border-b border-slate-200 pb-8 dark:border-slate-800">
+              <h3 id="resumeName" class="font-display text-3xl font-bold">Udeh Samson</h3>
+              <p id="resumeTitle" class="text-lg text-brand-blue dark:text-blue-400">Full Stack Engineer</p>
+              <div class="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-400"><span>Lagos, Nigeria</span><span id="resumeEmail">hello@udehsamson.dev</span><span id="resumePhone">+234 800 000 0000</span></div>
+            </header>
+            <section class="mt-8"><h4 class="mb-4 font-display text-xl font-semibold">Professional Summary</h4><p id="resumeSummary" class="leading-relaxed text-slate-700 dark:text-slate-300">Full Stack Engineer crafting scalable, accessible, and visually stunning web & mobile experiences.</p></section>
+            <section class="mt-8"><h4 class="mb-4 font-display text-xl font-semibold">Experience</h4><div class="space-y-6" id="resumeExperience"></div></section>
+            <section class="mt-8"><h4 class="mb-4 font-display text-xl font-semibold">Skills</h4><div class="flex flex-wrap gap-2" id="resumeSkills"></div></section>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-16 text-center reveal">
+            <h2 class="font-display text-3xl font-bold sm:text-4xl">Get in <span class="gradient-text">Touch</span></h2>
+            <p class="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">Have a project in mind? I'd love to hear from you.</p>
+          </div>
+          <div class="grid gap-12 lg:grid-cols-3">
+            <div class="lg:col-span-2 reveal">
+              <form id="contactForm" class="space-y-6">
+                <div class="grid gap-6 md:grid-cols-2">
+                  <div><label class="mb-1.5 block text-sm font-medium">Name</label><input name="name" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" /></div>
+                  <div><label class="mb-1.5 block text-sm font-medium">Email</label><input name="email" type="email" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" /></div>
+                </div>
+                <div><label class="mb-1.5 block text-sm font-medium">Phone</label><input name="phone" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" /></div>
+                <div><label class="mb-1.5 block text-sm font-medium">Subject</label><input name="subject" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900" /></div>
+                <div><label class="mb-1.5 block text-sm font-medium">Message</label><textarea name="message" rows="5" required class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm focus:border-brand-blue focus:outline-none dark:border-slate-700 dark:bg-slate-900"></textarea></div>
+                <button type="submit" class="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-500/25 hover:from-blue-500 hover:to-purple-500">Send Message</button>
+              </form>
+            </div>
+            <div class="space-y-4 reveal" id="contactLinks"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-4 py-24 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-5xl rounded-3xl bg-gradient-to-br from-blue-600 to-purple-700 p-8 text-center text-white shadow-2xl shadow-blue-500/25 sm:p-12 lg:p-16 reveal">
+          <h2 class="font-display text-3xl font-bold sm:text-4xl">Let's Build Something Amazing Together</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-blue-100">Have a project in mind? I'm always open to discussing new opportunities.</p>
+          <a href="#contact" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-white px-7 py-3.5 text-base font-medium text-blue-700 hover:bg-blue-50">Start a Conversation</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white px-4 py-16 dark:border-slate-800 dark:bg-slate-950 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-7xl">
+        <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div class="space-y-4">
+            <a href="#home" class="flex items-center gap-2 text-xl font-bold font-display"><svg class="h-7 w-7 text-brand-blue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 6-4"/><path d="m14.5 4-5 16"/></svg><span id="footerName">Udeh Samson</span></a>
+            <p id="footerTagline" class="text-sm text-slate-600 dark:text-slate-400">Full Stack Engineer crafting scalable, accessible, and visually stunning web & mobile experiences.</p>
+            <div class="flex gap-3" id="footerSocials"></div>
+          </div>
+          <div>
+            <h4 class="mb-4 font-display font-semibold">Navigation</h4>
+            <ul class="space-y-2 text-sm"><li><a href="#home" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Home</a></li><li><a href="#about" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">About</a></li><li><a href="#projects" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Projects</a></li><li><a href="#blog" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Blog</a></li><li><a href="#contact" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Contact</a></li></ul>
+          </div>
+          <div>
+            <h4 class="mb-4 font-display font-semibold">Services</h4>
+            <ul class="space-y-2 text-sm"><li><a href="#services" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Full Stack Dev</a></li><li><a href="#services" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">Frontend Engineering</a></li><li><a href="#services" class="text-slate-600 hover:text-brand-blue dark:text-slate-400">API Development</a></li></ul>
+          </div>
+          <div>
+            <h4 class="mb-4 font-display font-semibold">Admin</h4>
+            <a href="/admin/" class="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">Open Dashboard</a>
+          </div>
+        </div>
+        <div class="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500 dark:border-slate-800">&copy; 2025 <span id="footerCopyName">Udeh Samson</span>. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+      <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" onclick="closeModal()"></div>
+      <div class="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+        <button onclick="closeModal()" class="absolute right-4 top-4 rounded-lg p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg></button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE = 'udeh_portfolio_static';
+      const DEFAULT = {
+        profile: { name:'Udeh Samson', title:'Full Stack Engineer', tagline:'Building scalable digital experiences that blend performance, design, and intelligence.', bio:"I'm Udeh Samson, a results-driven Full Stack Engineer with a passion for turning complex problems into elegant, high-performance web and mobile applications. Over the years I've architected products across fintech, e-commerce, SaaS, and AI tooling.", email:'hello@udehsamson.dev', phone:'+234 800 000 0000', avatar:'/images/profile.jpg' },
+        stats: { yearsExperience:7, projectsDelivered:45, happyClients:30, satisfaction:99 },
+        socials: { github:'https://github.com/udehsamson', linkedin:'https://linkedin.com/in/udehsamson', x:'https://x.com/udehsamson', whatsapp:'https://wa.me/2348000000000' },
+        cv: null,
+        projects: [
+          { id:'p1', slug:'fintrack-pro', title:'FinTrack Pro', description:'A real-time personal finance dashboard with multi-currency support, bank sync, and predictive analytics.', image:'/images/project-fintrack.jpg', tech:['Next.js','TypeScript','Node.js','PostgreSQL','Prisma','Redis'], categories:['SaaS','Fintech'], github:'https://github.com/udehsamson', live:'https://fintrack-pro.vercel.app', date:'2024-11-15', content:'FinTrack Pro helps users take control of their finances through an intuitive dashboard.' },
+          { id:'p2', slug:'nexus-commerce', title:'Nexus Commerce', description:'Headless e-commerce storefront with real-time inventory, AI search, and seamless checkout.', image:'/images/project-nexus.jpg', tech:['Next.js','React','Node.js','PostgreSQL','Stripe','Algolia'], categories:['E-commerce','SaaS'], github:'https://github.com/udehsamson', live:'https://nexus-commerce.vercel.app', date:'2024-08-20', content:'Nexus Commerce reimagines online retail with a headless architecture.' },
+          { id:'p3', slug:'taskflow-ai', title:'TaskFlow AI', description:'AI-assisted project management tool that auto-prioritizes tasks and predicts delivery dates.', image:'/images/project-taskflow.jpg', tech:['React','Node.js','Python','PostgreSQL','OpenAI'], categories:['Productivity','AI'], github:'https://github.com/udehsamson', live:'https://taskflow-ai.vercel.app', date:'2024-05-10', content:'TaskFlow AI combines kanban-style task management with natural language processing.' },
+          { id:'p4', slug:'healthsync', title:'HealthSync', description:'Telehealth platform connecting patients and providers with video consultations and health records.', image:'/images/project-healthsync.jpg', tech:['Next.js','TypeScript','PostgreSQL','Prisma','WebRTC'], categories:['HealthTech','SaaS'], github:'https://github.com/udehsamson', live:'https://healthsync.vercel.app', date:'2023-12-01', content:'HealthSync simplifies remote care by combining appointment scheduling, video calls, and encrypted health records.' }
+        ],
+        blog: [
+          { id:'b1', slug:'scalable-nextjs-architecture', title:'Scalable Next.js Architecture for Enterprise Apps', excerpt:'A deep dive into folder structure, server components, caching strategies, and deployment patterns.', image:'/images/blog-architecture.jpg', date:'2025-01-10', read:8, tags:['nextjs','architecture'], content:'Building enterprise Next.js applications requires discipline.' },
+          { id:'b2', slug:'typescript-strict-patterns', title:'TypeScript Strict Patterns That Prevent Bugs', excerpt:'How strict TypeScript settings, branded types, and utility types can eliminate runtime errors.', image:'/images/blog-typescript.jpg', date:'2024-12-05', read:6, tags:['typescript','types'], content:'Strict mode is just the beginning.' }
+        ],
+        skills: [
+          { id:'s1', name:'React / Next.js', category:'Frontend', proficiency:98 },
+          { id:'s2', name:'TypeScript', category:'Frontend', proficiency:96 },
+          { id:'s3', name:'Tailwind CSS', category:'Frontend', proficiency:95 },
+          { id:'s4', name:'Node.js', category:'Backend', proficiency:94 },
+          { id:'s5', name:'PostgreSQL', category:'Backend', proficiency:92 },
+          { id:'s6', name:'Prisma', category:'Backend', proficiency:90 },
+          { id:'s7', name:'GraphQL / tRPC', category:'Backend', proficiency:88 },
+          { id:'s8', name:'Docker / CI/CD', category:'DevOps', proficiency:85 },
+          { id:'s9', name:'AWS / Vercel', category:'DevOps', proficiency:87 },
+          { id:'s10', name:'React Native', category:'Mobile', proficiency:82 }
+        ],
+        experiences: [
+          { id:'e1', role:'Senior Full Stack Engineer', company:'TechVerse Solutions', location:'Remote', start:'2022-03-01', end:'', current:true, desc:'Leading frontend architecture for a multi-tenant SaaS platform, mentoring engineers, and driving performance initiatives that reduced page load times by 40%.' },
+          { id:'e2', role:'Full Stack Developer', company:'Innovate Digital', location:'Lagos, Nigeria', start:'2020-06-01', end:'2022-02-28', current:false, desc:'Built and maintained customer-facing fintech applications using React, Node.js, and PostgreSQL, serving over 50,000 monthly active users.' },
+          { id:'e3', role:'Frontend Engineer', company:'Creative Studio Labs', location:'Lagos, Nigeria', start:'2018-09-01', end:'2020-05-31', current:false, desc:'Developed responsive marketing sites and design systems for clients across e-commerce, health, and finance sectors.' }
+        ],
+        testimonials: [
+          { id:'t1', name:'Amara Okafor', role:'Product Manager', company:'TechVerse Solutions', content:'Samson is one of the most reliable engineers I have worked with. He combines technical depth with design sensibility and always ships on time.', avatar:'/images/avatar-1.jpg' },
+          { id:'t2', name:'David Chen', role:'Engineering Lead', company:'Innovate Digital', content:'His ability to break down complex requirements into clean, maintainable code is exceptional. A true full-stack partner.', avatar:'/images/avatar-2.jpg' },
+          { id:'t3', name:'Fatima Bello', role:'Founder', company:'Nexus Commerce', content:'Samson transformed our e-commerce vision into a fast, beautiful storefront. Sales increased significantly after launch.', avatar:'/images/avatar-3.jpg' }
+        ],
+        services: [
+          { title:'Full Stack Development', desc:'End-to-end web and mobile applications using modern stacks.', features:['React / Next.js frontend','Node.js / Python backend','PostgreSQL & Prisma ORM','Cloud deployment'] },
+          { title:'Frontend Engineering', desc:'Pixel-perfect, accessible, and animated interfaces.', features:['Design system implementation','Performance optimization','Animation & micro-interactions','A11y & SEO'] },
+          { title:'Backend & API Development', desc:'Robust APIs, microservices, and data layers.', features:['REST & GraphQL APIs','Authentication & authorization','Database design','Caching & queues'] },
+          { title:'Mobile App Development', desc:'Cross-platform mobile experiences with React Native.', features:['iOS & Android','Offline-first architecture','Push notifications','App store deployment'] },
+          { title:'UI Implementation', desc:'Turn Figma designs into responsive, component-based code.', features:['Figma to code','Tailwind / CSS-in-JS','Storybook documentation','Responsive layouts'] },
+          { title:'Consulting & Optimization', desc:'Technical audits, architecture reviews, and performance optimization.', features:['Code audits','Performance tuning','Scalability planning','Team mentorship'] }
+        ],
+        messages: []
+      };
+
+      function loadData(){
+        const raw = localStorage.getItem(STORAGE);
+        let store = raw ? JSON.parse(raw) : {};
+        store = { ...DEFAULT, ...store };
+        store.profile = { ...DEFAULT.profile, ...(store.profile||{}) };
+        store.stats = { ...DEFAULT.stats, ...(store.stats||{}) };
+        store.socials = { ...DEFAULT.socials, ...(store.socials||{}) };
+        store.projects = store.projects || DEFAULT.projects;
+        store.blog = store.blog || DEFAULT.blog;
+        store.skills = store.skills || DEFAULT.skills;
+        store.experiences = store.experiences || DEFAULT.experiences;
+        store.testimonials = store.testimonials || DEFAULT.testimonials;
+        store.services = store.services || DEFAULT.services;
+        store.messages = store.messages || DEFAULT.messages;
+        return store;
+      }
+      function saveData(store){ localStorage.setItem(STORAGE, JSON.stringify(store)); }
+
+      const data = loadData();
+
+      function applyProfile(){
+        const p = data.profile;
+        document.getElementById('navName').textContent = p.name;
+        document.getElementById('heroName').textContent = p.name;
+        document.getElementById('heroAvatar').src = p.avatar;
+        document.getElementById('heroAvatar').alt = p.name;
+        document.getElementById('heroTagline').textContent = p.tagline;
+        document.getElementById('resumeName').textContent = p.name;
+        document.getElementById('resumeTitle').textContent = p.title;
+        document.getElementById('resumeSummary').textContent = p.bio;
+        document.getElementById('resumeEmail').textContent = p.email;
+        document.getElementById('resumePhone').textContent = p.phone;
+        document.getElementById('footerName').textContent = p.name;
+        document.getElementById('footerCopyName').textContent = p.name;
+        document.getElementById('footerTagline').textContent = p.bio;
+      }
+
+      function renderStats(){
+        const s = data.stats;
+        const labels = { yearsExperience:'Years Experience', projectsDelivered:'Projects Delivered', happyClients:'Happy Clients', satisfaction:'Client Satisfaction' };
+        const suffix = { yearsExperience:'+', projectsDelivered:'+', happyClients:'+', satisfaction:'%' };
+        document.getElementById('statsRow').innerHTML = Object.keys(labels).map((k,i)=>`
+          <div class="text-center reveal"><div class="font-display text-3xl font-bold sm:text-4xl" data-count="${s[k]}" data-suffix="${suffix[k]}">0</div><p class="mt-1 text-sm text-slate-600 dark:text-slate-400">${labels[k]}</p></div>`).join('');
+      }
+
+      function renderAbout(){
+        const p = data.profile;
+        document.getElementById('aboutBio').innerHTML = '<p>'+p.bio.split('\n\n').join('</p><p>')+'</p>';
+        const highlights = [
+          { label:'Experience', value:data.stats.yearsExperience+'+ Years', color:'blue' },
+          { label:'Clients', value:data.stats.happyClients+'+ Served', color:'purple' },
+          { label:'Projects', value:data.stats.projectsDelivered+'+ Delivered', color:'emerald' }
+        ];
+        document.getElementById('aboutHighlights').innerHTML = highlights.map(h=>`
+          <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/60">
+            <div class="flex items-center gap-4">
+              <div class="rounded-xl bg-${h.color}-50 p-3 dark:bg-${h.color}-900/20"><div class="h-6 w-6 rounded-full bg-${h.color}-500"></div></div>
+              <div><p class="text-sm text-slate-500 dark:text-slate-400">${h.label}</p><p class="font-display font-semibold">${h.value}</p></div>
+            </div>
+          </div>`).join('');
+      }
+
+      function renderSkills(){
+        const grouped = data.skills.reduce((acc,s)=>{ (acc[s.category]=acc[s.category]||[]).push(s); return acc;},{});
+        document.getElementById('skillsGrid').innerHTML = Object.entries(grouped).map(([cat,list],i)=>`
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/60 reveal" style="transition-delay:${i*100}ms">
+            <h3 class="mb-6 font-display text-lg font-semibold">${cat}</h3>
+            <div class="space-y-5">${list.map(s=>`
+              <div>
+                <div class="mb-2 flex justify-between"><span class="text-sm font-medium">${s.name}</span><span class="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${s.proficiency}%</span></div>
+                <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div class="skill-bar h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style="width:0%" data-width="${s.proficiency}%"></div></div>
+              </div>`).join('')}</div>
+          </div>`).join('');
+      }
+
+      function renderTimeline(){
+        document.getElementById('timeline').innerHTML = data.experiences.map((e,i)=>`
+          <div class="relative mb-12 flex items-start md:justify-center ${i%2===0?'md:flex-row-reverse':''} reveal">
+            <div class="hidden w-1/2 px-8 md:block"></div>
+            <div class="absolute left-8 z-10 -translate-x-1/2 rounded-full border-4 border-white bg-blue-500 p-2 dark:border-slate-950 md:left-1/2"><svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"/></svg></div>
+            <div class="ml-20 w-full md:ml-0 md:w-1/2 md:px-8"><div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/60"><span class="text-sm font-medium text-blue-600 dark:text-blue-400">${formatDate(e.start)} - ${e.current?'Present':formatDate(e.end)}</span><h3 class="mt-2 font-display text-xl font-semibold">${e.role}</h3><p class="text-slate-600 dark:text-slate-400">${e.company} &middot; ${e.location}</p><p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">${e.desc}</p></div></div>
+          </div>`).join('');
+      }
+
+      function renderProjects(filter=''){
+        const cats = ['All', ...new Set(data.projects.flatMap(p=>p.categories))];
+        document.getElementById('projectCategories').innerHTML = cats.map(c=>`<button onclick="setProjectCategory('${c}')" class="project-cat rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${c==='All'?'bg-blue-600 text-white':'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}">${c}</button>`).join('');
+        const q = filter.toLowerCase();
+        const list = data.projects.filter(p=>{
+          const techs = Array.isArray(p.tech)?p.tech:(typeof p.tech==='string'?p.tech.split(',').map(s=>s.trim()).filter(Boolean):[]);
+          return p.title.toLowerCase().includes(q)||p.description.toLowerCase().includes(q)||techs.some(t=>t.toLowerCase().includes(q));
+        });
+        document.getElementById('projectsGrid').innerHTML = list.map((p,i)=>`
+          <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/60 reveal" style="transition-delay:${i*100}ms">
+            <div class="relative aspect-video overflow-hidden"><img src="${p.image||'/images/placeholder.jpg'}" alt="${p.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"><div class="absolute left-4 top-4"><span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${p.categories[0]}</span></div></div>
+            <div class="flex flex-1 flex-col p-6">
+              <div class="mb-3 flex flex-wrap gap-2">${(Array.isArray(p.tech)?p.tech:(typeof p.tech==='string'?p.tech.split(',').map(s=>s.trim()).filter(Boolean):[])).slice(0,3).map(t=>`<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium dark:bg-slate-800">${t}</span>`).join('')}</div>
+              <h3 class="mb-2 font-display text-xl font-semibold group-hover:text-brand-blue">${p.title}</h3>
+              <p class="mb-4 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">${p.description}</p>
+              <button onclick="openProject('${p.slug}')" class="w-full rounded-xl border border-slate-300 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">View Details</button>
+            </div>
+          </div>`).join('');
+      }
+      function setProjectCategory(c){
+        document.querySelectorAll('.project-cat').forEach(btn=>{
+          const active = btn.textContent===c;
+          btn.className = `project-cat rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${active?'bg-blue-600 text-white':'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'}`;
+        });
+        const q = document.getElementById('projectSearch').value;
+        const list = data.projects.filter(p=>{
+          const techs = Array.isArray(p.tech)?p.tech:(typeof p.tech==='string'?p.tech.split(',').map(s=>s.trim()).filter(Boolean):[]);
+          const matchesSearch = p.title.toLowerCase().includes(q.toLowerCase())||p.description.toLowerCase().includes(q.toLowerCase())||techs.some(t=>t.toLowerCase().includes(q.toLowerCase()));
+          return matchesSearch && (c==='All'||p.categories.includes(c));
+        });
+        document.getElementById('projectsGrid').innerHTML = list.map((p,i)=>`
+          <div class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/60 reveal">
+            <div class="relative aspect-video overflow-hidden"><img src="${p.image||'/images/placeholder.jpg'}" alt="${p.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"><div class="absolute left-4 top-4"><span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${p.categories[0]}</span></div></div>
+            <div class="flex flex-1 flex-col p-6">
+              <div class="mb-3 flex flex-wrap gap-2">${(Array.isArray(p.tech)?p.tech:(typeof p.tech==='string'?p.tech.split(',').map(s=>s.trim()).filter(Boolean):[])).slice(0,3).map(t=>`<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium dark:bg-slate-800">${t}</span>`).join('')}</div>
+              <h3 class="mb-2 font-display text-xl font-semibold group-hover:text-brand-blue">${p.title}</h3>
+              <p class="mb-4 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">${p.description}</p>
+              <button onclick="openProject('${p.slug}')" class="w-full rounded-xl border border-slate-300 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">View Details</button>
+            </div>
+          </div>`).join('');
+      }
+
+      function renderBlog(filter=''){
+        const q = filter.toLowerCase();
+        const list = data.blog.filter(b=>b.title.toLowerCase().includes(q)||b.excerpt.toLowerCase().includes(q)||b.tags.some(t=>t.toLowerCase().includes(q)));
+        document.getElementById('blogGrid').innerHTML = list.map((b,i)=>`
+          <div onclick="openBlog('${b.slug}')" class="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/60 reveal" style="transition-delay:${i*100}ms">
+            <div class="relative aspect-video overflow-hidden"><img src="${b.image||'/images/blog-placeholder.jpg'}" alt="${b.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"></div>
+            <div class="p-6">
+              <div class="mb-3 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400"><span>${b.date}</span><span>${b.read} min read</span></div>
+              <h3 class="mb-3 font-display text-lg font-semibold group-hover:text-brand-blue">${b.title}</h3>
+              <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-400">${b.excerpt}</p>
+            </div>
+          </div>`).join('');
+      }
+
+      function renderServices(){
+        document.getElementById('servicesGrid').innerHTML = data.services.map((s,i)=>`
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/60 reveal" style="transition-delay:${i*100}ms">
+            <h3 class="mb-3 font-display text-xl font-semibold">${s.title}</h3>
+            <p class="mb-5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">${s.desc}</p>
+            <ul class="space-y-2">${s.features.map(f=>`<li class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300"><svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>${f}</li>`).join('')}</ul>
+          </div>`).join('');
+      }
+
+      function renderTestimonials(){
+        document.getElementById('testimonialsGrid').innerHTML = data.testimonials.map((t,i)=>`
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/60 reveal" style="transition-delay:${i*100}ms">
+            <div class="mb-4 flex gap-1 text-amber-400">${[1,2,3,4,5].map(()=>`<svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/></svg>`).join('')}</div>
+            <p class="mb-6 text-sm leading-relaxed text-slate-700 dark:text-slate-300">"${t.content}"</p>
+            <div class="flex items-center gap-3"><img src="${t.avatar}" alt="${t.name}" class="h-11 w-11 rounded-full object-cover"><div><p class="text-sm font-semibold">${t.name}</p><p class="text-xs text-slate-500 dark:text-slate-400">${t.role}, ${t.company}</p></div></div>
+          </div>`).join('');
+      }
+
+      function renderContrib(){
+        const levels = [1,3,2,4,0,2,5,3,4,1,0,2,3,5,4,2,1,3,4,0,2,5,3,4,2,1,3,0,4,5,2,3,1,4,2,0,3,5,4,2,1,3,0,4,2,5,3,1,4,2,0,3,1,5,4,2,3,0,1,4,2,5,3,4,1,2,0,3,4,5,2,1];
+        const colors = ['bg-slate-100 dark:bg-slate-800','bg-emerald-200 dark:bg-emerald-900/40','bg-emerald-300 dark:bg-emerald-700/50','bg-emerald-400 dark:bg-emerald-600','bg-emerald-500 dark:bg-emerald-500'];
+        document.getElementById('contribGrid').innerHTML = levels.map(l=>`<div class="aspect-square rounded-sm ${colors[l]}"></div>`).join('');
+      }
+
+      function renderSocials(){
+        const s = data.socials;
+        const links = [
+          {key:'github', icon:'<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z"/></svg>'},
+          {key:'linkedin', icon:'<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>'},
+          {key:'x', icon:'<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'}
+        ];
+        document.getElementById('heroSocials').innerHTML = links.map(l=>s[l.key]?`<a href="${s[l.key]}" target="_blank" rel="noreferrer" class="rounded-full border border-slate-200 p-3 text-slate-600 hover:border-brand-blue hover:text-brand-blue dark:border-slate-800 dark:text-slate-400">${l.icon}</a>`:'').join('');
+        document.getElementById('footerSocials').innerHTML = links.map(l=>s[l.key]?`<a href="${s[l.key]}" target="_blank" rel="noreferrer" class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white">${l.icon}</a>`:'').join('');
+      }
+
+      function renderContactLinks(){
+        const p = data.profile;
+        document.getElementById('contactLinks').innerHTML = `
+          <a href="mailto:${p.email}" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-blue dark:border-slate-800 dark:bg-slate-900/60"><div class="rounded-xl bg-blue-50 p-2.5 dark:bg-blue-900/20"><svg class="h-5 w-5 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg></div><div><p class="text-xs text-slate-500">Email</p><p class="text-sm font-medium">${p.email}</p></div></a>
+          <a href="tel:${p.phone.replace(/\s+/g,'')}" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-blue dark:border-slate-800 dark:bg-slate-900/60"><div class="rounded-xl bg-blue-50 p-2.5 dark:bg-blue-900/20"><svg class="h-5 w-5 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg></div><div><p class="text-xs text-slate-500">Phone</p><p class="text-sm font-medium">${p.phone}</p></div></a>
+          <a href="${data.socials.whatsapp}" target="_blank" rel="noreferrer" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-blue dark:border-slate-800 dark:bg-slate-900/60"><div class="rounded-xl bg-blue-50 p-2.5 dark:bg-blue-900/20"><svg class="h-5 w-5 text-brand-blue" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-4.5 3h9m-9 3H12m-6.75-12h13.5a2.25 2.25 0 0 1 2.25 2.25v13.5a2.25 2.25 0 0 1-2.25 2.25H5.25a2.25 2.25 0 0 1-2.25-2.25V5.25a2.25 2.25 0 0 1 2.25-2.25Z"/></svg></div><div><p class="text-xs text-slate-500">WhatsApp</p><p class="text-sm font-medium">Chat on WhatsApp</p></div></a>
+        `;
+      }
+
+      function renderResumeExperience(){
+        document.getElementById('resumeExperience').innerHTML = data.experiences.map(e=>`
+          <div>
+            <div class="flex justify-between"><h5 class="font-semibold">${e.role}</h5><span class="text-sm text-slate-500">${formatDate(e.start)} - ${e.current?'Present':formatDate(e.end)}</span></div>
+            <p class="text-sm text-slate-600 dark:text-slate-400">${e.company} &middot; ${e.location}</p>
+            <p class="mt-2 text-sm leading-relaxed text-slate-700 dark:text-slate-300">${e.desc}</p>
+          </div>`).join('');
+      }
+      function renderResumeSkills(){
+        document.getElementById('resumeSkills').innerHTML = data.skills.map(s=>`<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium dark:bg-slate-800">${s.name}</span>`).join('');
+      }
+      function setupCv(){
+        const btn = document.getElementById('resumeDownload');
+        const heroBtn = document.getElementById('heroCvBtn');
+        if(data.cv){
+          btn.href = data.cv;
+          btn.setAttribute('download','Udeh_Samson_Resume.pdf');
+          heroBtn.href = data.cv;
+          heroBtn.setAttribute('download','Udeh_Samson_Resume.pdf');
+        } else {
+          btn.href = '#';
+          btn.onclick = ()=>{ alert('CV not uploaded yet. Upload one in the admin dashboard.'); return false; };
+          heroBtn.href = '#resume';
+        }
+      }
+
+      function openProject(slug){
+        const p = data.projects.find(x=>x.slug===slug); if(!p) return;
+        document.getElementById('modalContent').innerHTML = `
+          <div class="mb-4 flex flex-wrap gap-2">${p.categories.map(c=>`<span class="rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">${c}</span>`).join('')}</div>
+          <h2 class="font-display text-2xl font-bold sm:text-3xl">${p.title}</h2>
+          <p class="mt-4 text-slate-600 dark:text-slate-400">${p.description}</p>
+          <img src="${p.image||'/images/placeholder.jpg'}" alt="${p.title}" class="mt-6 w-full rounded-2xl">
+          <div class="prose mt-6 max-w-none dark:prose-invert"><p>${p.content}</p></div>
+          <div class="mt-6 flex flex-wrap gap-2">${p.tech.map(t=>`<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium dark:bg-slate-800">${t}</span>`).join('')}</div>
+          <div class="mt-6 flex gap-3"><a href="${p.github}" target="_blank" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900">GitHub</a><a href="${p.live}" target="_blank" class="rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-sm font-medium text-white">Live Demo</a></div>
+        `;
+        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('modal').classList.add('flex');
+      }
+      function openBlog(slug){
+        const b = data.blog.find(x=>x.slug===slug); if(!b) return;
+        document.getElementById('modalContent').innerHTML = `
+          <h2 class="font-display text-2xl font-bold sm:text-3xl">${b.title}</h2>
+          <div class="mt-3 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400"><span>${b.date}</span><span>${b.read} min read</span></div>
+          <img src="${b.image||'/images/blog-placeholder.jpg'}" alt="${b.title}" class="mt-6 w-full rounded-2xl">
+          <div class="prose mt-6 max-w-none dark:prose-invert"><p>${b.excerpt}</p><p>${b.content}</p></div>
+          <div class="mt-6 flex flex-wrap gap-2">${b.tags.map(t=>`<span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium dark:bg-slate-800">#${t}</span>`).join('')}</div>
+        `;
+        document.getElementById('modal').classList.remove('hidden');
+        document.getElementById('modal').classList.add('flex');
+      }
+      function closeModal(){ document.getElementById('modal').classList.add('hidden'); document.getElementById('modal').classList.remove('flex'); }
+
+      function saveContactMessage(msg){
+        const store = loadData();
+        store.messages = store.messages || [];
+        store.messages.unshift({ ...msg, id:'m'+Date.now(), read:false, replied:false, createdAt:new Date().toISOString() });
+        saveData(store);
+      }
+
+      const typingTexts = ['Full Stack Engineer','UI/UX Designer','Problem Solver','Tech Mentor'];
+      let tIdx=0, tChar=0, tDeleting=false;
+      function typeLoop(){
+        const el = document.getElementById('typing');
+        const text = typingTexts[tIdx];
+        if(tDeleting){ tChar--; if(tChar<0){ tDeleting=false; tIdx=(tIdx+1)%typingTexts.length; } }
+        else { tChar++; if(tChar>text.length){ tDeleting=true; setTimeout(typeLoop,1500); return; } }
+        el.textContent = text.slice(0,tChar);
+        setTimeout(typeLoop, tDeleting?50:100);
+      }
+
+      function updateTheme(){
+        const dark = localStorage.getItem('theme')==='dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.getElementById('themeIcon').textContent = dark ? '☀️' : '🌙';
+      }
+      document.getElementById('themeToggle').onclick = () => { const dark = document.documentElement.classList.contains('dark'); localStorage.setItem('theme', dark?'light':'dark'); updateTheme(); };
+      document.getElementById('mobileMenuBtn').onclick = () => document.getElementById('mobileMenu').classList.toggle('hidden');
+
+      document.getElementById('contactForm').onsubmit = e => {
+        e.preventDefault();
+        const f = e.target;
+        saveContactMessage({ name:f.name.value, email:f.email.value, phone:f.phone.value, subject:f.subject.value, message:f.message.value });
+        alert('Thanks for your message! I will get back to you soon.');
+        f.reset();
+      };
+
+      document.getElementById('projectSearch').oninput = e => renderProjects(e.target.value);
+      document.getElementById('blogSearch').oninput = e => renderBlog(e.target.value);
+
+      function initParticles(){
+        const c = document.getElementById('particleCanvas');
+        const ctx = c.getContext('2d');
+        let w,h,particles=[];
+        function resize(){ w=c.width=innerWidth; h=c.height=innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        for(let i=0;i<80;i++) particles.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+1});
+        function draw(){
+          ctx.clearRect(0,0,w,h);
+          particles.forEach(p=>{
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.x<0||p.x>w) p.vx*=-1; if(p.y<0||p.y>h) p.vy*=-1;
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(59,130,246,0.4)'; ctx.fill();
+          });
+          requestAnimationFrame(draw);
+        }
+        draw();
+      }
+
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+            entry.target.querySelectorAll('.skill-bar').forEach(bar=>bar.style.width=bar.dataset.width);
+            entry.target.querySelectorAll('[data-count]').forEach(el=>{
+              const target = +el.dataset.count, suffix=el.dataset.suffix||''; let n=0;
+              const step = Math.max(1, Math.ceil(target/40));
+              const iv = setInterval(()=>{ n+=step; if(n>=target){ n=target; clearInterval(iv); } el.textContent=n+suffix; }, 30);
+            });
+          }
+        });
+      }, {threshold:0.15});
+
+      function formatDate(d){ if(!d) return ''; return new Date(d).toLocaleDateString(undefined,{year:'numeric',month:'short'}); }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        updateTheme(); typeLoop(); initParticles();
+        applyProfile(); renderStats(); renderAbout(); renderSkills(); renderTimeline(); renderProjects(); renderBlog(); renderServices(); renderTestimonials(); renderContrib(); renderSocials(); renderContactLinks(); renderResumeExperience(); renderResumeSkills(); setupCv();
+        document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+      });
+    </script>
+  </body>
+</html>
