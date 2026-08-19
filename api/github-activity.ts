@@ -1,5 +1,5 @@
 const GITHUB_API = 'https://api.github.com/graphql';
-const DEFAULT_USERNAME = 'udehsamson';
+const DEFAULT_USERNAME = 'Archcody28';
 
 function fallbackGitHubPayload() {
   const startDate = new Date('2026-01-04T00:00:00.000Z');
