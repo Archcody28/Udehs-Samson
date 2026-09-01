@@ -41,7 +41,7 @@ export function AboutIntro() {
             className="lg:col-span-2"
           >
             <div className="prose prose-lg max-w-none text-slate-700 dark:prose-invert dark:text-slate-300">
-              {profile.bio.split('\n\n').map((paragraph, idx) => (
+              {profile?.bio?.split('\n\n')?.map((paragraph, idx) => (
                 <p key={idx} className="mb-6 leading-relaxed">
                   {paragraph}
                 </p>

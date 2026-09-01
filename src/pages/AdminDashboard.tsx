@@ -152,8 +152,8 @@ export function AdminDashboard() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  const handleLogout = () => {
-    store.logout();
+  const handleLogout = async () => {
+    await store.logout();
     navigate('/admin/login');
   };
 
@@ -767,8 +767,8 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     setValue('avatar', base64, { shouldDirty: true });
   };
 
-  const onSubmit = (formData: ProfileForm) => {
-    store.updateProfile({ ...profile, ...formData });
+  const onSubmit = async (formData: ProfileForm) => {
+    await store.updateProfile({ ...profile, ...formData });
     toast.success('Profile updated');
   };
 
@@ -941,7 +941,7 @@ function ProjectFormModal({
         },
   });
 
-  const onSubmit = (formData: ProjectForm) => {
+  const onSubmit = async (formData: ProjectForm) => {
     const payload = {
       ...formData,
       categories: parseList(formData.categories),
@@ -949,10 +949,10 @@ function ProjectFormModal({
       images,
     };
     if (data) {
-      store.updateProject(data.id, payload);
+      await store.updateProject(data.id, payload);
       toast.success('Project updated');
     } else {
-      store.addProject(payload);
+      await store.addProject(payload);
       toast.success('Project created');
     }
     onClose();
@@ -1037,7 +1037,7 @@ function BlogFormModal({
         },
   });
 
-  const onSubmit = (formData: BlogForm) => {
+  const onSubmit = async (formData: BlogForm) => {
     const payload = {
       ...formData,
       categories: parseList(formData.categories),
@@ -1045,10 +1045,10 @@ function BlogFormModal({
       coverImage,
     };
     if (data) {
-      store.updateBlogPost(data.id, payload);
+      await store.updateBlogPost(data.id, payload);
       toast.success('Blog post updated');
     } else {
-      store.addBlogPost(payload);
+      await store.addBlogPost(payload);
       toast.success('Blog post created');
     }
     onClose();
@@ -1107,12 +1107,12 @@ function SkillFormModal({
     defaultValues: data ?? { name: '', category: '', proficiency: 50 },
   });
 
-  const onSubmit = (formData: SkillForm) => {
+  const onSubmit = async (formData: SkillForm) => {
     if (data) {
-      store.updateSkill(data.id, formData);
+      await store.updateSkill(data.id, formData);
       toast.success('Skill updated');
     } else {
-      store.addSkill(formData);
+      await store.addSkill(formData);
       toast.success('Skill created');
     }
     onClose();
@@ -1167,13 +1167,13 @@ function ExperienceFormModal({
     },
   });
 
-  const onSubmit = (formData: ExperienceForm) => {
+  const onSubmit = async (formData: ExperienceForm) => {
     const payload = { ...formData, current };
     if (data) {
-      store.updateExperience(data.id, payload);
+      await store.updateExperience(data.id, payload);
       toast.success('Experience updated');
     } else {
-      store.addExperience(payload);
+      await store.addExperience(payload);
       toast.success('Experience created');
     }
     onClose();
@@ -1229,13 +1229,13 @@ function TestimonialFormModal({
     defaultValues: data ?? { name: '', role: '', company: '', content: '' },
   });
 
-  const onSubmit = (formData: TestimonialForm) => {
+  const onSubmit = async (formData: TestimonialForm) => {
     const payload = { ...formData, avatar };
     if (data) {
-      store.updateTestimonial(data.id, payload);
+      await store.updateTestimonial(data.id, payload);
       toast.success('Testimonial updated');
     } else {
-      store.addTestimonial(payload);
+      await store.addTestimonial(payload);
       toast.success('Testimonial created');
     }
     onClose();
