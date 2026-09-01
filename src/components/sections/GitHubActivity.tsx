@@ -211,6 +211,7 @@ export function GitHubActivity() {
               </a>
             </div>
 
+<<<<<<< HEAD
             <div className="grid grid-cols-12 gap-1 sm:grid-cols-18 md:grid-cols-24">
               {contributionDays.map((day, idx) => {
                 const fallbackColors = [
@@ -256,6 +257,73 @@ export function GitHubActivity() {
                 );
               })}
             </div>
+=======
+            <div className="grid grid-cols-[repeat(53,minmax(0,1fr))] gap-1 overflow-x-auto pb-2">
+  {activity
+    ? activity.user.contributionsCollection.contributionCalendar.weeks.map(
+        (week, weekIndex) => (
+          <div
+            key={weekIndex}
+            className="grid grid-rows-7 gap-1"
+          >
+            {week.contributionDays.map((day) => {
+              let backgroundColor = '#161b22';
+
+              if (day.contributionCount > 0 && day.contributionCount <= 2) {
+                backgroundColor = '#0e4429';
+              } else if (
+                day.contributionCount > 2 &&
+                day.contributionCount <= 4
+              ) {
+                backgroundColor = '#006d32';
+              } else if (
+                day.contributionCount > 4 &&
+                day.contributionCount <= 7
+              ) {
+                backgroundColor = '#26a641';
+              } else if (day.contributionCount > 7) {
+                backgroundColor = '#39d353';
+              }
+
+              return (
+                <motion.div
+                  key={day.date}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.15 }}
+                  className="h-3 w-3 rounded-sm sm:h-3.5 sm:w-3.5"
+                  style={{ backgroundColor }}
+                  title={`${day.contributionCount} contributions on ${day.date}`}
+                />
+              );
+            })}
+          </div>
+        )
+      )
+    : fallbackContributions.map((count, index) => {
+        const fallbackColors = [
+          '#161b22',
+          '#0e4429',
+          '#006d32',
+          '#26a641',
+          '#39d353',
+        ];
+
+        return (
+          <div
+            key={index}
+            className="h-3 w-3 rounded-sm sm:h-3.5 sm:w-3.5"
+            style={{
+              backgroundColor:
+                fallbackColors[count] ?? fallbackColors[0],
+            }}
+            title={`${count} contributions`}
+          />
+        );
+      })}
+</div>
+>>>>>>> afa46ea0cb8ded6f54c4b940866b2d0f14c5da94
           </Card>
 
           <div className="grid grid-cols-2 gap-4">

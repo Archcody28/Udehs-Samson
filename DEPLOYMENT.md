@@ -1,142 +1,243 @@
 # Deployment Guide
 
-This project is a Vite + React portfolio site designed for static hosting, with a serverless GitHub activity endpoint and a protected admin dashboard.
+This project is a Vite + React portfolio designed for production deployment with static hosting and a serverless GitHub activity endpoint.
 
-## Project layout
+## Project Structure
 
-- Frontend app: `src/`
-- Production build output: `dist/`
-- Vercel config: `vercel.json`
-- Serverless API: `api/github-activity.ts`
-- Admin panel: `public/admin/index.html`
+```text
+portfolio/
+├── api/                  # Serverless API functions
+├── public/               # Static assets and public pages
+├── src/                  # React application
+├── dist/                 # Production build output
+├── .env                  # Local environment variables
+├── .env.example          # Environment variable template
+├── vercel.json           # Vercel configuration
+└── package.json
+```
 
-## Build status
+## Requirements
 
-This project is verified to build successfully with:
+Before deploying, make sure you have:
+
+* Node.js installed
+* npm installed
+* A GitHub repository containing the project
+* A Vercel account or another compatible hosting provider
+
+## Local Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Archcody28/portfolio.git
+cd portfolio
+```
+
+Install dependencies:
 
 ```bash
 npm install
+```
+
+Create a local `.env` file if GitHub activity integration is enabled:
+
+```env
+GITHUB_TOKEN=your_github_token
+```
+
+**Never commit `.env` to Git.**
+
+The repository should contain an appropriate `.gitignore` entry:
+
+```gitignore
+.env
+.env.local
+.env.*.local
+```
+
+## Build
+
+Create a production build:
+
+```bash
 npm run build
 ```
 
-The production build output is generated to `dist/` and is compatible with Vercel static hosting.
+The compiled application will be generated in:
 
-## Required environment variables
-
-This project uses a local `.env` file for development, and the repo is configured to ignore it in Git.
-
-Create or update the project root `.env` file with:
-
-```bash
-GITHUB_TOKEN=ghp_your_personal_access_token
+```text
+dist/
 ```
 
-Notes:
-- The GitHub token is used by `api/github-activity.ts` to fetch live contribution data from the GitHub GraphQL API.
-- If the token is missing, the app falls back to demo contribution data instead of failing.
-- The token should never be exposed in the frontend.
-- `.env` is excluded from version control via `.gitignore`.
-
-For local setup, you can also keep a template in `.env.example` if you want to document the expected variables without committing secrets.
-
-## Admin password configuration
-
-The admin dashboard stores a SHA-256 hash and compares it to the entered password. You must update the hash in `public/admin/index.html` before deployment.
-
-To generate a hash:
+To preview the production build locally:
 
 ```bash
-echo -n 'your-new-password' | sha256sum
+npm run preview
 ```
-
-Then replace the `ADMIN_HASH` value with the generated hash.
 
 ## Deploying to Vercel
 
-This repository already includes a Vercel configuration:
+Vercel is the recommended deployment platform for this project because it supports both the Vite frontend and the serverless API used for GitHub activity.
 
-- Build command: `npm run build`
-- Output directory: `dist`
-- Framework: `null` (static site)
+### 1. Push the project to GitHub
 
-### Steps
+Make sure your latest changes are committed and pushed:
 
-1. Push the project to GitHub.
-2. Open Vercel and click “Add Project”.
-3. Import the repository.
-4. Keep the existing build settings for this project:
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-   - Install Command: `npm install`
-5. Add the environment variable:
-   - `GITHUB_TOKEN`
-6. Deploy the project.
+```bash
+git add .
+git commit -m "Prepare portfolio for deployment"
+git push origin main
+```
 
-### Vercel settings to confirm
+### 2. Import the repository into Vercel
 
-In Project Settings → Build and Output Settings, confirm:
+1. Sign in to Vercel.
+2. Create a new project.
+3. Import the GitHub repository.
+4. Configure the project using the existing Vercel configuration.
 
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Install Command: `npm install`
+### 3. Configure the build
 
-## Deploying to Netlify or other static hosts
+Use:
 
-This app can also be deployed to static hosting providers that support environment variables and static uploads.
+```text
+Build Command: npm run build
+Output Directory: dist
+Install Command: npm install
+```
 
-### Recommended settings
+### 4. Configure environment variables
 
-- Build command: `npm run build`
-- Publish directory: `dist`
-- Environment variable: `GITHUB_TOKEN`
+If GitHub activity integration is enabled, add:
 
-### Important note
+```text
+GITHUB_TOKEN
+```
 
-The GitHub activity API route is a Vercel-style serverless function in `api/github-activity.ts`. If you deploy to a host that does not support serverless functions, you should either:
+Set its value using the hosting provider's environment-variable settings.
 
-- use a host with serverless support, or
-- disable the live GitHub activity widget and keep the fallback data only
+**Do not place the token directly in frontend JavaScript or commit it to the repository.**
 
-## Production checks after deployment
+### 5. Deploy
 
-After the app is live, confirm the following:
+Start the deployment from Vercel.
 
-- Home page loads without errors
-- Theme, animations, and sections render correctly
-- Projects and blog pages load
-- Admin page loads at `/admin/`
-- GitHub activity widget loads or falls back gracefully
-- Contact and resume pages display correctly
-- No broken asset paths or missing CSS/JS files appear in the browser console
+After deployment, open the generated URL and verify that the application loads correctly.
 
-## Troubleshooting
+## GitHub Activity
 
-### Build fails
+The project can retrieve GitHub contribution information through:
 
-Check:
-- Node.js and npm versions are compatible
-- Dependencies installed successfully
-- No missing environment variables for the GitHub API
+```text
+api/github-activity.ts
+```
 
-### GitHub activity is empty or broken
+The GitHub token is handled by the server-side API rather than being exposed directly to the browser.
 
-- Confirm `GITHUB_TOKEN` is set in the host environment
-- Verify the token has access to the GitHub GraphQL API
-- Ensure the serverless function is deployed and enabled on the platform
+If the GitHub API is unavailable, the application can use its fallback behavior instead of preventing the portfolio from loading.
 
-### Admin login does not work
+## Admin Dashboard
 
-- Ensure `ADMIN_HASH` in `public/admin/index.html` matches the correct SHA-256 hash
-- Clear browser storage if testing previous credentials
+The current portfolio includes an admin interface for managing portfolio content.
 
-## Recommended production setup
+Because the current implementation is intended for a personal portfolio, it should **not be considered a general-purpose production authentication system**.
 
-- Host on Vercel for the best compatibility with the existing config
-- Store `GITHUB_TOKEN` in the hosting provider’s environment variables
-- Keep the admin dashboard protected behind a strong password hash
-- Use HTTPS-enabled hosting
-- Keep the actual secrets in `.env` locally and in your hosting provider’s secret manager, never in Git
+For a production application with multiple users or sensitive data, replace the client-side authentication approach with:
 
-## Summary
+* Server-side authentication
+* Secure password hashing such as Argon2id, bcrypt, or scrypt
+* Server-side sessions or secure tokens
+* Authorization checks
+* Database-backed content management
+* Secure cookies
+* Rate limiting
+* CSRF protection where applicable
 
-This project is ready for a lightweight static deployment on Vercel or similar hosting. The only required runtime-sensitive configuration for the live app is the GitHub token for the activity feed, plus the admin password hash for the dashboard. Local secrets stay in `.env`, and `.gitignore` keeps them out of version control.
+Do not store passwords, authentication secrets, or private credentials in client-side code.
+
+## Deploying to Other Platforms
+
+The frontend can be deployed to most static hosting providers that support Vite applications.
+
+Use:
+
+```text
+Build Command: npm run build
+Publish Directory: dist
+```
+
+However, the GitHub activity endpoint requires serverless-function support.
+
+If the selected hosting provider does not support the API implementation in `api/github-activity.ts`, either configure an equivalent serverless function for that platform or disable the live GitHub activity integration.
+
+## Production Checklist
+
+Before considering the deployment complete, verify:
+
+* [ ] The production build completes successfully.
+* [ ] The homepage loads correctly.
+* [ ] All navigation links work.
+* [ ] Images and assets load correctly.
+* [ ] Light/dark mode works.
+* [ ] Projects and blog sections work.
+* [ ] Contact information is correct.
+* [ ] Resume link works.
+* [ ] GitHub activity works or falls back gracefully.
+* [ ] Admin functionality works as intended.
+* [ ] No secrets are present in the repository.
+* [ ] Browser console contains no unexpected errors.
+* [ ] The deployed site uses HTTPS.
+* [ ] Mobile and desktop layouts work correctly.
+
+## Security Checklist
+
+Before pushing or deploying:
+
+```bash
+git status
+```
+
+Check that sensitive files are not included.
+
+Never commit:
+
+```text
+.env
+.env.local
+private keys
+API tokens
+passwords
+database credentials
+service credentials
+```
+
+If a secret is accidentally committed, **revoke or rotate it immediately**. Removing the file in a later commit does not make the exposed secret safe.
+
+## Production Environment
+
+For production deployments:
+
+* Store secrets using the hosting provider's environment-variable system.
+* Keep `.env` files out of version control.
+* Use HTTPS.
+* Keep dependencies updated.
+* Avoid exposing server-side credentials to the browser.
+* Use proper server-side authentication for protected applications.
+* Monitor deployment and runtime errors.
+
+## Recommended Deployment
+
+For the current project:
+
+```text
+Frontend: Vite + React
+Hosting: Vercel
+Build: npm run build
+Output: dist/
+API: Serverless function
+Secrets: Vercel Environment Variables
+Source Control: GitHub
+```
+
+This setup provides a simple deployment workflow while keeping the frontend lightweight and allowing server-side handling of sensitive API credentials.

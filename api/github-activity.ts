@@ -1,6 +1,6 @@
 
 const GITHUB_API = 'https://api.github.com/graphql';
-const DEFAULT_USERNAME = 'udehsamson';
+const DEFAULT_USERNAME = 'Archcody28';
 
 function fallbackGitHubPayload() {
   const startDate = new Date('2026-01-04T00:00:00.000Z');
@@ -51,6 +51,7 @@ function fallbackGitHubPayload() {
 export default async function handler(req: any, res: any) {
   const token = process.env.GITHUB_TOKEN;
 
+<<<<<<< HEAD
   // Use fallback data when no GitHub token is configured.
   if (!token) {
     res.setHeader(
@@ -61,6 +62,7 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json(fallbackGitHubPayload());
   }
 
+<<<<<<< HEAD
   // The portfolio only exposes the configured GitHub account.
   const username = DEFAULT_USERNAME;
 
