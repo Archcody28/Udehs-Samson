@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type {
   PortfolioData,
   Project,
@@ -17,6 +17,27 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // In-memory auth token (cleared on page refresh — intentional)
 let authToken: string | null = null;
+
+// Subscription mechanism so all components share the same auth state
+const authListeners = new Set<() => void>();
+
+function subscribeToAuth(listener: () => void) {
+  authListeners.add(listener);
+  return () => { authListeners.delete(listener); };
+}
+
+function notifyAuthChange() {
+  authListeners.forEach((listener) => listener());
+}
+
+function setAuthToken(token: string | null) {
+  authToken = token;
+  notifyAuthChange();
+}
+
+function getAuthToken() {
+  return authToken;
+}
 
 // API helper - uses Bearer token for auth (no cookies, no localStorage)
 async function apiFetch<T>(
@@ -82,7 +103,12 @@ export function useContentStore() {
     profile: defaultProfile,
     messages: [],
   });
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Subscribe to module-level auth state so all components see the same value
+  const isAuthenticated = useSyncExternalStore(
+    subscribeToAuth,
+    () => !!authToken,
+    () => false
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   // Load data on mount (auth starts as logged out — token is memory-only)
@@ -110,8 +136,7 @@ export function useContentStore() {
         { method: 'POST', body: JSON.stringify({ email, password }) }
       );
       if (result.authenticated && result.token) {
-        authToken = result.token;
-        setIsAuthenticated(true);
+        setAuthToken(result.token);
         return true;
       }
       return false;
@@ -126,8 +151,7 @@ export function useContentStore() {
     } catch {
       // Ignore logout errors
     }
-    authToken = null;
-    setIsAuthenticated(false);
+    setAuthToken(null);
   }, []);
 
   // Profile
