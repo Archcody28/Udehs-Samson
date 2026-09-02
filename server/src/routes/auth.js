@@ -115,6 +115,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     });
     res.json({ authenticated: true, token: sessionToken });
   } catch (error) {
+    console.error("LOGIN ERROR:", error);
     res.status(500).json({ error: 'Login failed' });
   }
 });
