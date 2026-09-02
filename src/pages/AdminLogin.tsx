@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Lock, Eye, EyeOff } from 'lucide-react';
+import { Lock, Eye, EyeOff, Mail } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
 import { useContentStore } from '@/hooks/useContentStore';
 import { Input } from '@/components/ui/Input';
@@ -11,6 +11,7 @@ import toast from 'react-hot-toast';
 export function AdminLogin() {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useContentStore();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,13 +23,13 @@ export function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    const success = await login(password);
+    const success = await login(email, password);
     setIsLoading(false);
     if (success) {
       toast.success('Welcome back, Samson!');
       navigate('/admin/dashboard');
     } else {
-      toast.error('Invalid password. Try again.');
+      toast.error('Invalid email or password. Try again.');
     }
   };
 
@@ -48,11 +49,22 @@ export function AdminLogin() {
             </div>
             <h1 className="font-display text-2xl font-bold">Admin Dashboard</h1>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              Enter your password to manage your portfolio.
+              Enter your credentials to manage your portfolio.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="relative">
+              <Input
+                label="Email"
+                type="email"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <Mail className="absolute right-3 top-8 h-4 w-4 text-slate-400" />
+            </div>
             <div className="relative">
               <Input
                 label="Password"

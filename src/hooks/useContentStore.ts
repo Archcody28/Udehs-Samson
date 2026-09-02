@@ -103,11 +103,11 @@ export function useContentStore() {
   }
 
   // Auth
-  const login = useCallback(async (password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     try {
       const result = await apiFetch<{ authenticated: boolean; token: string }>(
         '/api/auth/login',
-        { method: 'POST', body: JSON.stringify({ password }) }
+        { method: 'POST', body: JSON.stringify({ email, password }) }
       );
       if (result.authenticated && result.token) {
         authToken = result.token;
