@@ -143,16 +143,12 @@ The current portfolio includes an admin interface for managing portfolio content
 
 Because the current implementation is intended for a personal portfolio, it should **not be considered a general-purpose production authentication system**.
 
-For a production application with multiple users or sensitive data, replace the client-side authentication approach with:
-
-* Server-side authentication
-* Secure password hashing such as Argon2id, bcrypt, or scrypt
-* Server-side sessions or secure tokens
-* Authorization checks
-* Database-backed content management
-* Secure cookies
-* Rate limiting
-* CSRF protection where applicable
+The authentication system uses:
+* Server-side authentication with bcrypt password hashing
+* Bearer token sessions (no cookies, no localStorage)
+* Server-side session storage in MongoDB with 24-hour TTL expiration
+* Authorization checks via requireAdmin middleware
+* Rate limiting on login attempts
 
 Do not store passwords, authentication secrets, or private credentials in client-side code.
 

@@ -15,7 +15,10 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// API helper - uses HTTP-only cookies for auth (no token in localStorage)
+// In-memory auth token (cleared on page refresh — intentional)
+let authToken: string | null = null;
+
+// API helper - uses Bearer token for auth (no cookies, no localStorage)
 async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -25,10 +28,14 @@ async function apiFetch<T>(
     ...(options.headers as Record<string, string>),
   };
 
+  // Attach Authorization header when token exists
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
-    credentials: 'include', // Send cookies with requests
   });
 
   if (!response.ok) {
@@ -78,20 +85,10 @@ export function useContentStore() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check auth status on mount
+  // Load data on mount (auth starts as logged out — token is memory-only)
   useEffect(() => {
-    checkAuth();
     loadData();
   }, []);
-
-  async function checkAuth() {
-    try {
-      const result = await apiFetch<{ authenticated: boolean }>('/api/auth/check');
-      setIsAuthenticated(result.authenticated);
-    } catch {
-      setIsAuthenticated(false);
-    }
-  }
 
   async function loadData() {
     try {
@@ -108,11 +105,12 @@ export function useContentStore() {
   // Auth
   const login = useCallback(async (password: string): Promise<boolean> => {
     try {
-      const result = await apiFetch<{ success: boolean }>(
+      const result = await apiFetch<{ authenticated: boolean; token: string }>(
         '/api/auth/login',
         { method: 'POST', body: JSON.stringify({ password }) }
       );
-      if (result.success) {
+      if (result.authenticated && result.token) {
+        authToken = result.token;
         setIsAuthenticated(true);
         return true;
       }
@@ -128,6 +126,7 @@ export function useContentStore() {
     } catch {
       // Ignore logout errors
     }
+    authToken = null;
     setIsAuthenticated(false);
   }, []);
 

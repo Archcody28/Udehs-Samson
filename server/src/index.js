@@ -1,6 +1,5 @@
-import express from 'express';
+﻿import express from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import { requireAdmin } from './middleware/auth.js';
@@ -41,9 +40,8 @@ app.use((req, res, next) => {
 });
 
 // CORS and parsing
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+app.use(cors({ origin: CLIENT_URL }));
 app.use(express.json({ limit: '50mb' }));
-app.use(cookieParser());
 
 // API Routes
 app.use('/api/profile', profileRoutes);

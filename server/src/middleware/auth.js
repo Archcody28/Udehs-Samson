@@ -1,25 +1,22 @@
-import Session from '../models/Session.js';
+﻿import Session from '../models/Session.js';
 
 /**
  * Middleware to verify authentication and admin authorization.
- * Expects a valid session token in the `sid` HTTP-only cookie.
+ * Expects a valid session token in the Authorization: Bearer <token> header.
  */
 export async function requireAdmin(req, res, next) {
   try {
-    const token = req.cookies?.sid;
-
-    if (!token) {
+    const header = req.headers.authorization;
+    if (!header || !header.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
-    const session = await Session.findOne({ token });
+    const token = header.slice(7).trim();
+    const tokenHash = Session.hashToken(token);
+    const session = await Session.findOne({ tokenHash });
 
     if (!session) {
       return res.status(401).json({ error: 'Invalid or expired session' });
-    }
-
-    if (session.role !== 'admin') {
-      return res.status(403).json({ error: 'Admin access required' });
     }
 
     req.session = session;

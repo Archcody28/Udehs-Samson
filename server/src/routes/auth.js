@@ -1,4 +1,4 @@
-import express from 'express';
+﻿import express from 'express';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import rateLimit from 'express-rate-limit';
@@ -14,6 +14,15 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Extract Bearer token from Authorization header
+function extractBearerToken(req) {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) {
+    return null;
+  }
+  return header.slice(7).trim();
+}
 
 // POST login
 router.post('/login', loginLimiter, async (req, res) => {
@@ -34,73 +43,62 @@ router.post('/login', loginLimiter, async (req, res) => {
     const isValid = await bcrypt.compare(password, adminPasswordHash);
 
     if (!isValid) {
-      // Generic error message — do not reveal whether password was wrong
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Generate a cryptographically secure session token
     const sessionToken = crypto.randomBytes(32).toString('hex');
 
-    // Store session server-side in MongoDB
-    await Session.create({ token: sessionToken, role: 'admin' });
+    // Hash the token before storing in MongoDB
+    const tokenHash = Session.hashToken(sessionToken);
 
-    // Set HTTP-only, Secure, SameSite cookie
-    res.cookie('sid', sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none', // Adjust based on your frontend domain setup
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      path: '/',
+    // Store session with expiration (24 hours)
+    await Session.create({
+      tokenHash,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    res.json({ success: true });
+    res.json({ authenticated: true, token: sessionToken });
   } catch (error) {
     res.status(500).json({ error: 'Login failed' });
-  }
-});
-
-// POST logout
-router.post('/logout', async (req, res) => {
-  try {
-    const token = req.cookies?.sid;
-
-    if (token) {
-      // Remove session from database
-      await Session.deleteOne({ token });
-    }
-
-    // Clear the cookie
-    res.clearCookie('sid', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      path: '/',
-    });
-
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Logout failed' });
   }
 });
 
 // GET check auth status
 router.get('/check', async (req, res) => {
   try {
-    const token = req.cookies?.sid;
+    const token = extractBearerToken(req);
 
     if (!token) {
       return res.json({ authenticated: false });
     }
 
-    const session = await Session.findOne({ token });
+    const tokenHash = Session.hashToken(token);
+    const session = await Session.findOne({ tokenHash });
 
-    if (!session || session.role !== 'admin') {
+    if (!session) {
       return res.json({ authenticated: false });
     }
 
     res.json({ authenticated: true });
   } catch (error) {
     res.json({ authenticated: false });
+  }
+});
+
+// POST logout
+router.post('/logout', async (req, res) => {
+  try {
+    const token = extractBearerToken(req);
+
+    if (token) {
+      const tokenHash = Session.hashToken(token);
+      await Session.deleteOne({ tokenHash });
+    }
+
+    res.json({ authenticated: false });
+  } catch (error) {
+    res.status(500).json({ error: 'Logout failed' });
   }
 });
 

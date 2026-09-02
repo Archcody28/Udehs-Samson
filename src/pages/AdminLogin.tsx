@@ -22,8 +22,7 @@ export function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const success = login(password);
+    const success = await login(password);
     setIsLoading(false);
     if (success) {
       toast.success('Welcome back, Samson!');

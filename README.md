@@ -42,15 +42,16 @@ The public site features animated sections powered by Framer Motion, 3D particle
 ## Security
 
 - **bcrypt password hashing** — Admin passwords are hashed with bcrypt (cost factor 12)
-- **HTTP-only cookies** — Session token stored in `httpOnly`, `secure`, `sameSite: strict` cookie
-- **Server-side sessions** — Sessions stored in MongoDB with 24-hour TTL expiration
-- **Cryptographic session IDs** — Generated using `crypto.randomBytes(32)`
+- **Bearer token authentication** — Session token sent via `Authorization: Bearer <token>` header (no cookies)
+- **Server-side sessions** — Session token hashes stored in MongoDB with 24-hour TTL expiration
+- **Cryptographic session tokens** — Generated using `crypto.randomBytes(32)`, hashed with SHA-256 before storage
+- **In-memory token storage** — Token held only in JavaScript memory; cleared on page refresh
 - **Rate-limited login** — Maximum 10 login attempts per 15 minutes per IP
 - **Server-side authorization** — `requireAdmin` middleware validates session on every protected request
 - **Protected admin APIs** — All state-changing operations require valid admin session
 - **ObjectId validation** — Route parameters validated as MongoDB ObjectIds
 - **Mass-assignment protection** — Profile updates use explicit field whitelist
-- **CORS configuration** — Restricted to specific origin with credentials
+- **CORS configuration** — Restricted to specific origin (no credentials required)
 - **Security headers** — `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Strict-Transport-Security` (production)
 - **Environment-based secrets** — All secrets loaded from environment variables
 
@@ -80,7 +81,6 @@ The public site features animated sections powered by Framer Motion, 3D particle
 | Express 4 | HTTP server framework |
 | Mongoose 8 | MongoDB ODM |
 | bcrypt | Password hashing |
-| cookie-parser | Cookie parsing |
 | express-rate-limit | Rate limiting |
 | cors | Cross-origin resource sharing |
 | dotenv | Environment variable loading |
@@ -357,11 +357,13 @@ Server validates password
     ↓
 bcrypt verification (bcrypt.compare)
     ↓
-Session created in MongoDB (crypto.randomBytes token, 24h TTL)
+Session created in MongoDB (SHA-256 hash of crypto.randomBytes token, 24h TTL)
     ↓
-HTTP-only, Secure, SameSite=Strict cookie returned
+Session token returned in response body
     ↓
-Protected API requests include cookie automatically
+Token stored in memory (JavaScript variable)
+    ↓
+Protected API requests include Authorization: Bearer <token> header
     ↓
 Server-side requireAdmin middleware validates session
     ↓
@@ -370,16 +372,16 @@ Authorization granted or denied
 
 ### Session Lifecycle
 
-1. **Login** — Password verified against bcrypt hash. Session token generated and stored in MongoDB.
-2. **Requests** — Browser sends `sid` cookie automatically. Server validates token against MongoDB.
+1. **Login** — Password verified against bcrypt hash. Session token generated, hashed with SHA-256, and stored in MongoDB. Raw token returned to client.
+2. **Requests** — Frontend sends `Authorization: Bearer <token>` header. Server hashes token and validates against MongoDB.
 3. **Expiration** — MongoDB TTL index automatically removes sessions after 24 hours.
-4. **Logout** — Session deleted from MongoDB. Cookie cleared from browser.
+4. **Logout** — Session deleted from MongoDB. In-memory token cleared.
+5. **Page Refresh** — Token is lost (memory-only). User must log in again.
 
 ## Deployment
 
 ### Production Requirements
 
-- **HTTPS required** — `secure: true` cookie flag is set when `NODE_ENV=production`
 - **MongoDB authentication** — Use a connection string with credentials (e.g., MongoDB Atlas)
 - **CORS origin** — Set `CLIENT_URL` to the production frontend URL
 - **Reverse proxy** — If behind Nginx/cloud proxy, the `trust proxy` setting is configured to `1` (one proxy hop). Adjust if your deployment uses multiple proxy layers.
@@ -388,17 +390,17 @@ Authorization granted or denied
 ### Deployment Architecture
 
 The application is a two-part deployment:
-- **Frontend**: Static files (Vite `dist/`) served via CDN or static host
-- **Backend**: Node.js Express server running with MongoDB connection
+- **Frontend**: Static files (Vite `dist/`) served via CDN or static host (Vercel)
+- **Backend**: Node.js Express server running with MongoDB connection (Render)
 
-The frontend and backend are designed to be deployed to the same origin in production. The Vite dev server proxy (`/api` → backend) handles local development.
+The frontend and backend are deployed to separate origins. Authentication uses Bearer tokens (no cookies), so cross-origin requests work without shared domains.
 
 ## Development Notes
 
 - The frontend uses an Agon Element Picker script injected in `index.html` for development-time element inspection (Alt+Shift+I). This is a development tool and does not affect production builds.
-- The `useContentStore` hook is the central state manager, handling all API communication with HTTP-only cookie-based auth.
+- The `useContentStore` hook is the central state manager, handling all API communication with Bearer token auth.
 - Route protection on the frontend (`ProtectedRoute`) is a UX layer only. All authorization is enforced server-side.
-- Session tokens are never exposed to client-side JavaScript (HTTP-only cookie).
+- Session tokens are held in memory only — never persisted to localStorage, sessionStorage, or cookies.
 - The `generate-hash` script uses bcrypt with cost factor 12.
 
 ## License
