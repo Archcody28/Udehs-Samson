@@ -48,7 +48,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     res.cookie('sid', sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none', // Adjust based on your frontend domain setup
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
       path: '/',
     });
@@ -73,7 +73,7 @@ router.post('/logout', async (req, res) => {
     res.clearCookie('sid', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/',
     });
 
