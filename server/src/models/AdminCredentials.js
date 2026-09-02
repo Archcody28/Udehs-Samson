@@ -1,15 +1,37 @@
 import mongoose from 'mongoose';
 
 /**
- * TEMPORARY model for emergency admin password provisioning.
- * Stores a single bcrypt hash for the admin password in MongoDB.
- * This allows password changes without modifying environment variables.
- * REMOVE THIS MODEL once the setup endpoint is permanently disabled.
+ * Permanent admin authentication model.
+ * Stores the single admin account credentials in MongoDB.
+ * Only one admin document should exist in this collection.
  */
 const adminCredentialsSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
   passwordHash: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    default: 'admin',
+    enum: ['admin'],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
