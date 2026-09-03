@@ -157,13 +157,16 @@ export function useContentStore() {
   // Profile
   const updateProfile = useCallback(async (profile: Profile) => {
     try {
+      console.log('[updateProfile] Sending PUT request with profile:', { name: profile.name, title: profile.title, email: profile.email });
       const updated = await apiFetch<Profile>('/api/profile', {
         method: 'PUT',
         body: JSON.stringify(profile),
       });
+      console.log('[updateProfile] Success, response:', { name: updated.name, title: updated.title });
       setData((prev) => ({ ...prev, profile: updated }));
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('[updateProfile] Failed:', error);
+      throw error;
     }
   }, []);
 

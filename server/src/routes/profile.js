@@ -35,15 +35,20 @@ router.put('/', requireAdmin, async (req, res) => {
         sanitized[field] = updates[field];
       }
     }
+    console.log('[PUT /api/profile] Sanitized fields:', Object.keys(sanitized));
     let profile = await Profile.findOne();
     if (!profile) {
+      console.log('[PUT /api/profile] No existing profile, creating new one');
       profile = await Profile.create(sanitized);
     } else {
+      console.log('[PUT /api/profile] Updating existing profile:', profile.id);
       Object.assign(profile, sanitized);
       await profile.save();
     }
+    console.log('[PUT /api/profile] Success, returning profile');
     res.json(profile);
   } catch (error) {
+    console.error('[PUT /api/profile] Error:', error.message);
     res.status(500).json({ error: 'Failed to update profile' });
   }
 });

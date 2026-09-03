@@ -768,8 +768,13 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
   };
 
   const onSubmit = async (formData: ProfileForm) => {
-    await store.updateProfile({ ...profile, ...formData });
-    toast.success('Profile updated');
+    try {
+      await store.updateProfile({ ...profile, ...formData });
+      toast.success('Profile updated');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update profile';
+      toast.error(message);
+    }
   };
 
   return (
