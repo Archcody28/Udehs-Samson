@@ -138,6 +138,25 @@ const profileSchema = z.object({
   x: z.string().url(),
   whatsapp: z.string().url(),
   avatar: z.string().optional(),
+  cvUrl: z.string().optional(),
+  yearsOfExperience: z.coerce.number().min(0).default(0),
+  clientSatisfaction: z.coerce.number().min(0).max(100).default(0),
+  projectsDelivered: z.coerce.number().min(0).default(0),
+  happyClients: z.coerce.number().min(0).default(0),
+  education: z.array(z.object({
+    id: z.string().optional(),
+    degree: z.string().default(''),
+    institution: z.string().default(''),
+    year: z.string().default(''),
+    description: z.string().default(''),
+  })).default([]),
+  certifications: z.array(z.object({
+    id: z.string().optional(),
+    name: z.string().default(''),
+    issuer: z.string().default(''),
+    year: z.string().default(''),
+    url: z.string().default(''),
+  })).default([]),
 });
 
 type ProfileForm = z.infer<typeof profileSchema>;
@@ -738,6 +757,9 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     register,
     handleSubmit,
     setValue,
+    watch,
+    getValues,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
@@ -756,8 +778,102 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       x: profile.x,
       whatsapp: profile.whatsapp,
       avatar: profile.avatar,
+      cvUrl: profile.cvUrl || '',
+      yearsOfExperience: profile.yearsOfExperience || 0,
+      clientSatisfaction: profile.clientSatisfaction || 0,
+      projectsDelivered: profile.projectsDelivered || 0,
+      happyClients: profile.happyClients || 0,
+      education: profile.education || [],
+      certifications: profile.certifications || [],
     },
   });
+
+  // Sync form when profile data loads/changes
+  useEffect(() => {
+    reset({
+      name: profile.name,
+      title: profile.title,
+      tagline: profile.tagline,
+      bio: profile.bio,
+      shortBio: profile.shortBio,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      website: profile.website,
+      github: profile.github,
+      linkedin: profile.linkedin,
+      x: profile.x,
+      whatsapp: profile.whatsapp,
+      avatar: profile.avatar,
+      cvUrl: profile.cvUrl || '',
+      yearsOfExperience: profile.yearsOfExperience || 0,
+      clientSatisfaction: profile.clientSatisfaction || 0,
+      projectsDelivered: profile.projectsDelivered || 0,
+      happyClients: profile.happyClients || 0,
+      education: profile.education || [],
+      certifications: profile.certifications || [],
+    });
+    setAvatarPreview(profile.avatar);
+  }, [profile, reset]);
+
+  // Education handlers
+  const addEducation = () => {
+    const current = getValues('education');
+    setValue('education', [...current, { degree: '', institution: '', year: '', description: '' }]);
+  };
+
+  const removeEducation = (index: number) => {
+    const current = getValues('education');
+    setValue('education', current.filter((_, i) => i !== index));
+  };
+
+  const updateEducation = (index: number, field: string, value: string) => {
+    const current = getValues('education');
+    const updated = [...current];
+    updated[index] = { ...updated[index], [field]: value };
+    setValue('education', updated);
+  };
+
+  // Certification handlers
+  const addCertification = () => {
+    const current = getValues('certifications');
+    setValue('certifications', [...current, { name: '', issuer: '', year: '', url: '' }]);
+  };
+
+  const removeCertification = (index: number) => {
+    const current = getValues('certifications');
+    setValue('certifications', current.filter((_, i) => i !== index));
+  };
+
+  const updateCertification = (index: number, field: string, value: string) => {
+    const current = getValues('certifications');
+    const updated = [...current];
+    updated[index] = { ...updated[index], [field]: value };
+    setValue('certifications', updated);
+  };
+
+  // CV upload handler
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      toast.error('Please upload a PDF file');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size must be less than 10MB');
+      return;
+    }
+    // For now, store as data URL placeholder - storage integration point
+    const reader = new FileReader();
+    reader.onload = () => {
+      // In production, this would upload to a storage service and return a URL
+      // For now, we just store a placeholder indicating the file was selected
+      setValue('cvUrl', `/uploads/cv-${Date.now()}.pdf`);
+      toast.success('CV uploaded successfully. Note: File storage integration pending.');
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -849,12 +965,95 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
         <Input label="LinkedIn" error={errors.linkedin?.message} {...register('linkedin')} />
         <Input label="X / Twitter" error={errors.x?.message} {...register('x')} />
         <Input label="WhatsApp Link" error={errors.whatsapp?.message} {...register('whatsapp')} />
+        <Input label="CV URL" error={errors.cvUrl?.message} {...register('cvUrl')} className="md:col-span-2" />
         <div className="md:col-span-2">
-          <Button type="submit" isLoading={isSubmitting}>
-            Save Profile
-          </Button>
+          <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Upload CV (PDF)</label>
+          <input
+            type="file"
+            accept=".pdf,application/pdf"
+            onChange={handleCvUpload}
+            className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+          />
+          {watch('cvUrl') && (
+            <p className="mt-1 text-xs text-slate-500">Current: {watch('cvUrl')}</p>
+          )}
         </div>
       </form>
+
+      {/* Professional Statistics */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+        <h3 className="mb-4 font-display text-lg font-semibold">Professional Statistics</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Input label="Years of Experience" type="number" error={errors.yearsOfExperience?.message} {...register('yearsOfExperience')} />
+          <Input label="Client Satisfaction (%)" type="number" error={errors.clientSatisfaction?.message} {...register('clientSatisfaction')} />
+          <Input label="Projects Delivered" type="number" error={errors.projectsDelivered?.message} {...register('projectsDelivered')} />
+          <Input label="Happy Clients" type="number" error={errors.happyClients?.message} {...register('happyClients')} />
+        </div>
+      </div>
+
+      {/* Education */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold">Education</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addEducation}>Add Education</Button>
+        </div>
+        <div className="space-y-4">
+          {getValues('education').map((_, index) => (
+            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Education #{index + 1}</span>
+                <button type="button" onClick={() => removeEducation(index)} className="text-red-500 hover:text-red-600">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input placeholder="Degree" value={getValues(`education.${index}.degree`)} onChange={(e) => updateEducation(index, 'degree', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Institution" value={getValues(`education.${index}.institution`)} onChange={(e) => updateEducation(index, 'institution', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Year" value={getValues(`education.${index}.year`)} onChange={(e) => updateEducation(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Description" value={getValues(`education.${index}.description`)} onChange={(e) => updateEducation(index, 'description', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+              </div>
+            </div>
+          ))}
+          {getValues('education').length === 0 && (
+            <p className="text-center text-sm text-slate-500">No education records. Click "Add Education" to add one.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Certifications */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold">Certifications</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addCertification}>Add Certification</Button>
+        </div>
+        <div className="space-y-4">
+          {getValues('certifications').map((_, index) => (
+            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Certification #{index + 1}</span>
+                <button type="button" onClick={() => removeCertification(index)} className="text-red-500 hover:text-red-600">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input placeholder="Name" value={getValues(`certifications.${index}.name`)} onChange={(e) => updateCertification(index, 'name', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Issuer" value={getValues(`certifications.${index}.issuer`)} onChange={(e) => updateCertification(index, 'issuer', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Year" value={getValues(`certifications.${index}.year`)} onChange={(e) => updateCertification(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="URL" value={getValues(`certifications.${index}.url`)} onChange={(e) => updateCertification(index, 'url', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+              </div>
+            </div>
+          ))}
+          {getValues('certifications').length === 0 && (
+            <p className="text-center text-sm text-slate-500">No certifications. Click "Add Certification" to add one.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="md:col-span-2">
+        <Button type="submit" isLoading={isSubmitting}>
+          Save Profile
+        </Button>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,25 @@
 import mongoose from 'mongoose';
 
+const educationSchema = new mongoose.Schema(
+  {
+    degree: { type: String, default: '' },
+    institution: { type: String, default: '' },
+    year: { type: String, default: '' },
+    description: { type: String, default: '' },
+  },
+  { _id: true }
+);
+
+const certificationSchema = new mongoose.Schema(
+  {
+    name: { type: String, default: '' },
+    issuer: { type: String, default: '' },
+    year: { type: String, default: '' },
+    url: { type: String, default: '' },
+  },
+  { _id: true }
+);
+
 const profileSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -17,6 +37,12 @@ const profileSchema = new mongoose.Schema(
     whatsapp: { type: String, required: true },
     avatar: { type: String, default: '' },
     cvUrl: { type: String, default: '' },
+    yearsOfExperience: { type: Number, default: 0 },
+    clientSatisfaction: { type: Number, default: 0 },
+    projectsDelivered: { type: Number, default: 0 },
+    happyClients: { type: Number, default: 0 },
+    education: { type: [educationSchema], default: [] },
+    certifications: { type: [certificationSchema], default: [] },
   },
   {
     timestamps: true,

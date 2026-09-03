@@ -14,6 +14,12 @@ export interface Profile {
   whatsapp: string;
   avatar: string;
   cvUrl: string;
+  yearsOfExperience: number;
+  clientSatisfaction: number;
+  projectsDelivered: number;
+  happyClients: number;
+  education: Education[];
+  certifications: Certification[];
 }
 
 export type ContentStatus = 'draft' | 'published';
