@@ -978,9 +978,8 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
             <p className="mt-1 text-xs text-slate-500">Current: {watch('cvUrl')}</p>
           )}
         </div>
-      </form>
 
-      {/* Professional Statistics */}
+        {/* Professional Statistics */}
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
         <h3 className="mb-4 font-display text-lg font-semibold">Professional Statistics</h3>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -1054,6 +1053,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
           Save Profile
         </Button>
       </div>
+      </form>
     </div>
   );
 }
