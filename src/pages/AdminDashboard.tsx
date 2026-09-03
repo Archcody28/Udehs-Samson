@@ -762,9 +762,46 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
   const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    const base64 = await getBase64Image(file);
-    setAvatarPreview(base64);
-    setValue('avatar', base64, { shouldDirty: true });
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const compressed = await new Promise<string>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxSize = 400;
+          let { width, height } = img;
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = Math.round((height * maxSize) / width);
+              width = maxSize;
+            } else {
+              width = Math.round((width * maxSize) / height);
+              height = maxSize;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            resolve(dataUrl);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+      });
+      setAvatarPreview(compressed);
+      setValue('avatar', compressed, { shouldDirty: true });
+    } catch (error) {
+      console.error('Failed to process image:', error);
+    }
   };
 
   const onSubmit = async (formData: ProfileForm) => {
