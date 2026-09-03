@@ -1,6 +1,5 @@
 import express from 'express';
 import BlogPost from '../models/BlogPost.js';
-import { requireAdmin } from '../middleware/auth.js';
 import { validateObjectId } from '../middleware/validate.js';
 
 const router = express.Router();
@@ -15,8 +14,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create blog post (admin only)
-router.post('/', requireAdmin, async (req, res) => {
+// POST create blog post (public)
+router.post('/', async (req, res) => {
   try {
     const blog = await BlogPost.create(req.body);
     res.status(201).json(blog);
@@ -25,8 +24,8 @@ router.post('/', requireAdmin, async (req, res) => {
   }
 });
 
-// PUT update blog post (admin only)
-router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// PUT update blog post (public)
+router.put('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const blog = await BlogPost.findByIdAndUpdate(
       req.params.id,
@@ -42,8 +41,8 @@ router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE blog post (admin only)
-router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// DELETE blog post (public)
+router.delete('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const blog = await BlogPost.findByIdAndDelete(req.params.id);
     if (!blog) {

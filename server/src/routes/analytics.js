@@ -1,11 +1,10 @@
 import express from 'express';
 import Analytics from '../models/Analytics.js';
-import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET analytics (admin only)
-router.get('/', requireAdmin, async (req, res) => {
+// GET analytics (public)
+router.get('/', async (req, res) => {
   try {
     let analytics = await Analytics.findOne();
     if (!analytics) {

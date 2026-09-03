@@ -1,6 +1,5 @@
 import express from 'express';
 import Project from '../models/Project.js';
-import { requireAdmin } from '../middleware/auth.js';
 import { validateObjectId } from '../middleware/validate.js';
 
 const router = express.Router();
@@ -15,8 +14,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create project (admin only)
-router.post('/', requireAdmin, async (req, res) => {
+// POST create project (public)
+router.post('/', async (req, res) => {
   try {
     const project = await Project.create(req.body);
     res.status(201).json(project);
@@ -25,8 +24,8 @@ router.post('/', requireAdmin, async (req, res) => {
   }
 });
 
-// PUT update project (admin only)
-router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// PUT update project (public)
+router.put('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const project = await Project.findByIdAndUpdate(
       req.params.id,
@@ -42,8 +41,8 @@ router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE project (admin only)
-router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// DELETE project (public)
+router.delete('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
     if (!project) {

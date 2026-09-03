@@ -1,6 +1,5 @@
 import express from 'express';
 import Profile from '../models/Profile.js';
-import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -24,8 +23,8 @@ const ALLOWED_PROFILE_FIELDS = [
   'linkedin', 'x', 'whatsapp', 'avatar', 'cvUrl',
 ];
 
-// PUT update profile (admin only)
-router.put('/', requireAdmin, async (req, res) => {
+// PUT update profile (public)
+router.put('/', async (req, res) => {
   try {
     const updates = req.body;
     // Whitelist allowed fields to prevent mass assignment
@@ -35,20 +34,15 @@ router.put('/', requireAdmin, async (req, res) => {
         sanitized[field] = updates[field];
       }
     }
-    console.log('[PUT /api/profile] Sanitized fields:', Object.keys(sanitized));
     let profile = await Profile.findOne();
     if (!profile) {
-      console.log('[PUT /api/profile] No existing profile, creating new one');
       profile = await Profile.create(sanitized);
     } else {
-      console.log('[PUT /api/profile] Updating existing profile:', profile.id);
       Object.assign(profile, sanitized);
       await profile.save();
     }
-    console.log('[PUT /api/profile] Success, returning profile');
     res.json(profile);
   } catch (error) {
-    console.error('[PUT /api/profile] Error:', error.message);
     res.status(500).json({ error: 'Failed to update profile' });
   }
 });

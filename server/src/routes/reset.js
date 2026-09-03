@@ -6,7 +6,6 @@ import Skill from '../models/Skill.js';
 import Experience from '../models/Experience.js';
 import Testimonial from '../models/Testimonial.js';
 import Analytics from '../models/Analytics.js';
-import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -210,8 +209,8 @@ const defaultPageViews = [
   { date: 'Sun', views: 460 },
 ];
 
-// POST reset database to defaults (admin only)
-router.post('/', requireAdmin, async (req, res) => {
+// POST reset database to defaults (public)
+router.post('/', async (req, res) => {
   try {
     // Clear all collections
     await Promise.all([

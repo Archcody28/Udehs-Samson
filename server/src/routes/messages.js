@@ -1,14 +1,13 @@
 import express from 'express';
 import Message from '../models/Message.js';
-import { requireAdmin } from '../middleware/auth.js';
 import { validateObjectId } from '../middleware/validate.js';
 
 const router = express.Router();
 
-// All message operations are admin-only except POST (public contact form)
+// All message operations are public except POST (public contact form)
 
-// GET all messages (admin only)
-router.get('/', requireAdmin, async (req, res) => {
+// GET all messages (public)
+router.get('/', async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
     res.json(messages);
@@ -27,8 +26,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update message (admin only)
-router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// PUT update message (public)
+router.put('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const message = await Message.findByIdAndUpdate(
       req.params.id,
@@ -44,8 +43,8 @@ router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE message (admin only)
-router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
+// DELETE message (public)
+router.delete('/:id', validateObjectId('id'), async (req, res) => {
   try {
     const message = await Message.findByIdAndDelete(req.params.id);
     if (!message) {

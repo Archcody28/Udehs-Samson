@@ -39,7 +39,7 @@ function getAuthToken() {
   return authToken;
 }
 
-// API helper - uses Bearer token for auth (no cookies, no localStorage)
+// API helper - no auth required
 async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -48,11 +48,6 @@ async function apiFetch<T>(
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
-
-  // Attach Authorization header when token exists
-  if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
-  }
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,

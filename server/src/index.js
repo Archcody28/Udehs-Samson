@@ -1,8 +1,7 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
-import { requireAdmin } from './middleware/auth.js';
 
 // Route imports
 import profileRoutes from './routes/profile.js';
