@@ -8,7 +8,10 @@ import { formatDate } from '@/lib/utils';
 
 export function Resume() {
   const { data } = useContentStore();
-  const { profile, skills, experiences, education, certifications, achievements } = data;
+  const { profile, skills, experiences } = data;
+  const education = profile.education ?? [];
+  const certifications = profile.certifications ?? [];
+  const achievements = data.achievements ?? [];
 
   return (
     <>

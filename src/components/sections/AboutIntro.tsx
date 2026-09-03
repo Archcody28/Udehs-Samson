@@ -5,13 +5,13 @@ import { Award, Briefcase, GraduationCap, Users } from 'lucide-react';
 
 export function AboutIntro() {
   const { data } = useContentStore();
-  const { profile, education, experiences, testimonials } = data;
+  const { profile } = data;
 
   const highlights = [
-    { icon: Briefcase, label: 'Years Experience', value: '7+' },
-    { icon: Users, label: 'Clients Served', value: '30+' },
-    { icon: Award, label: 'Certifications', value: `${data.certifications.length}+` },
-    { icon: GraduationCap, label: 'Education', value: education[0]?.institution ?? 'University' },
+    { icon: Briefcase, label: 'Years Experience', value: `${profile.yearsOfExperience ?? 0}+` },
+    { icon: Users, label: 'Clients Served', value: `${profile.happyClients ?? 0}+` },
+    { icon: Award, label: 'Certifications', value: `${(profile.certifications ?? []).length}+` },
+    { icon: GraduationCap, label: 'Education', value: (profile.education ?? [])[0]?.institution ?? 'University' },
   ];
 
   return (

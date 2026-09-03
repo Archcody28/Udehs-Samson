@@ -7,16 +7,16 @@ import { TypingText } from '@/components/ui/TypingText';
 import { ParticleField } from '@/components/three/ParticleField';
 import { useContentStore } from '@/hooks/useContentStore';
 
-const stats = [
-  { value: 7, suffix: '+', label: 'Years Experience' },
-  { value: 45, suffix: '+', label: 'Projects Delivered' },
-  { value: 30, suffix: '+', label: 'Happy Clients' },
-  { value: 99, suffix: '%', label: 'Client Satisfaction' },
-];
-
 export function Hero() {
   const { data } = useContentStore();
   const { profile } = data;
+
+  const stats = [
+    { value: profile.yearsOfExperience ?? 0, suffix: '+', label: 'Years Experience' },
+    { value: profile.projectsDelivered ?? 0, suffix: '+', label: 'Projects Delivered' },
+    { value: profile.happyClients ?? 0, suffix: '+', label: 'Happy Clients' },
+    { value: profile.clientSatisfaction ?? 0, suffix: '%', label: 'Client Satisfaction' },
+  ];
 
   return (
     <section className="relative flex min-h-[calc(100vh-5rem)] items-center overflow-hidden px-4 sm:px-6 lg:px-8">
