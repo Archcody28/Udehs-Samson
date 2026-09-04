@@ -90,6 +90,7 @@ const blogSchema = z.object({
   featured: z.boolean().optional(),
   status: z.enum(['draft', 'published']),
   publishedAt: z.string().min(1),
+  author: z.string().min(1),
 });
 
 type BlogForm = z.infer<typeof blogSchema>;
@@ -1275,6 +1276,7 @@ function BlogFormModal({
           featured: false,
           status: 'draft',
           publishedAt: new Date().toISOString().split('T')[0],
+          author: 'Udeh Samson',
         },
   });
 
@@ -1302,6 +1304,7 @@ function BlogFormModal({
       <Textarea label="Content" rows={8} error={errors.content?.message} {...register('content')} />
       <Input label="Categories (comma separated)" error={errors.categories?.message} {...register('categories')} />
       <Input label="Tags (comma separated)" error={errors.tags?.message} {...register('tags')} />
+      <Input label="Author" error={errors.author?.message} {...register('author')} />
       <Input label="Published At" type="date" error={errors.publishedAt?.message} {...register('publishedAt')} />
       <div className="grid gap-4 md:grid-cols-2">
         <Select
