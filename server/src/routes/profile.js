@@ -1,5 +1,7 @@
 import express from 'express';
 import Profile from '../models/Profile.js';
+import cloudinary from '../config/cloudinary.js';
+import upload from '../middleware/upload.js';
 
 const router = express.Router();
 
