@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import {
+  Facebook,
   Github,
   Linkedin,
   Mail,
@@ -53,6 +54,7 @@ export function Contact() {
     { icon: Github, label: 'GitHub', href: profile.github, value: '@udehsamson' },
     { icon: Linkedin, label: 'LinkedIn', href: profile.linkedin, value: '/in/udehsamson' },
     { icon: Twitter, label: 'X', href: profile.x, value: '@udehsamson' },
+    { icon: Facebook, label: 'Facebook', href: profile.facebook, value: 'Facebook' },
     { icon: MessageCircle, label: 'WhatsApp', href: profile.whatsapp, value: 'Chat on WhatsApp' },
     { icon: Calendar, label: 'Book a Call', href: 'https://calendly.com', value: 'Schedule time' },
   ];
@@ -121,7 +123,7 @@ export function Contact() {
             className="space-y-4"
           >
             <h2 className="font-display text-xl font-semibold">Contact Information</h2>
-            {contactLinks.map((link) => (
+            {contactLinks.filter((link) => link.href).map((link) => (
               <a
                 key={link.label}
                 href={link.href}

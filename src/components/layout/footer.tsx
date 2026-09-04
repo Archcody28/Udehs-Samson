@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Github, Linkedin, Twitter, Code2 } from 'lucide-react';
+import { Code2, Facebook, Github, Linkedin, Twitter } from 'lucide-react';
 import { useContentStore } from '@/hooks/useContentStore';
 
 const footerLinks = [
@@ -51,24 +51,39 @@ export function Footer() {
               >
                 <Github className="h-5 w-5" />
               </a>
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href={profile.x}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-                aria-label="X"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
+              {profile.linkedin && (
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </a>
+              )}
+              {profile.x && (
+                <a
+                  href={profile.x}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                  aria-label="X"
+                >
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              {profile.facebook && (
+                <a
+                  href={profile.facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
             </div>
           </div>
 

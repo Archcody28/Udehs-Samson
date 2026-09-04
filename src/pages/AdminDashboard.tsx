@@ -135,11 +135,14 @@ const profileSchema = z.object({
   location: z.string().min(1),
   website: z.string().url(),
   github: z.string().url(),
-  linkedin: z.string().url(),
-  x: z.string().url(),
+  linkedin: z.union([z.string().url(), z.literal('')]),
+  x: z.union([z.string().url(), z.literal('')]),
   whatsapp: z.string().url(),
+  facebook: z.union([z.string().url(), z.literal('')]),
   avatar: z.string().optional(),
   cvUrl: z.string().optional(),
+  achievement: z.string().optional(),
+  philosophy: z.string().optional(),
   yearsOfExperience: z.coerce.number().min(0).default(0),
   clientSatisfaction: z.coerce.number().min(0).max(100).default(0),
   projectsDelivered: z.coerce.number().min(0).default(0),
@@ -778,8 +781,11 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       linkedin: profile.linkedin,
       x: profile.x,
       whatsapp: profile.whatsapp,
+      facebook: profile.facebook || '',
       avatar: profile.avatar,
       cvUrl: profile.cvUrl || '',
+      achievement: profile.achievement || '',
+      philosophy: profile.philosophy || '',
       yearsOfExperience: profile.yearsOfExperience || 0,
       clientSatisfaction: profile.clientSatisfaction || 0,
       projectsDelivered: profile.projectsDelivered || 0,
@@ -805,8 +811,11 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       linkedin: profile.linkedin,
       x: profile.x,
       whatsapp: profile.whatsapp,
+      facebook: profile.facebook || '',
       avatar: profile.avatar,
       cvUrl: profile.cvUrl || '',
+      achievement: profile.achievement || '',
+      philosophy: profile.philosophy || '',
       yearsOfExperience: profile.yearsOfExperience || 0,
       clientSatisfaction: profile.clientSatisfaction || 0,
       projectsDelivered: profile.projectsDelivered || 0,
@@ -958,6 +967,8 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
         <Input label="Tagline" error={errors.tagline?.message} {...register('tagline')} className="md:col-span-2" />
         <Textarea label="Bio" error={errors.bio?.message} {...register('bio')} className="md:col-span-2" />
         <Textarea label="Short Bio" error={errors.shortBio?.message} {...register('shortBio')} className="md:col-span-2" />
+        <Textarea label="Achievement" error={errors.achievement?.message} {...register('achievement')} className="md:col-span-2" />
+        <Textarea label="Philosophy" error={errors.philosophy?.message} {...register('philosophy')} className="md:col-span-2" />
         <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
         <Input label="Phone" error={errors.phone?.message} {...register('phone')} />
         <Input label="Location" error={errors.location?.message} {...register('location')} />
@@ -966,6 +977,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
         <Input label="LinkedIn" error={errors.linkedin?.message} {...register('linkedin')} />
         <Input label="X / Twitter" error={errors.x?.message} {...register('x')} />
         <Input label="WhatsApp Link" error={errors.whatsapp?.message} {...register('whatsapp')} />
+        <Input label="Facebook URL" error={errors.facebook?.message} {...register('facebook')} />
         <Input label="CV URL" error={errors.cvUrl?.message} {...register('cvUrl')} className="md:col-span-2" />
         <div className="md:col-span-2">
           <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Upload CV (PDF)</label>

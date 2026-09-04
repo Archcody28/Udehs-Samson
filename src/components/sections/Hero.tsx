@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Download, Github, Linkedin, Twitter } from 'lucide-react';
+import { ArrowRight, Download, Facebook, Github, Linkedin, Twitter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
@@ -77,24 +77,39 @@ export function Hero() {
             >
               <Github className="h-5 w-5" />
             </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-slate-200 p-3 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-5 w-5" />
-            </a>
-            <a
-              href={profile.x}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-slate-200 p-3 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
-              aria-label="X"
-            >
-              <Twitter className="h-5 w-5" />
-            </a>
+            {profile.linkedin && (
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-slate-200 p-3 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+            )}
+            {profile.x && (
+              <a
+                href={profile.x}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-slate-200 p-3 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+                aria-label="X"
+              >
+                <Twitter className="h-5 w-5" />
+              </a>
+            )}
+            {profile.facebook && (
+              <a
+                href={profile.facebook}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-full border border-slate-200 p-3 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+            )}
           </div>
         </motion.div>
 

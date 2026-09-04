@@ -12,8 +12,11 @@ export interface Profile {
   linkedin: string;
   x: string;
   whatsapp: string;
+  facebook: string;
   avatar: string;
   cvUrl: string;
+  achievement: string;
+  philosophy: string;
   yearsOfExperience: number;
   clientSatisfaction: number;
   projectsDelivered: number;

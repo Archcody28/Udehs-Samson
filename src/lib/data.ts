@@ -31,8 +31,11 @@ When I'm not coding, you'll find me mentoring developers, writing about engineer
   linkedin: 'https://linkedin.com/in/udehsamson',
   x: 'https://x.com/udehsamson',
   whatsapp: 'https://wa.me/2348000000000',
+  facebook: '',
   avatar: '/images/profile.jpg',
   cvUrl: '/resume.pdf',
+  achievement: '',
+  philosophy: '',
 };
 
 export const defaultProjects: Project[] = [

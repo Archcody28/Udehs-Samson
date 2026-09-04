@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
 const ALLOWED_PROFILE_FIELDS = [
   'name', 'title', 'tagline', 'bio', 'shortBio',
   'email', 'phone', 'location', 'website', 'github',
-  'linkedin', 'x', 'whatsapp', 'avatar', 'cvUrl',
+  'linkedin', 'x', 'whatsapp', 'facebook', 'avatar', 'cvUrl',
+  'achievement', 'philosophy',
   'yearsOfExperience', 'clientSatisfaction', 'projectsDelivered', 'happyClients',
   'education', 'certifications',
 ];
@@ -50,6 +51,11 @@ function validateProfileInput(sanitized) {
   }
   if (sanitized.cvUrl !== undefined && typeof sanitized.cvUrl !== 'string') {
     return { error: 'cvUrl must be a string' };
+  }
+  for (const field of ['achievement', 'philosophy', 'facebook', 'linkedin', 'x']) {
+    if (sanitized[field] !== undefined && typeof sanitized[field] !== 'string') {
+      return { error: `${field} must be a string` };
+    }
   }
   return null;
 }

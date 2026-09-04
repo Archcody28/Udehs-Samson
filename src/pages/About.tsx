@@ -5,7 +5,7 @@ import { Timeline } from '@/components/sections/Timeline';
 import { Skills } from '@/components/sections/Skills';
 import { useContentStore } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
-import { Award, BookOpen, GraduationCap, Lightbulb, Target } from 'lucide-react';
+import { Award, BookOpen, GraduationCap, Lightbulb } from 'lucide-react';
 
 export function About() {
   const { data } = useContentStore();
@@ -103,15 +103,11 @@ export function About() {
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
                 <Award className="h-6 w-6 text-emerald-500" /> Achievements
               </h3>
-              {data.achievements.map((achievement) => (
-                <Card key={achievement.id} hover>
-                  <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                    {achievement.year}
-                  </p>
-                  <h4 className="font-display text-lg font-semibold">{achievement.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400">{achievement.description}</p>
-                </Card>
-              ))}
+              <Card className="h-full" hover>
+                <p className="text-slate-700 dark:text-slate-300">
+                  {data.profile.achievement || 'No achievements listed yet.'}
+                </p>
+              </Card>
             </div>
 
             <div>
@@ -119,44 +115,9 @@ export function About() {
                 <Lightbulb className="h-6 w-6 text-amber-500" /> Philosophy
               </h3>
               <Card className="h-full" hover>
-                <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="rounded-xl bg-blue-50 p-3 dark:bg-blue-900/20">
-                      <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-display font-semibold">Product First</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        Technology should serve the user. I start with the problem, validate solutions,
-                        and then choose the right tools.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="rounded-xl bg-purple-50 p-3 dark:bg-purple-900/20">
-                      <Lightbulb className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-display font-semibold">Continuous Learning</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        The best engineers are students for life. I invest in learning new patterns,
-                        languages, and design principles every week.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="rounded-xl bg-emerald-50 p-3 dark:bg-emerald-900/20">
-                      <Award className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-display font-semibold">Craftsmanship</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        Clean code, accessible interfaces, and robust architecture are not optional —
-                        they are the foundation of trust.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <p className="text-slate-700 dark:text-slate-300">
+                  {data.profile.philosophy || 'No philosophy listed yet.'}
+                </p>
               </Card>
             </div>
           </div>
