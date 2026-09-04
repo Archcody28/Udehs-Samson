@@ -30,7 +30,7 @@ export function Resume() {
             </p>
           </div>
           <div className="flex gap-3 no-print">
-            <a href={profile.cvUrl} download>
+            <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer">
               <Button variant="outline" leftIcon={<Download className="h-4 w-4" />}>
                 Download CV
               </Button>

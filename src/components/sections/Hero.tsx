@@ -60,7 +60,7 @@ export function Hero() {
                 Hire Me
               </Button>
             </Link>
-            <a href={profile.cvUrl} download>
+            <a href={profile.cvUrl} target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" leftIcon={<Download className="h-5 w-5" />}>
                 Download CV
               </Button>
