@@ -34,8 +34,8 @@ When I'm not coding, you'll find me mentoring developers, writing about engineer
   facebook: '',
   avatar: '/images/profile.jpg',
   cvUrl: '/resume.pdf',
-  achievement: '',
-  philosophy: '',
+  achievements: [],
+  philosophy: [],
 };
 
 export const defaultProjects: Project[] = [

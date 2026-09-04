@@ -15,8 +15,8 @@ export interface Profile {
   facebook: string;
   avatar: string;
   cvUrl: string;
-  achievement: string;
-  philosophy: string;
+  achievements: Achievement[];
+  philosophy: PhilosophyItem[];
   yearsOfExperience: number;
   clientSatisfaction: number;
   projectsDelivered: number;
@@ -113,6 +113,12 @@ export interface Achievement {
   id: string;
   title: string;
   year: string;
+  description: string;
+}
+
+export interface PhilosophyItem {
+  id?: string;
+  title: string;
   description: string;
 }
 

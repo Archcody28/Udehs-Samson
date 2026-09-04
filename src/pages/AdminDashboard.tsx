@@ -141,8 +141,15 @@ const profileSchema = z.object({
   facebook: z.union([z.string().url(), z.literal('')]),
   avatar: z.string().optional(),
   cvUrl: z.string().optional(),
-  achievement: z.string().optional(),
-  philosophy: z.string().optional(),
+  achievements: z.array(z.object({
+    title: z.string().default(''),
+    year: z.string().default(''),
+    description: z.string().default(''),
+  })).default([]),
+  philosophy: z.array(z.object({
+    title: z.string().default(''),
+    description: z.string().default(''),
+  })).default([]),
   yearsOfExperience: z.coerce.number().min(0).default(0),
   clientSatisfaction: z.coerce.number().min(0).max(100).default(0),
   projectsDelivered: z.coerce.number().min(0).default(0),
@@ -784,8 +791,8 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       facebook: profile.facebook || '',
       avatar: profile.avatar,
       cvUrl: profile.cvUrl || '',
-      achievement: profile.achievement || '',
-      philosophy: profile.philosophy || '',
+      achievements: profile.achievements || [],
+      philosophy: profile.philosophy || [],
       yearsOfExperience: profile.yearsOfExperience || 0,
       clientSatisfaction: profile.clientSatisfaction || 0,
       projectsDelivered: profile.projectsDelivered || 0,
@@ -814,8 +821,8 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       facebook: profile.facebook || '',
       avatar: profile.avatar,
       cvUrl: profile.cvUrl || '',
-      achievement: profile.achievement || '',
-      philosophy: profile.philosophy || '',
+      achievements: profile.achievements || [],
+      philosophy: profile.philosophy || [],
       yearsOfExperience: profile.yearsOfExperience || 0,
       clientSatisfaction: profile.clientSatisfaction || 0,
       projectsDelivered: profile.projectsDelivered || 0,
@@ -860,6 +867,42 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     const updated = [...current];
     updated[index] = { ...updated[index], [field]: value };
     setValue('certifications', updated);
+  };
+
+  // Achievement handlers
+  const addAchievement = () => {
+    const current = getValues('achievements');
+    setValue('achievements', [...current, { title: '', year: '', description: '' }]);
+  };
+
+  const removeAchievement = (index: number) => {
+    const current = getValues('achievements');
+    setValue('achievements', current.filter((_, i) => i !== index));
+  };
+
+  const updateAchievement = (index: number, field: string, value: string) => {
+    const current = getValues('achievements');
+    const updated = [...current];
+    updated[index] = { ...updated[index], [field]: value };
+    setValue('achievements', updated);
+  };
+
+  // Philosophy handlers
+  const addPhilosophy = () => {
+    const current = getValues('philosophy');
+    setValue('philosophy', [...current, { title: '', description: '' }]);
+  };
+
+  const removePhilosophy = (index: number) => {
+    const current = getValues('philosophy');
+    setValue('philosophy', current.filter((_, i) => i !== index));
+  };
+
+  const updatePhilosophy = (index: number, field: string, value: string) => {
+    const current = getValues('philosophy');
+    const updated = [...current];
+    updated[index] = { ...updated[index], [field]: value };
+    setValue('philosophy', updated);
   };
 
   // CV upload handler
@@ -967,8 +1010,6 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
         <Input label="Tagline" error={errors.tagline?.message} {...register('tagline')} className="md:col-span-2" />
         <Textarea label="Bio" error={errors.bio?.message} {...register('bio')} className="md:col-span-2" />
         <Textarea label="Short Bio" error={errors.shortBio?.message} {...register('shortBio')} className="md:col-span-2" />
-        <Textarea label="Achievement" error={errors.achievement?.message} {...register('achievement')} className="md:col-span-2" />
-        <Textarea label="Philosophy" error={errors.philosophy?.message} {...register('philosophy')} className="md:col-span-2" />
         <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
         <Input label="Phone" error={errors.phone?.message} {...register('phone')} />
         <Input label="Location" error={errors.location?.message} {...register('location')} />
@@ -991,7 +1032,6 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
             <p className="mt-1 text-xs text-slate-500">Current: {watch('cvUrl')}</p>
           )}
         </div>
-      </form>
 
       {/* Professional Statistics */}
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
@@ -1062,11 +1102,67 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
         </div>
       </div>
 
+      {/* Achievements */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold">Achievements</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addAchievement}>Add Achievement</Button>
+        </div>
+        <div className="space-y-4">
+          {getValues('achievements').map((achievement, index) => (
+            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Achievement #{index + 1}</span>
+                <button type="button" onClick={() => removeAchievement(index)} className="text-red-500 hover:text-red-600" aria-label="Remove achievement">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <input placeholder="Title" value={achievement.title} onChange={(e) => updateAchievement(index, 'title', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Year" value={achievement.year} onChange={(e) => updateAchievement(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Description" value={achievement.description} onChange={(e) => updateAchievement(index, 'description', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm sm:col-span-2 dark:border-slate-700 dark:bg-slate-900" />
+              </div>
+            </div>
+          ))}
+          {getValues('achievements').length === 0 && (
+            <p className="text-center text-sm text-slate-500">No achievements added yet. Click "Add Achievement" to add one.</p>
+          )}
+        </div>
+      </div>
+
+      {/* Philosophy */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-lg font-semibold">Philosophy</h3>
+          <Button type="button" variant="outline" size="sm" onClick={addPhilosophy}>Add Philosophy</Button>
+        </div>
+        <div className="space-y-4">
+          {getValues('philosophy').map((item, index) => (
+            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Philosophy #{index + 1}</span>
+                <button type="button" onClick={() => removePhilosophy(index)} className="text-red-500 hover:text-red-600" aria-label="Remove philosophy item">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <input placeholder="Title" value={item.title} onChange={(e) => updatePhilosophy(index, 'title', e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <textarea placeholder="Description" rows={3} value={item.description} onChange={(e) => updatePhilosophy(index, 'description', e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+              </div>
+            </div>
+          ))}
+          {getValues('philosophy').length === 0 && (
+            <p className="text-center text-sm text-slate-500">No philosophy items added yet. Click "Add Philosophy" to add one.</p>
+          )}
+        </div>
+      </div>
+
       <div className="md:col-span-2">
         <Button type="submit" isLoading={isSubmitting}>
           Save Profile
         </Button>
       </div>
+      </form>
     </div>
   );
 }

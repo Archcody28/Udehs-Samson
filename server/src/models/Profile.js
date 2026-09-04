@@ -20,6 +20,23 @@ const certificationSchema = new mongoose.Schema(
   { _id: true }
 );
 
+const achievementSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: '' },
+    year: { type: String, default: '' },
+    description: { type: String, default: '' },
+  },
+  { _id: true }
+);
+
+const philosophyItemSchema = new mongoose.Schema(
+  {
+    title: { type: String, default: '' },
+    description: { type: String, default: '' },
+  },
+  { _id: true }
+);
+
 const profileSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -38,8 +55,8 @@ const profileSchema = new mongoose.Schema(
     facebook: { type: String, default: '' },
     avatar: { type: String, default: '' },
     cvUrl: { type: String, default: '' },
-    achievement: { type: String, default: '' },
-    philosophy: { type: String, default: '' },
+    achievements: { type: [achievementSchema], default: [] },
+    philosophy: { type: [philosophyItemSchema], default: [] },
     yearsOfExperience: { type: Number, default: 0 },
     clientSatisfaction: { type: Number, default: 0 },
     projectsDelivered: { type: Number, default: 0 },

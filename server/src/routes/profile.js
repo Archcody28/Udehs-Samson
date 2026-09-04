@@ -23,7 +23,7 @@ const ALLOWED_PROFILE_FIELDS = [
   'name', 'title', 'tagline', 'bio', 'shortBio',
   'email', 'phone', 'location', 'website', 'github',
   'linkedin', 'x', 'whatsapp', 'facebook', 'avatar', 'cvUrl',
-  'achievement', 'philosophy',
+  'achievements', 'philosophy',
   'yearsOfExperience', 'clientSatisfaction', 'projectsDelivered', 'happyClients',
   'education', 'certifications',
 ];
@@ -46,13 +46,19 @@ function validateProfileInput(sanitized) {
   if (sanitized.certifications !== undefined && !Array.isArray(sanitized.certifications)) {
     return { error: 'certifications must be an array' };
   }
+  if (sanitized.achievements !== undefined && !Array.isArray(sanitized.achievements)) {
+    return { error: 'achievements must be an array' };
+  }
+  if (sanitized.philosophy !== undefined && !Array.isArray(sanitized.philosophy)) {
+    return { error: 'philosophy must be an array' };
+  }
   if (sanitized.tagline !== undefined && typeof sanitized.tagline !== 'string') {
     return { error: 'tagline must be a string' };
   }
   if (sanitized.cvUrl !== undefined && typeof sanitized.cvUrl !== 'string') {
     return { error: 'cvUrl must be a string' };
   }
-  for (const field of ['achievement', 'philosophy', 'facebook', 'linkedin', 'x']) {
+  for (const field of ['facebook', 'linkedin', 'x']) {
     if (sanitized[field] !== undefined && typeof sanitized[field] !== 'string') {
       return { error: `${field} must be a string` };
     }
