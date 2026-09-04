@@ -838,15 +838,29 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       toast.error('File size must be less than 10MB');
       return;
     }
-    // For now, store as data URL placeholder - storage integration point
-    const reader = new FileReader();
-    reader.onload = () => {
-      // In production, this would upload to a storage service and return a URL
-      // For now, we just store a placeholder indicating the file was selected
-      setValue('cvUrl', `/uploads/cv-${Date.now()}.pdf`);
-      toast.success('CV uploaded successfully. Note: File storage integration pending.');
-    };
-    reader.readAsDataURL(file);
+    try {
+      const formData = new FormData();
+      formData.append('cv', file);
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile/cv`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Upload failed');
+      }
+
+      const updatedProfile = await response.json();
+      setValue('cvUrl', updatedProfile.cvUrl);
+      toast.success('CV uploaded successfully');
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Failed to upload CV';
+      toast.error(message);
+      console.error('CV upload error:', error);
+    }
   };
 
   const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
