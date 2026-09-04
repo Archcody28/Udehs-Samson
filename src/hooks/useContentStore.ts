@@ -10,7 +10,7 @@ import type {
   ContactMessage,
 } from '@/types';
 import { generateId, slugify } from '@/lib/utils';
-import { defaultProfile, defaultPortfolioData } from '@/lib/data';
+import { defaultProfile, defaultPortfolioData, defaultAchievements, defaultPhilosophy } from '@/lib/data';
 import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -76,8 +76,22 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
       apiFetch<{ pageViews: { date: string; views: number }[]; projectViews: { projectId: string; views: number }[] }>('/api/analytics'),
     ]);
 
+  // Restore original seed content for profiles created before achievements/philosophy existed.
+  // Blank rows (saved accidentally) are dropped; explicitly saved non-empty data is always respected.
+  const storedAchievements = (profile.achievements ?? []).filter(
+    (item) => item.title.trim() || item.year.trim() || item.description.trim()
+  );
+  const storedPhilosophy = (profile.philosophy ?? []).filter(
+    (item) => item.title.trim() || item.description.trim()
+  );
+  const normalizedProfile: Profile = {
+    ...profile,
+    achievements: storedAchievements.length ? storedAchievements : defaultAchievements,
+    philosophy: storedPhilosophy.length ? storedPhilosophy : defaultPhilosophy,
+  };
+
   return {
-    profile,
+    profile: normalizedProfile,
     projects,
     blogPosts,
     skills,

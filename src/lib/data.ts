@@ -8,6 +8,7 @@ import type {
   Education,
   Certification,
   Achievement,
+  PhilosophyItem,
   Service,
   ContactMessage,
 } from '@/types';
@@ -304,6 +305,26 @@ export const defaultAchievements: Achievement[] = [
     title: 'Hackathon Winner - FinTech Track',
     year: '2023',
     description: 'Built a real-time payment splitter that won first place at Lagos Tech Fest.',
+  },
+];
+
+// Original philosophy cards previously hardcoded in src/pages/About.tsx.
+// Preserved as seed content so existing profile data is never lost (icons are presentation-only).
+export const defaultPhilosophy: PhilosophyItem[] = [
+  {
+    title: 'Product First',
+    description:
+      'Technology should serve the user. I start with the problem, validate solutions, and then choose the right tools.',
+  },
+  {
+    title: 'Continuous Learning',
+    description:
+      'The best engineers are students for life. I invest in learning new patterns, languages, and design principles every week.',
+  },
+  {
+    title: 'Craftsmanship',
+    description:
+      'Clean code, accessible interfaces, and robust architecture are not optional — they are the foundation of trust.',
   },
 ];
 
