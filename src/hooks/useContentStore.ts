@@ -62,6 +62,23 @@ async function apiFetch<T>(
   return response.json();
 }
 
+// Seeds the recovered original content ONLY when the profile has no meaningful saved data.
+// - field missing/undefined (pre-seed profile)  -> seed
+// - `[]` (explicitly saved empty)              -> preserved as-is: an empty array is user data
+// - array where every row is blank             -> artifact of the earlier broken save flow -> seed
+// - array with at least one row with content   -> MongoDB is authoritative
+function seededOrStored<T extends { title: string; description?: string; year?: string }>(
+  items: T[] | undefined,
+  seed: T[]
+): T[] {
+  if (!Array.isArray(items)) return seed;
+  if (items.length === 0) return items;
+  const hasContent = items.some(
+    (item) => item.title.trim() !== '' || item.description?.trim() !== '' || item.year?.trim() !== ''
+  );
+  return hasContent ? items : seed;
+}
+
 // Fetch all portfolio data
 async function fetchPortfolioData(): Promise<PortfolioData> {
   const [profile, projects, blogPosts, skills, experiences, testimonials, messages, analytics] =
@@ -76,18 +93,12 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
       apiFetch<{ pageViews: { date: string; views: number }[]; projectViews: { projectId: string; views: number }[] }>('/api/analytics'),
     ]);
 
-  // Restore original seed content for profiles created before achievements/philosophy existed.
-  // Blank rows (saved accidentally) are dropped; explicitly saved non-empty data is always respected.
-  const storedAchievements = (profile.achievements ?? []).filter(
-    (item) => item.title.trim() || item.year.trim() || item.description.trim()
-  );
-  const storedPhilosophy = (profile.philosophy ?? []).filter(
-    (item) => item.title.trim() || item.description.trim()
-  );
+  // Seed original content only when the profile has no meaningful saved data.
+  // MongoDB is authoritative once real data exists (including an intentional empty array).
   const normalizedProfile: Profile = {
     ...profile,
-    achievements: storedAchievements.length ? storedAchievements : defaultAchievements,
-    philosophy: storedPhilosophy.length ? storedPhilosophy : defaultPhilosophy,
+    achievements: seededOrStored(profile.achievements, defaultAchievements),
+    philosophy: seededOrStored(profile.philosophy, defaultPhilosophy),
   };
 
   return {
