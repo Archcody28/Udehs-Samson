@@ -83,4 +83,57 @@ router.put('/', async (req, res) => {
   }
 });
 
+// Helper: upload PDF buffer to Cloudinary (returns secure URL)
+function uploadPdfToCloudinary(buffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'portfolio/cv',
+        public_id: 'portfolio/cv/cv',
+        resource_type: 'auto',
+        overwrite: true,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      }
+    );
+    stream.end(buffer);
+  });
+}
+
+// POST upload CV (admin) — stores the resulting Cloudinary URL in Profile.cvUrl
+router.post('/cv', upload.single('cv'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    if (req.file.mimetype !== 'application/pdf') {
+      return res.status(400).json({ error: 'Only PDF files are allowed' });
+    }
+
+    const { secure_url } = await uploadPdfToCloudinary(req.file.buffer);
+
+    let profile = await Profile.findOne();
+    if (!profile) {
+      profile = await Profile.create({});
+    }
+    profile.cvUrl = secure_url;
+    await profile.save();
+
+    res.json(profile);
+  } catch (error) {
+    console.error('CV upload error:', error);
+    res.status(500).json({ error: 'Failed to upload CV' });
+  }
+});
+
+// Convert multer validation errors (e.g. wrong file type/size) to JSON responses
+router.use((error, req, res, next) => {
+  if (error) {
+    return res.status(400).json({ error: error.message || 'Upload failed' });
+  }
+  next();
+});
+
 export default router;
