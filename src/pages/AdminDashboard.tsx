@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -758,7 +758,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     handleSubmit,
     setValue,
     watch,
-    getValues,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileForm>({
@@ -788,6 +788,16 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     },
   });
 
+  const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
+    control,
+    name: 'education',
+  });
+
+  const { fields: certificationFields, append: appendCertification, remove: removeCertification } = useFieldArray({
+    control,
+    name: 'certifications',
+  });
+
   // Sync form when profile data loads/changes
   useEffect(() => {
     reset({
@@ -815,42 +825,6 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     });
     setAvatarPreview(profile.avatar);
   }, [profile, reset]);
-
-  // Education handlers
-  const addEducation = () => {
-    const current = getValues('education');
-    setValue('education', [...current, { degree: '', institution: '', year: '', description: '' }]);
-  };
-
-  const removeEducation = (index: number) => {
-    const current = getValues('education');
-    setValue('education', current.filter((_, i) => i !== index));
-  };
-
-  const updateEducation = (index: number, field: string, value: string) => {
-    const current = getValues('education');
-    const updated = [...current];
-    updated[index] = { ...updated[index], [field]: value };
-    setValue('education', updated);
-  };
-
-  // Certification handlers
-  const addCertification = () => {
-    const current = getValues('certifications');
-    setValue('certifications', [...current, { name: '', issuer: '', year: '', url: '' }]);
-  };
-
-  const removeCertification = (index: number) => {
-    const current = getValues('certifications');
-    setValue('certifications', current.filter((_, i) => i !== index));
-  };
-
-  const updateCertification = (index: number, field: string, value: string) => {
-    const current = getValues('certifications');
-    const updated = [...current];
-    updated[index] = { ...updated[index], [field]: value };
-    setValue('certifications', updated);
-  };
 
   // CV upload handler
   const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -994,11 +968,11 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Education</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addEducation}>Add Education</Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => appendEducation({ degree: '', institution: '', year: '', description: '' })}>Add Education</Button>
         </div>
         <div className="space-y-4">
-          {getValues('education').map((_, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+          {educationFields.map((field, index) => (
+            <div key={field.id} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Education #{index + 1}</span>
                 <button type="button" onClick={() => removeEducation(index)} className="text-red-500 hover:text-red-600">
@@ -1006,14 +980,14 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input placeholder="Degree" value={getValues(`education.${index}.degree`)} onChange={(e) => updateEducation(index, 'degree', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Institution" value={getValues(`education.${index}.institution`)} onChange={(e) => updateEducation(index, 'institution', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Year" value={getValues(`education.${index}.year`)} onChange={(e) => updateEducation(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Description" value={getValues(`education.${index}.description`)} onChange={(e) => updateEducation(index, 'description', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Degree" {...register(`education.${index}.degree`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Institution" {...register(`education.${index}.institution`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Year" {...register(`education.${index}.year`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Description" {...register(`education.${index}.description`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
               </div>
             </div>
           ))}
-          {getValues('education').length === 0 && (
+          {educationFields.length === 0 && (
             <p className="text-center text-sm text-slate-500">No education records. Click "Add Education" to add one.</p>
           )}
         </div>
@@ -1023,11 +997,11 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Certifications</h3>
-          <Button type="button" variant="outline" size="sm" onClick={addCertification}>Add Certification</Button>
+          <Button type="button" variant="outline" size="sm" onClick={() => appendCertification({ name: '', issuer: '', year: '', url: '' })}>Add Certification</Button>
         </div>
         <div className="space-y-4">
-          {getValues('certifications').map((_, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+          {certificationFields.map((field, index) => (
+            <div key={field.id} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Certification #{index + 1}</span>
                 <button type="button" onClick={() => removeCertification(index)} className="text-red-500 hover:text-red-600">
@@ -1035,14 +1009,14 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input placeholder="Name" value={getValues(`certifications.${index}.name`)} onChange={(e) => updateCertification(index, 'name', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Issuer" value={getValues(`certifications.${index}.issuer`)} onChange={(e) => updateCertification(index, 'issuer', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Year" value={getValues(`certifications.${index}.year`)} onChange={(e) => updateCertification(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="URL" value={getValues(`certifications.${index}.url`)} onChange={(e) => updateCertification(index, 'url', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Name" {...register(`certifications.${index}.name`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Issuer" {...register(`certifications.${index}.issuer`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Year" {...register(`certifications.${index}.year`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="URL" {...register(`certifications.${index}.url`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
               </div>
             </div>
           ))}
-          {getValues('certifications').length === 0 && (
+          {certificationFields.length === 0 && (
             <p className="text-center text-sm text-slate-500">No certifications. Click "Add Certification" to add one.</p>
           )}
         </div>
