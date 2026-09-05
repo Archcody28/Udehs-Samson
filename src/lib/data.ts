@@ -416,6 +416,6 @@ export const siteConfig = {
   title: 'Full Stack Engineer & UI/UX Designer',
   description:
     'Portfolio of Udeh Samson, a Full Stack Engineer building scalable, accessible, and visually stunning digital products.',
-  url: 'https://udehsamson.dev',
+  url: 'https://udeh-samson.vercel.app',
   twitter: '@udehsamson',
 };

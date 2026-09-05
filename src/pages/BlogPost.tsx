@@ -112,6 +112,9 @@ export function BlogPost() {
         description={post.excerpt}
         pathname={`/blog/${post.slug}`}
         type="article"
+        image={post.coverImage}
+        datePublished={post.publishedAt}
+        author={post.author}
       />
       <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
         <button

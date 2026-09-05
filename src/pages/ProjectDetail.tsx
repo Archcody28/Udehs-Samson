@@ -54,6 +54,7 @@ export function ProjectDetail() {
         description={project.seoDescription || project.description}
         pathname={`/projects/${project.slug}`}
         type="article"
+        image={project.images[0]}
       />
       <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
         <button

@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://udehsamson.dev/sitemap.xml
+Sitemap: https://udeh-samson.vercel.app/sitemap.xml
