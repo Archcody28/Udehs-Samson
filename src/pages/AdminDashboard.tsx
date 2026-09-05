@@ -1,6 +1,6 @@
 import { useState, useEffect, type ChangeEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -770,6 +770,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
     setValue,
     watch,
     getValues,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileForm>({
@@ -801,6 +802,10 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
       certifications: profile.certifications || [],
     },
   });
+
+  // Reactive subscriptions so Add/Edit/Remove re-render the sections immediately
+  const watchedAchievements = useWatch({ control, name: 'achievements' });
+  const watchedPhilosophy = useWatch({ control, name: 'philosophy' });
 
   // Sync form when profile data loads/changes
   useEffect(() => {
@@ -1109,7 +1114,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
           <Button type="button" variant="outline" size="sm" onClick={addAchievement}>Add Achievement</Button>
         </div>
         <div className="space-y-4">
-          {getValues('achievements').map((achievement, index) => (
+          {(watchedAchievements ?? []).map((achievement, index) => (
             <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Achievement #{index + 1}</span>
@@ -1124,7 +1129,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
               </div>
             </div>
           ))}
-          {getValues('achievements').length === 0 && (
+          {(watchedAchievements ?? []).length === 0 && (
             <p className="text-center text-sm text-slate-500">No achievements added yet. Click "Add Achievement" to add one.</p>
           )}
         </div>
@@ -1137,7 +1142,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
           <Button type="button" variant="outline" size="sm" onClick={addPhilosophy}>Add Philosophy</Button>
         </div>
         <div className="space-y-4">
-          {getValues('philosophy').map((item, index) => (
+          {(watchedPhilosophy ?? []).map((item, index) => (
             <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Philosophy #{index + 1}</span>
@@ -1151,7 +1156,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
               </div>
             </div>
           ))}
-          {getValues('philosophy').length === 0 && (
+          {(watchedPhilosophy ?? []).length === 0 && (
             <p className="text-center text-sm text-slate-500">No philosophy items added yet. Click "Add Philosophy" to add one.</p>
           )}
         </div>
