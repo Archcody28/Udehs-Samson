@@ -130,6 +130,8 @@ export function useContentStore() {
     () => false
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Load data on mount (auth starts as logged out — token is memory-only)
   useEffect(() => {
@@ -139,12 +141,16 @@ export function useContentStore() {
   async function loadData() {
     try {
       setIsLoading(true);
+      setLoadError(null);
       const portfolioData = await fetchPortfolioData();
       setData(portfolioData);
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load portfolio data';
       console.error('Failed to load portfolio data:', error);
+      setLoadError(message);
     } finally {
       setIsLoading(false);
+      setIsHydrated(true);
     }
   }
 
@@ -542,6 +548,9 @@ export function useContentStore() {
   return {
     data,
     isLoading,
+    isHydrated,
+    loadError,
+    loadData,
     isAuthenticated,
     login,
     logout,

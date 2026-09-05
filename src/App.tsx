@@ -14,6 +14,9 @@ import { AdminLogin } from '@/pages/AdminLogin';
 import { AdminDashboard } from '@/pages/AdminDashboard';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { NotFound } from '@/pages/NotFound';
+import { AppLoader } from '@/components/common/AppLoader';
+import { AppError } from '@/components/common/AppError';
+import { useContentStore } from '@/hooks/useContentStore';
 
 function AnimatedOutlet() {
   const location = useLocation();
@@ -53,6 +56,19 @@ function AnimatedOutlet() {
 }
 
 export default function App() {
+  const { isHydrated, isLoading, loadError, loadData } = useContentStore();
+
+  // Show loader during initial hydration
+  if (!isHydrated && isLoading) {
+    return <AppLoader />;
+  }
+
+  // Show error if initial hydration failed
+  if (!isHydrated && loadError) {
+    return <AppError message={loadError} onRetry={loadData} />;
+  }
+
+  // Render portfolio after successful hydration
   return (
     <Layout>
       <AnimatedOutlet />
