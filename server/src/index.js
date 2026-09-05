@@ -16,6 +16,8 @@ import authRoutes from './routes/auth.js';
 import githubActivityRoutes from './routes/github-activity.js';
 import resetRoutes from './routes/reset.js';
 
+import sitemapRoutes from './routes/sitemap.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -54,6 +56,9 @@ app.use('/api/analytics', analyticsRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/github-activity', githubActivityRoutes);
 app.use('/api/reset', resetRoutes);
+
+// Sitemap (root-level, not under /api)
+app.use('/sitemap.xml', sitemapRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

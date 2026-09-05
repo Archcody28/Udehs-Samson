@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /admin
 
 Sitemap: https://udeh-samson.vercel.app/sitemap.xml
