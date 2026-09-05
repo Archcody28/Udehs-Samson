@@ -144,13 +144,13 @@ export function useContentStore() {
       setLoadError(null);
       const portfolioData = await fetchPortfolioData();
       setData(portfolioData);
+      setIsHydrated(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to load portfolio data';
       console.error('Failed to load portfolio data:', error);
       setLoadError(message);
     } finally {
       setIsLoading(false);
-      setIsHydrated(true);
     }
   }
 
