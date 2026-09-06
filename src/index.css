@@ -114,16 +114,3 @@ body {
 .animated-underline:hover::after {
   width: 100%;
 }
-
-/* Skeleton shimmer animation */
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .before\:animate-\[shimmer_2s_infinite\]::before {
-    animation: none;
-  }
-}
