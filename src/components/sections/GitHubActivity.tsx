@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Github,
@@ -12,8 +12,16 @@ import { Card } from '@/components/ui/Card';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { useProfile } from '@/hooks/useContentStore';
 
-// F32a.6 static-data audit: removed the fabricated heatmap placeholder that
-// rendered fake contribution data before the real fetch resolved.
+// Module-level in-memory cache for the GitHub activity response.
+// Real data only: populated only after a successful backend response.
+// Used across remounts/navigation so ordinary SPA navigation does not
+// re-fetch GitHub activity during the cache lifetime.
+let githubCache: {
+  data: GitHubActivityData;
+  fetchedAt: number;
+} | null = null;
+
+const GITHUB_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
 type ContributionDay = {
   date: string;
@@ -58,45 +66,100 @@ type GitHubActivityData = {
   };
 };
 
+export function getCachedGitHubActivity(): GitHubActivityData | null {
+  if (!githubCache) return null;
+  if (Date.now() - githubCache.fetchedAt >= GITHUB_CACHE_TTL_MS) {
+    githubCache = null;
+    return null;
+  }
+  return githubCache.data;
+}
+
+export async function refreshGitHubActivity(): Promise<void> {
+  const response = await fetch('/api/github-activity');
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.error || 'Failed to load GitHub activity');
+  }
+
+  githubCache = { data: json as GitHubActivityData, fetchedAt: Date.now() };
+}
+
+export function clearGitHubCache(): void {
+  githubCache = null;
+}
+
 export function GitHubActivity() {
   // Profile-only subscription: independent GitHub fetch, no coupling to
   // other portfolio state changes.
   const profile = useProfile();
   const githubUrl = profile?.github;
 
-  const [activity, setActivity] = useState<GitHubActivityData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [activity, setActivity] = useState<GitHubActivityData | null>(() => {
+    // Reuse a recent real GitHub response already cached before this mount
+    // (e.g. after returning to a route that remounts this section).
+    return getCachedGitHubActivity();
+  });
+  const [loading, setLoading] = useState(() => !(githubCache && activity));
   const [error, setError] = useState<string | null>(null);
 
+  // Start with the cached activity so the section never re-renders with
+  // a different derived shape when the cache is already warm.
+  const cachedRef = useRef<GitHubActivityData | null>(activity);
+
   useEffect(() => {
+    // If a valid cache entry exists before the mount, respect it rather
+    // than re-fetching the GitHub API on every remount.
+    if (cachedRef.current) {
+      setActivity(cachedRef.current);
+      return;
+    }
+
+    let cancelled = false;
+
     const fetchActivity = async () => {
       try {
         const response = await fetch('/api/github-activity');
         const json = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            json.error || 'Failed to load GitHub activity'
-          );
+          throw new Error(json.error || 'Failed to load GitHub activity');
         }
 
-        setActivity(json);
-      } catch (err: any) {
-        setError(
-          err?.message ?? 'Unable to fetch GitHub activity'
-        );
+        const data = json as GitHubActivityData;
+        githubCache = { data, fetchedAt: Date.now() };
+        cachedRef.current = data;
+
+        if (!cancelled) {
+          setActivity(data);
+          setError(null);
+        }
+      } catch (err: unknown) {
+        const message = err && typeof err === 'object' && 'message' in err
+          ? (err as { message: string }).message
+          : 'Unable to load GitHub activity';
+        if (!cancelled) {
+          setError(message);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchActivity();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cachedRef]);
 
   // No fabricated fallback: render nothing/empty until real GitHub data
   // arrives (or show the error state). The grid simply stays empty during
   // the brief fetch window.
-  const contributionDays = useMemo(() => {
+  const contributionDays = useMemo<ContributionDay[]>(() => {
     if (!activity) {
       return [];
     }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, ExternalLink, Github } from 'lucide-react';
@@ -32,12 +32,14 @@ export function ProjectDetail() {
 
   // Stable identifier dependency (slug), not the whole project object:
   // avoids re-recording views when unrelated store state changes the
-  // projects array identity / project object identity.
+  // projects array identity / project object identity. The ref guard keeps
+  // StrictMode's double-invoked effect from recording the same view twice.
   const projectId = project?.id;
+  const lastRecordedProjectId = useRef<string | null>(null);
   useEffect(() => {
-    if (projectId) {
-      recordProjectView(projectId);
-    }
+    if (!projectId || lastRecordedProjectId.current === projectId) return;
+    lastRecordedProjectId.current = projectId;
+    recordProjectView(projectId);
   }, [projectId, recordProjectView]);
 
   if (!project) {
