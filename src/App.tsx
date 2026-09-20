@@ -1,57 +1,80 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Suspense, lazy, useEffect } from 'react';
+import { Routes, Route, Outlet, useLocation, useNavigationType } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/layout';
 import { Home } from '@/pages/Home';
-import { About } from '@/pages/About';
-import { Projects } from '@/pages/Projects';
-import { ProjectDetail } from '@/pages/ProjectDetail';
-import { Blog } from '@/pages/Blogs';
-import { BlogPost } from '@/pages/BlogPost';
-import { ServicesPage } from '@/pages/Services';
-import { Contact } from '@/pages/Contact';
-import { Resume } from '@/pages/Resume';
-import { AdminLogin } from '@/pages/AdminLogin';
-import { AdminDashboard } from '@/pages/AdminDashboard';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { NotFound } from '@/pages/NotFound';
 import { AppLoader } from '@/components/common/AppLoader';
 import { AppError } from '@/components/common/AppError';
 import { useContentStore } from '@/hooks/useContentStore';
 
-function AnimatedOutlet() {
-  const location = useLocation();
+// Home stays eager (critical first paint). Everything else splits into
+// on-demand route chunks so the admin stack (react-hook-form/zod/recharts)
+// never enters the initial public bundle.
+const About = lazy(() => import('@/pages/About').then((m) => ({ default: m.About })));
+const Projects = lazy(() => import('@/pages/Projects').then((m) => ({ default: m.Projects })));
+const ProjectDetail = lazy(() => import('@/pages/ProjectDetail').then((m) => ({ default: m.ProjectDetail })));
+const Blog = lazy(() => import('@/pages/Blogs').then((m) => ({ default: m.Blog })));
+const BlogPost = lazy(() => import('@/pages/BlogPost').then((m) => ({ default: m.BlogPost })));
+const ServicesPage = lazy(() => import('@/pages/Services').then((m) => ({ default: m.ServicesPage })));
+const Contact = lazy(() => import('@/pages/Contact').then((m) => ({ default: m.Contact })));
+const Resume = lazy(() => import('@/pages/Resume').then((m) => ({ default: m.Resume })));
+const AdminLogin = lazy(() => import('@/pages/AdminLogin').then((m) => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() =>
+  import('@/pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard }))
+);
+
+function RouteFallback() {
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.3 }}
-      >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/projects/:slug" element={<ProjectDetail />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/resume" element={<Resume />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
+    <div
+      className="mx-auto max-w-7xl px-4 py-32 text-center text-sm text-slate-500 dark:text-slate-400"
+      role="status"
+      aria-live="polite"
+    >
+      Loading page…
+    </div>
+  );
+}
+
+// Scroll restoration: PUSH navigations start at top; POP (back/forward)
+// leaves browser behavior alone.
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  const navType = useNavigationType();
+  useEffect(() => {
+    if (navType === 'PUSH') {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    }
+  }, [pathname, navType]);
+  return null;
+}
+
+// Lightweight enter transition per route content. No AnimatePresence
+// mode="wait" and no pathname-keyed <Routes>: the destination mounts
+// immediately without a blank exit/enter serialization.
+function PageTransition() {
+  const { pathname } = useLocation();
+  return (
+    <motion.div
+      key={pathname}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Outlet />
+    </motion.div>
+  );
+}
+
+function LayoutRoute() {
+  return (
+    <Layout>
+      <ScrollToTop />
+      <Suspense fallback={<RouteFallback />}>
+        <PageTransition />
+      </Suspense>
+    </Layout>
   );
 }
 
@@ -74,10 +97,32 @@ export default function App() {
     return <AppLoader />;
   }
 
-  // Render portfolio after successful hydration
+  // Render portfolio after successful hydration.
+  // Stable layout route: Layout/Navbar/Footer stay mounted; only the
+  // Outlet content swaps per route. No pathname-keyed <Routes>.
   return (
-    <Layout>
-      <AnimatedOutlet />
-    </Layout>
+    <Routes>
+      <Route element={<LayoutRoute />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:slug" element={<ProjectDetail />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
   );
 }

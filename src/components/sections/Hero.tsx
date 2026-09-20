@@ -1,11 +1,16 @@
+import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, Facebook, Github, Linkedin, Twitter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { TypingText } from '@/components/ui/TypingText';
-import { ParticleField } from '@/components/three/ParticleField';
 import { useContentStore } from '@/hooks/useContentStore';
+
+// Three.js canvas splits out of the critical Home chunk.
+const ParticleField = lazy(() =>
+  import('@/components/three/ParticleField').then((m) => ({ default: m.ParticleField }))
+);
 
 export function Hero() {
   const { data } = useContentStore();
@@ -21,7 +26,9 @@ export function Hero() {
 
   return (
     <section className="relative flex min-h-[calc(100vh-5rem)] items-center overflow-hidden px-4 sm:px-6 lg:px-8">
-      <ParticleField />
+      <Suspense fallback={null}>
+        <ParticleField />
+      </Suspense>
 
       <div className="mx-auto grid max-w-7xl items-center gap-8 py-20 md:grid-cols-2">
         <motion.div

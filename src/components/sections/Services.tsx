@@ -1,8 +1,16 @@
 import { motion } from 'framer-motion';
-import * as LucideIcons from 'lucide-react';
 import { defaultServices } from '@/lib/data';
 import { Card } from '@/components/ui/Card';
-import { Check } from 'lucide-react';
+import { Check, Layers, Monitor, Server, Smartphone, Palette, TrendingUp } from 'lucide-react';
+
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Layers,
+  Monitor,
+  Server,
+  Smartphone,
+  Palette,
+  TrendingUp,
+};
 
 export function Services() {
   return (
@@ -25,9 +33,7 @@ export function Services() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {defaultServices.map((service, idx) => {
-            const Icon = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[
-              service.icon
-            ];
+            const Icon = serviceIcons[service.icon];
             return (
               <motion.div
                 key={service.id}

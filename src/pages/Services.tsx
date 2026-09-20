@@ -5,7 +5,16 @@ import { SEO } from '@/components/layout/SEO';
 import { defaultServices } from '@/lib/data';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import * as LucideIcons from 'lucide-react';
+import { Layers, Monitor, Server, Smartphone, Palette, TrendingUp } from 'lucide-react';
+
+const serviceIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  Layers,
+  Monitor,
+  Server,
+  Smartphone,
+  Palette,
+  TrendingUp,
+};
 
 export function ServicesPage() {
   return (
@@ -28,9 +37,7 @@ export function ServicesPage() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {defaultServices.map((service, idx) => {
-            const Icon = (LucideIcons as Record<string, React.ComponentType<{ className?: string }>>)[
-              service.icon
-            ];
+            const Icon = serviceIcons[service.icon];
             return (
               <motion.div
                 key={service.id}
