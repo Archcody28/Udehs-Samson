@@ -77,6 +77,7 @@ export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data } = useContentStore();
+  if (!data) return null;
 
   const post = useMemo(
     () => data.blogPosts.find((p) => p.slug === slug && p.status === 'published'),

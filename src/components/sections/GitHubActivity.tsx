@@ -63,6 +63,7 @@ type GitHubActivityData = {
 
 export function GitHubActivity() {
   const { data } = useContentStore();
+  const githubUrl = data?.profile.github;
 
   const [activity, setActivity] = useState<GitHubActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -201,7 +202,7 @@ export function GitHubActivity() {
               </div>
 
               <a
-                href={data.profile.github}
+                href={githubUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline dark:text-blue-400"

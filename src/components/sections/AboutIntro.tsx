@@ -5,6 +5,7 @@ import { Award, Briefcase, GraduationCap, Users } from 'lucide-react';
 
 export function AboutIntro() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { profile } = data;
 
   const highlights = [

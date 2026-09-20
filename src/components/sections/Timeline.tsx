@@ -5,6 +5,7 @@ import { Briefcase } from 'lucide-react';
 
 export function Timeline() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { experiences } = data;
 
   return (

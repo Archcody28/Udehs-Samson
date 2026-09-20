@@ -16,6 +16,9 @@ const philosophyStyles = [
 
 export function About() {
   const { data } = useContentStore();
+  if (!data) return null;
+  const education = data.profile.education ?? [];
+  const certifications = data.profile.certifications ?? [];
 
   return (
     <>
@@ -60,7 +63,7 @@ export function About() {
                 <GraduationCap className="h-6 w-6 text-blue-500" /> Education
               </h3>
               <div className="space-y-4">
-                {data.education.map((edu) => (
+                {education.map((edu) => (
                   <Card key={edu.id} hover>
                     <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{edu.year}</p>
                     <h4 className="font-display text-lg font-semibold">{edu.degree}</h4>
@@ -78,7 +81,7 @@ export function About() {
                 <BookOpen className="h-6 w-6 text-purple-500" /> Certifications
               </h3>
               <div className="space-y-4">
-                {data.certifications.map((cert) => (
+                {certifications.map((cert) => (
                   <Card key={cert.id} hover>
                     <p className="text-sm font-medium text-purple-600 dark:text-purple-400">{cert.year}</p>
                     <h4 className="font-display text-lg font-semibold">{cert.name}</h4>

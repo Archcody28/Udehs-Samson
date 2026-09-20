@@ -11,7 +11,7 @@ import type {
   ContactMessage,
 } from '@/types';
 import { generateId, slugify } from '@/lib/utils';
-import { defaultProfile, defaultPortfolioData, defaultAchievements, defaultPhilosophy } from '@/lib/data';
+import { defaultAchievements, defaultPhilosophy } from '@/lib/data';
 import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -111,10 +111,11 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
     testimonials,
     messages,
     analytics,
-    // These are not stored in DB but kept for type compatibility
-    education: [],
-    certifications: [],
-    achievements: [],
+    // Canonical profile-owned collections (match Mongoose Profile shape).
+    // Top-level copies mirror profile so legacy readers stay consistent.
+    education: normalizedProfile.education ?? [],
+    certifications: normalizedProfile.certifications ?? [],
+    achievements: normalizedProfile.achievements ?? [],
   };
 }
 
@@ -124,7 +125,8 @@ let hydrationPromise: Promise<PortfolioData> | null = null;
 let hydrationStarted = false;
 
 export interface ContentStoreValue {
-  data: PortfolioData;
+  /** Null until the first successful hydration — never fictitious defaults. */
+  data: PortfolioData | null;
   isLoading: boolean;
   isHydrated: boolean;
   loadError: string | null;
@@ -163,11 +165,13 @@ export interface ContentStoreValue {
 const ContentContext = createContext<ContentStoreValue | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<PortfolioData>({
-    ...defaultPortfolioData,
-    profile: defaultProfile,
-    messages: [],
-  });
+  // Explicitly unloaded: no fictitious projects/profile/blogs/skills/etc.
+  // updateData applies a patch only once real data exists (CRUD/analytics),
+  // guarding every setData updater below against the null pre-hydration state.
+  const [data, setData] = useState<PortfolioData | null>(null);
+  const updateData = useCallback((patch: (prev: PortfolioData) => PortfolioData) => {
+    setData((prev) => (prev ? patch(prev) : prev));
+  }, []);
   // Subscribe to module-level auth state so all components see the same value
   const isAuthenticated = useSyncExternalStore(
     subscribeToAuth,
@@ -258,7 +262,14 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         body: JSON.stringify(profile),
       });
-      setData((prev) => ({ ...prev, profile: updated }));
+      updateData((prev) => ({
+        ...prev,
+        profile: updated,
+        // Keep top-level mirrors consistent with canonical profile collections.
+        education: updated.education ?? [],
+        certifications: updated.certifications ?? [],
+        achievements: updated.achievements ?? [],
+      }));
     } catch (error) {
       console.error('Failed to update profile:', error);
       throw error;
@@ -272,7 +283,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         body: JSON.stringify({ ...project, slug: slugify(project.title) }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         projects: [newProject, ...prev.projects],
       }));
@@ -292,7 +303,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           slug: updates.title ? slugify(updates.title) : undefined,
         }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         projects: prev.projects.map((p) => (p.id === id ? { ...p, ...updated } : p)),
       }));
@@ -304,7 +315,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteProject = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/projects/${id}`, { method: 'DELETE' });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         projects: prev.projects.filter((p) => p.id !== id),
       }));
@@ -325,7 +336,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           readingTime,
         }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         blogPosts: [newPost, ...prev.blogPosts],
       }));
@@ -345,7 +356,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
           slug: updates.title ? slugify(updates.title) : undefined,
         }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         blogPosts: prev.blogPosts.map((b) => (b.id === id ? { ...b, ...updated } : b)),
       }));
@@ -357,7 +368,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteBlogPost = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/blogs/${id}`, { method: 'DELETE' });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         blogPosts: prev.blogPosts.filter((b) => b.id !== id),
       }));
@@ -373,7 +384,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         body: JSON.stringify(skill),
       });
-      setData((prev) => ({ ...prev, skills: [...prev.skills, newSkill] }));
+      updateData((prev) => ({ ...prev, skills: [...prev.skills, newSkill] }));
       return newSkill;
     } catch (error) {
       console.error('Failed to add skill:', error);
@@ -387,7 +398,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         skills: prev.skills.map((s) => (s.id === id ? { ...s, ...updates } : s)),
       }));
@@ -399,7 +410,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteSkill = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/skills/${id}`, { method: 'DELETE' });
-      setData((prev) => ({ ...prev, skills: prev.skills.filter((s) => s.id !== id) }));
+      updateData((prev) => ({ ...prev, skills: prev.skills.filter((s) => s.id !== id) }));
     } catch (error) {
       console.error('Failed to delete skill:', error);
     }
@@ -412,7 +423,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         body: JSON.stringify(exp),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         experiences: [newExp, ...prev.experiences],
       }));
@@ -429,7 +440,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         experiences: prev.experiences.map((e) => (e.id === id ? { ...e, ...updates } : e)),
       }));
@@ -441,7 +452,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteExperience = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/experiences/${id}`, { method: 'DELETE' });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         experiences: prev.experiences.filter((e) => e.id !== id),
       }));
@@ -457,7 +468,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         body: JSON.stringify(t),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         testimonials: [newT, ...prev.testimonials],
       }));
@@ -474,7 +485,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         testimonials: prev.testimonials.map((t) => (t.id === id ? { ...t, ...updates } : t)),
       }));
@@ -486,7 +497,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteTestimonial = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/testimonials/${id}`, { method: 'DELETE' });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         testimonials: prev.testimonials.filter((t) => t.id !== id),
       }));
@@ -507,7 +518,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
             status: 'new',
           }),
         });
-        setData((prev) => ({
+        updateData((prev) => ({
           ...prev,
           messages: [newMessage, ...prev.messages],
         }));
@@ -526,7 +537,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'PUT',
         body: JSON.stringify({ status: 'read' }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         messages: prev.messages.map((message) =>
           message.id === id ? { ...message, status: 'read' } : message
@@ -540,7 +551,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const deleteMessage = useCallback(async (id: string) => {
     try {
       await apiFetch(`/api/messages/${id}`, { method: 'DELETE' });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         messages: prev.messages.filter((message) => message.id !== id),
       }));
@@ -556,7 +567,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         body: JSON.stringify({ projectId }),
       });
-      setData((prev) => ({
+      updateData((prev) => ({
         ...prev,
         analytics: {
           ...prev.analytics,
@@ -573,7 +584,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const recordPageView = useCallback(async () => {
     try {
       await apiFetch('/api/analytics/page-view', { method: 'POST' });
-      setData((prev) => {
+      updateData((prev) => {
         const views = [...prev.analytics.pageViews];
         const lastIndex = views.length - 1;
         if (views[lastIndex]) {
@@ -598,22 +609,22 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     }
   }, [loadData]);
 
-  // Derived data
+  // Derived data (empty until hydration — never fake defaults)
   const publishedProjects = useMemo(
-    () => data.projects.filter((p) => p.status === 'published'),
-    [data.projects]
+    () => data?.projects.filter((p) => p.status === 'published') ?? [],
+    [data]
   );
   const featuredProjects = useMemo(
     () => publishedProjects.filter((p) => p.featured),
     [publishedProjects]
   );
   const publishedBlogPosts = useMemo(
-    () => data.blogPosts.filter((b) => b.status === 'published'),
-    [data.blogPosts]
+    () => data?.blogPosts.filter((b) => b.status === 'published') ?? [],
+    [data]
   );
   const unreadMessageCount = useMemo(
-    () => data.messages.filter((message) => message.status === 'new').length,
-    [data.messages]
+    () => data?.messages.filter((message) => message.status === 'new').length ?? 0,
+    [data]
   );
 
   const value = useMemo(

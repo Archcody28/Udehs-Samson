@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/Badge';
 
 export function Skills() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { skills } = data;
 
   const categories = Array.from(new Set(skills.map((s) => s.category)));

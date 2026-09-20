@@ -27,6 +27,7 @@ const footerLinks = [
 
 export function Footer() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { profile } = data;
 
   return (

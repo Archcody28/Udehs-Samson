@@ -31,7 +31,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useContentStore, type ContentStoreValue } from '@/hooks/useContentStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
@@ -172,6 +172,8 @@ const profileSchema = z.object({
 
 type ProfileForm = z.infer<typeof profileSchema>;
 
+type LoadedStore = ContentStoreValue & { data: NonNullable<ContentStoreValue['data']> };
+
 export function AdminDashboard() {
   const navigate = useNavigate();
   const store = useContentStore();
@@ -181,6 +183,28 @@ export function AdminDashboard() {
   if (!store.isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
+
+  // Admin reads the same hydrated singleton; never fabricate defaults.
+  // Narrow once here so every tab below receives non-null data.
+  if (!store.data) {
+    if (store.loadError) {
+      return (
+        <div className="mx-auto max-w-xl px-4 pt-32 text-center">
+          <p className="text-sm text-red-500">Failed to load content: {store.loadError}</p>
+          <Button className="mt-4" onClick={() => void store.loadData(true)}>
+            Retry
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <div className="mx-auto max-w-xl px-4 pt-32 text-center text-sm text-slate-500">
+        Loading content…
+      </div>
+    );
+  }
+  const content = store.data;
+  const adminStore = { ...store, data: content };
 
   const handleLogout = async () => {
     await store.logout();
@@ -229,15 +253,15 @@ export function AdminDashboard() {
         </aside>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          {activeTab === 'overview' && <OverviewTab store={store} setModal={setModal} />}
-          {activeTab === 'projects' && <ProjectsTab store={store} setModal={setModal} />}
-          {activeTab === 'blog' && <BlogTab store={store} setModal={setModal} />}
-          {activeTab === 'skills' && <SkillsTab store={store} setModal={setModal} />}
-          {activeTab === 'experience' && <ExperienceTab store={store} setModal={setModal} />}
-          {activeTab === 'testimonials' && <TestimonialsTab store={store} setModal={setModal} />}
-          {activeTab === 'profile' && <ProfileTab store={store} />}
-          {activeTab === 'messages' && <MessagesTab store={store} />}
-          {activeTab === 'analytics' && <AnalyticsTab store={store} />}
+          {activeTab === 'overview' && <OverviewTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'projects' && <ProjectsTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'blog' && <BlogTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'skills' && <SkillsTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'experience' && <ExperienceTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'testimonials' && <TestimonialsTab store={adminStore} setModal={setModal} />}
+          {activeTab === 'profile' && <ProfileTab store={adminStore} />}
+          {activeTab === 'messages' && <MessagesTab store={adminStore} />}
+          {activeTab === 'analytics' && <AnalyticsTab store={adminStore} />}
         </main>
       </div>
 
@@ -251,7 +275,7 @@ export function AdminDashboard() {
           <ProjectFormModal
             data={modal.data as Project | undefined}
             onClose={() => setModal(null)}
-            store={store}
+            store={adminStore}
             parseList={parseList}
           />
         )}
@@ -259,25 +283,25 @@ export function AdminDashboard() {
           <BlogFormModal
             data={modal.data as BlogPost | undefined}
             onClose={() => setModal(null)}
-            store={store}
+            store={adminStore}
             parseList={parseList}
           />
         )}
         {modal?.type === 'skill' && (
-          <SkillFormModal data={modal.data as Skill | undefined} onClose={() => setModal(null)} store={store} />
+          <SkillFormModal data={modal.data as Skill | undefined} onClose={() => setModal(null)} store={adminStore} />
         )}
         {modal?.type === 'experience' && (
           <ExperienceFormModal
             data={modal.data as Experience | undefined}
             onClose={() => setModal(null)}
-            store={store}
+            store={adminStore}
           />
         )}
         {modal?.type === 'testimonial' && (
           <TestimonialFormModal
             data={modal.data as Testimonial | undefined}
             onClose={() => setModal(null)}
-            store={store}
+            store={adminStore}
           />
         )}
       </Modal>
@@ -289,7 +313,7 @@ function OverviewTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown } | null) => void;
 }) {
   const stats = [
@@ -393,7 +417,7 @@ function ProjectsTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown }) => void;
 }) {
   return (
@@ -453,7 +477,7 @@ function BlogTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown }) => void;
 }) {
   return (
@@ -512,7 +536,7 @@ function SkillsTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown }) => void;
 }) {
   return (
@@ -568,7 +592,7 @@ function ExperienceTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown }) => void;
 }) {
   return (
@@ -617,7 +641,7 @@ function ExperienceTab({
   );
 }
 
-function MessagesTab({ store }: { store: ReturnType<typeof useContentStore> }) {
+function MessagesTab({ store }: { store: ContentStoreValue }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -712,7 +736,7 @@ function TestimonialsTab({
   store,
   setModal,
 }: {
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   setModal: (m: { type: string; data?: unknown }) => void;
 }) {
   return (
@@ -761,7 +785,7 @@ function TestimonialsTab({
   );
 }
 
-function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
+function ProfileTab({ store }: { store: ContentStoreValue }) {
   const { profile } = store.data;
   const [avatarPreview, setAvatarPreview] = useState(profile.avatar);
   const {
@@ -1189,7 +1213,7 @@ function ProfileTab({ store }: { store: ReturnType<typeof useContentStore> }) {
   );
 }
 
-function AnalyticsTab({ store }: { store: ReturnType<typeof useContentStore> }) {
+function AnalyticsTab({ store }: { store: ContentStoreValue }) {
   return (
     <div className="space-y-8">
       <h2 className="font-display text-2xl font-bold">Analytics</h2>
@@ -1279,7 +1303,7 @@ function ProjectFormModal({
 }: {
   data?: Project;
   onClose: () => void;
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   parseList: (str: string) => string[];
 }) {
   const [images, setImages] = useState<string[]>(data?.images ?? []);
@@ -1381,7 +1405,7 @@ function BlogFormModal({
 }: {
   data?: BlogPost;
   onClose: () => void;
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
   parseList: (str: string) => string[];
 }) {
   const [coverImage, setCoverImage] = useState<string | undefined>(data?.coverImage);
@@ -1470,7 +1494,7 @@ function SkillFormModal({
 }: {
   data?: Skill;
   onClose: () => void;
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
 }) {
   const {
     register,
@@ -1521,7 +1545,7 @@ function ExperienceFormModal({
 }: {
   data?: Experience;
   onClose: () => void;
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
 }) {
   const [current, setCurrent] = useState(data?.current ?? false);
   const {
@@ -1591,7 +1615,7 @@ function TestimonialFormModal({
 }: {
   data?: Testimonial;
   onClose: () => void;
-  store: ReturnType<typeof useContentStore>;
+  store: LoadedStore;
 }) {
   const [avatar, setAvatar] = useState<string | undefined>(data?.avatar);
   const {

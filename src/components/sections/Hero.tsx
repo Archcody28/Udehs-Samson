@@ -9,6 +9,7 @@ import { useContentStore } from '@/hooks/useContentStore';
 
 export function Hero() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { profile } = data;
 
   const stats = [

@@ -56,16 +56,22 @@ function AnimatedOutlet() {
 }
 
 export default function App() {
-  const { isHydrated, isLoading, loadError, loadData } = useContentStore();
+  const { data, isHydrated, isLoading, loadError, loadData } = useContentStore();
 
-  // Show loader during initial hydration
-  if (!isHydrated && isLoading) {
+  // Loading boundary: public tree renders only with real hydrated data.
+  // data is null until the first successful hydration — never fake defaults.
+  if ((!isHydrated || !data) && isLoading) {
     return <AppLoader />;
   }
 
   // Show error if initial hydration failed
-  if (!isHydrated && loadError) {
+  if ((!isHydrated || !data) && loadError) {
     return <AppError message={loadError} onRetry={loadData} />;
+  }
+
+  // Defensive: never render portfolio without real data.
+  if (!data) {
+    return <AppLoader />;
   }
 
   // Render portfolio after successful hydration

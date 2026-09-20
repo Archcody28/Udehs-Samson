@@ -11,6 +11,7 @@ import 'swiper/css/pagination';
 
 export function Testimonials() {
   const { data } = useContentStore();
+  if (!data) return null;
   const { testimonials } = data;
 
   return (

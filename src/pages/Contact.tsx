@@ -31,6 +31,7 @@ type FormData = z.infer<typeof schema>;
 
 export function Contact() {
   const { data, addMessage } = useContentStore();
+  if (!data) return null;
   const { profile } = data;
 
   const {

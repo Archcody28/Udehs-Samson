@@ -13,6 +13,7 @@ export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data, publishedProjects, recordProjectView } = useContentStore();
+  if (!data) return null;
 
   const project = useMemo(
     () => data.projects.find((p) => p.slug === slug && p.status === 'published'),
