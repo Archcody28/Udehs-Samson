@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type {
   PortfolioData,
   Project,
@@ -117,7 +118,51 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
   };
 }
 
-export function useContentStore() {
+// Module-level fetch guards: exactly one hydration request cycle per page load,
+// shared by every consumer. Covers StrictMode double-mount and N-instance mounts.
+let hydrationPromise: Promise<PortfolioData> | null = null;
+let hydrationStarted = false;
+
+export interface ContentStoreValue {
+  data: PortfolioData;
+  isLoading: boolean;
+  isHydrated: boolean;
+  loadError: string | null;
+  loadData: (force?: boolean) => Promise<void>;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  updateProfile: (profile: Profile) => Promise<void>;
+  addProject: (project: Omit<Project, 'id' | 'slug'>) => Promise<Project | undefined>;
+  updateProject: (id: string, updates: Partial<Project>) => Promise<void>;
+  deleteProject: (id: string) => Promise<void>;
+  addBlogPost: (post: Omit<BlogPost, 'id' | 'slug' | 'readingTime'>) => Promise<BlogPost | undefined>;
+  updateBlogPost: (id: string, updates: Partial<BlogPost>) => Promise<void>;
+  deleteBlogPost: (id: string) => Promise<void>;
+  addSkill: (skill: Omit<Skill, 'id'>) => Promise<Skill | undefined>;
+  updateSkill: (id: string, updates: Partial<Skill>) => Promise<void>;
+  deleteSkill: (id: string) => Promise<void>;
+  addExperience: (exp: Omit<Experience, 'id'>) => Promise<Experience | undefined>;
+  updateExperience: (id: string, updates: Partial<Experience>) => Promise<void>;
+  deleteExperience: (id: string) => Promise<void>;
+  addTestimonial: (t: Omit<Testimonial, 'id'>) => Promise<Testimonial | undefined>;
+  updateTestimonial: (id: string, updates: Partial<Testimonial>) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
+  addMessage: (message: Omit<ContactMessage, 'id' | 'createdAt' | 'status'>) => Promise<ContactMessage | undefined>;
+  markMessageRead: (id: string) => Promise<void>;
+  deleteMessage: (id: string) => Promise<void>;
+  recordProjectView: (projectId: string) => Promise<void>;
+  recordPageView: () => Promise<void>;
+  resetToDefaults: () => Promise<void>;
+  publishedProjects: Project[];
+  featuredProjects: Project[];
+  publishedBlogPosts: BlogPost[];
+  unreadMessageCount: number;
+}
+
+const ContentContext = createContext<ContentStoreValue | null>(null);
+
+export function ContentProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<PortfolioData>({
     ...defaultPortfolioData,
     profile: defaultProfile,
@@ -133,26 +178,52 @@ export function useContentStore() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Load data on mount (auth starts as logged out — token is memory-only)
-  useEffect(() => {
-    loadData();
-  }, []);
+  const hydratedRef = useRef(false);
 
-  async function loadData() {
+  // Stable, guarded loader: concurrent callers share one in-flight promise.
+  // force=true (retry / reset) starts a fresh cycle.
+  const loadData = useCallback(async (force = false) => {
+    if (hydrationPromise && !force) {
+      try {
+        const portfolioData = await hydrationPromise;
+        setData(portfolioData);
+        setIsHydrated(true);
+        hydratedRef.current = true;
+      } catch {
+        // Error state already recorded by the owning cycle; keep flags as-is.
+      }
+      return;
+    }
+    if (hydrationStarted && hydratedRef.current && !force) return;
+    hydrationStarted = true;
+    setIsLoading(true);
+    setLoadError(null);
+    const cycle = fetchPortfolioData();
+    hydrationPromise = cycle;
     try {
-      setIsLoading(true);
-      setLoadError(null);
-      const portfolioData = await fetchPortfolioData();
+      const portfolioData = await cycle;
       setData(portfolioData);
       setIsHydrated(true);
+      hydratedRef.current = true;
     } catch (error) {
+      // Allow retry after failure.
+      hydrationPromise = null;
+      hydrationStarted = false;
       const message = error instanceof Error ? error.message : 'Failed to load portfolio data';
       console.error('Failed to load portfolio data:', error);
       setLoadError(message);
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
+
+  // Single hydration kickoff for the whole app (StrictMode-safe via guards).
+  useEffect(() => {
+    void loadData();
+  }, [loadData]);
+
+  // Manual refresh entry points (retry button, admin reset) bypass the guard.
+  const reloadData = useCallback(() => loadData(true), [loadData]);
 
   // Auth
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
@@ -520,12 +591,12 @@ export function useContentStore() {
     if (!confirm('This will replace all content with defaults. Continue?')) return;
     try {
       await apiFetch('/api/reset', { method: 'POST' });
-      await loadData();
+      await loadData(true);
       toast.success('Data reset to defaults');
     } catch (error) {
       console.error('Failed to reset data:', error);
     }
-  }, []);
+  }, [loadData]);
 
   // Derived data
   const publishedProjects = useMemo(
@@ -545,40 +616,90 @@ export function useContentStore() {
     [data.messages]
   );
 
-  return {
-    data,
-    isLoading,
-    isHydrated,
-    loadError,
-    loadData,
-    isAuthenticated,
-    login,
-    logout,
-    updateProfile,
-    addProject,
-    updateProject,
-    deleteProject,
-    addBlogPost,
-    updateBlogPost,
-    deleteBlogPost,
-    addSkill,
-    updateSkill,
-    deleteSkill,
-    addExperience,
-    updateExperience,
-    deleteExperience,
-    addTestimonial,
-    updateTestimonial,
-    deleteTestimonial,
-    addMessage,
-    markMessageRead,
-    deleteMessage,
-    recordProjectView,
-    recordPageView,
-    resetToDefaults,
-    publishedProjects,
-    featuredProjects,
-    publishedBlogPosts,
-    unreadMessageCount,
-  };
+  const value = useMemo(
+    () => ({
+      data,
+      isLoading,
+      isHydrated,
+      loadError,
+      loadData: reloadData,
+      isAuthenticated,
+      login,
+      logout,
+      updateProfile,
+      addProject,
+      updateProject,
+      deleteProject,
+      addBlogPost,
+      updateBlogPost,
+      deleteBlogPost,
+      addSkill,
+      updateSkill,
+      deleteSkill,
+      addExperience,
+      updateExperience,
+      deleteExperience,
+      addTestimonial,
+      updateTestimonial,
+      deleteTestimonial,
+      addMessage,
+      markMessageRead,
+      deleteMessage,
+      recordProjectView,
+      recordPageView,
+      resetToDefaults,
+      publishedProjects,
+      featuredProjects,
+      publishedBlogPosts,
+      unreadMessageCount,
+    }),
+    [
+      data,
+      isLoading,
+      isHydrated,
+      loadError,
+      reloadData,
+      isAuthenticated,
+      login,
+      logout,
+      updateProfile,
+      addProject,
+      updateProject,
+      deleteProject,
+      addBlogPost,
+      updateBlogPost,
+      deleteBlogPost,
+      addSkill,
+      updateSkill,
+      deleteSkill,
+      addExperience,
+      updateExperience,
+      deleteExperience,
+      addTestimonial,
+      updateTestimonial,
+      deleteTestimonial,
+      addMessage,
+      markMessageRead,
+      deleteMessage,
+      recordProjectView,
+      recordPageView,
+      resetToDefaults,
+      publishedProjects,
+      featuredProjects,
+      publishedBlogPosts,
+      unreadMessageCount,
+    ]
+  );
+
+  return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
+}
+
+// Compatibility API: every consumer reads the single provider-owned state.
+// No local useState/useEffect/fetch here — mounting never refetches.
+export function useContentStore(): ContentStoreValue {
+  const ctx = useContext(ContentContext);
+  if (!ctx) {
+    throw new Error('useContentStore must be used within <ContentProvider>');
+  }
+  return ctx;
 }

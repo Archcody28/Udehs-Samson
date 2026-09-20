@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from '@/hooks/useTheme';
+import { ContentProvider } from '@/hooks/useContentStore';
 import App from './App';
 import './index.css';
 
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <BrowserRouter>
         <ThemeProvider>
-          <App />
+          <ContentProvider>
+            <App />
+          </ContentProvider>
           <Toaster
             position="top-right"
             toastOptions={{
