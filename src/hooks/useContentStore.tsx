@@ -81,8 +81,12 @@ function seededOrStored<T extends { title: string; description?: string; year?: 
 }
 
 // Fetch all portfolio data
-async function fetchPortfolioData(): Promise<PortfolioData> {
-  const [profile, projects, blogPosts, skills, experiences, testimonials, messages, analytics] =
+// Critical public content hydrates the app; messages/analytics are deferred
+// (admin-only) and must never block or fail public hydration.
+type DeferredData = Pick<PortfolioData, 'messages' | 'analytics'>;
+
+async function fetchCriticalData(): Promise<Omit<PortfolioData, 'messages' | 'analytics'>> {
+  const [profile, projects, blogPosts, skills, experiences, testimonials] =
     await Promise.all([
       apiFetch<Profile>('/api/profile'),
       apiFetch<Project[]>('/api/projects'),
@@ -90,8 +94,6 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
       apiFetch<Skill[]>('/api/skills'),
       apiFetch<Experience[]>('/api/experiences'),
       apiFetch<Testimonial[]>('/api/testimonials'),
-      apiFetch<ContactMessage[]>('/api/messages'),
-      apiFetch<{ pageViews: { date: string; views: number }[]; projectViews: { projectId: string; views: number }[] }>('/api/analytics'),
     ]);
 
   // Seed original content only when the profile has no meaningful saved data.
@@ -109,8 +111,10 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
     skills,
     experiences,
     testimonials,
-    messages,
-    analytics,
+    // Deferred placeholders: real messages/analytics merge in later via
+    // loadDeferredData(). Never block public hydration on admin-only data.
+    messages: [],
+    analytics: { pageViews: [], projectViews: [] },
     // Canonical profile-owned collections (match Mongoose Profile shape).
     // Top-level copies mirror profile so legacy readers stay consistent.
     education: normalizedProfile.education ?? [],
@@ -119,10 +123,22 @@ async function fetchPortfolioData(): Promise<PortfolioData> {
   };
 }
 
+async function fetchDeferredData(): Promise<DeferredData> {
+  const [messages, analytics] = await Promise.all([
+    apiFetch<ContactMessage[]>('/api/messages'),
+    apiFetch<{ pageViews: { date: string; views: number }[]; projectViews: { projectId: string; views: number }[] }>('/api/analytics'),
+  ]);
+  return { messages, analytics };
+}
+
 // Module-level fetch guards: exactly one hydration request cycle per page load,
 // shared by every consumer. Covers StrictMode double-mount and N-instance mounts.
-let hydrationPromise: Promise<PortfolioData> | null = null;
-let hydrationStarted = false;
+// Critical and deferred cycles each have their own guard.
+let criticalPromise: Promise<PortfolioData> | null = null;
+let criticalStarted = false;
+let deferredPromise: Promise<DeferredData> | null = null;
+let deferredStarted = false;
+let deferredLoaded = false;
 
 export interface ContentStoreValue {
   /** Null until the first successful hydration — never fictitious defaults. */
@@ -131,6 +147,11 @@ export interface ContentStoreValue {
   isHydrated: boolean;
   loadError: string | null;
   loadData: (force?: boolean) => Promise<void>;
+  /** Admin-only content: loads independently, never blocks public hydration. */
+  isDeferredLoading: boolean;
+  isDeferredLoaded: boolean;
+  deferredError: string | null;
+  loadDeferredData: (force?: boolean) => Promise<void>;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -183,13 +204,17 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const hydratedRef = useRef(false);
+  const deferredLoadedRef = useRef(false);
+  const [isDeferredLoading, setIsDeferredLoading] = useState(false);
+  const [isDeferredLoaded, setIsDeferredLoaded] = useState(false);
+  const [deferredError, setDeferredError] = useState<string | null>(null);
 
-  // Stable, guarded loader: concurrent callers share one in-flight promise.
-  // force=true (retry / reset) starts a fresh cycle.
+  // Stable, guarded critical loader: concurrent callers share one in-flight
+  // promise. force=true (retry / reset) starts a fresh cycle.
   const loadData = useCallback(async (force = false) => {
-    if (hydrationPromise && !force) {
+    if (criticalPromise && !force) {
       try {
-        const portfolioData = await hydrationPromise;
+        const portfolioData = await criticalPromise;
         setData(portfolioData);
         setIsHydrated(true);
         hydratedRef.current = true;
@@ -198,12 +223,12 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       }
       return;
     }
-    if (hydrationStarted && hydratedRef.current && !force) return;
-    hydrationStarted = true;
+    if (criticalStarted && hydratedRef.current && !force) return;
+    criticalStarted = true;
     setIsLoading(true);
     setLoadError(null);
-    const cycle = fetchPortfolioData();
-    hydrationPromise = cycle;
+    const cycle = fetchCriticalData();
+    criticalPromise = cycle;
     try {
       const portfolioData = await cycle;
       setData(portfolioData);
@@ -211,13 +236,52 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       hydratedRef.current = true;
     } catch (error) {
       // Allow retry after failure.
-      hydrationPromise = null;
-      hydrationStarted = false;
+      criticalPromise = null;
+      criticalStarted = false;
       const message = error instanceof Error ? error.message : 'Failed to load portfolio data';
       console.error('Failed to load portfolio data:', error);
       setLoadError(message);
     } finally {
       setIsLoading(false);
+    }
+  }, []);
+
+  // Deferred (admin-only) loader: messages + analytics merge into the existing
+  // critical data. Failures are isolated — public hydration never depends on
+  // this cycle. Concurrent callers share one in-flight promise.
+  const loadDeferredData = useCallback(async (force = false) => {
+    if (deferredPromise && !force) {
+      try {
+        const deferred = await deferredPromise;
+        updateData((prev) => ({ ...prev, messages: deferred.messages, analytics: deferred.analytics }));
+        setIsDeferredLoaded(true);
+        deferredLoadedRef.current = true;
+      } catch {
+        // Deferred error already recorded; public data untouched.
+      }
+      return;
+    }
+    if (deferredStarted && deferredLoadedRef.current && !force) return;
+    deferredStarted = true;
+    setIsDeferredLoading(true);
+    setDeferredError(null);
+    const cycle = fetchDeferredData();
+    deferredPromise = cycle;
+    try {
+      const deferred = await cycle;
+      updateData((prev) => ({ ...prev, messages: deferred.messages, analytics: deferred.analytics }));
+      deferredLoaded = true;
+      deferredLoadedRef.current = true;
+      setIsDeferredLoaded(true);
+    } catch (error) {
+      // Allow retry; never touch critical data or public hydration flags.
+      deferredPromise = null;
+      deferredStarted = false;
+      const message = error instanceof Error ? error.message : 'Failed to load messages/analytics';
+      console.error('Failed to load deferred content:', error);
+      setDeferredError(message);
+    } finally {
+      setIsDeferredLoading(false);
     }
   }, []);
 
@@ -560,7 +624,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Analytics
+  // Analytics (write-through; safe when analytics not yet deferred-loaded)
   const recordProjectView = useCallback(async (projectId: string) => {
     try {
       await apiFetch('/api/analytics/project-view', {
@@ -603,11 +667,13 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     try {
       await apiFetch('/api/reset', { method: 'POST' });
       await loadData(true);
+      // Re-merge admin-only content after reset; isolated from public flags.
+      await loadDeferredData(true);
       toast.success('Data reset to defaults');
     } catch (error) {
       console.error('Failed to reset data:', error);
     }
-  }, [loadData]);
+  }, [loadData, loadDeferredData]);
 
   // Derived data (empty until hydration — never fake defaults)
   const publishedProjects = useMemo(
@@ -634,6 +700,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       isHydrated,
       loadError,
       loadData: reloadData,
+      isDeferredLoading,
+      isDeferredLoaded,
+      deferredError,
+      loadDeferredData,
       isAuthenticated,
       login,
       logout,
@@ -670,6 +740,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
       isHydrated,
       loadError,
       reloadData,
+      isDeferredLoading,
+      isDeferredLoaded,
+      deferredError,
+      loadDeferredData,
       isAuthenticated,
       login,
       logout,

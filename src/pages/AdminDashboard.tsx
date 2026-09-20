@@ -180,6 +180,13 @@ export function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [modal, setModal] = useState<{ type: string; data?: unknown } | null>(null);
 
+  const { loadDeferredData } = store;
+  // Admin needs deferred (admin-only) content: trigger it on mount.
+  // Guarded + shared: concurrent mounts await one in-flight promise.
+  useEffect(() => {
+    void loadDeferredData();
+  }, [loadDeferredData]);
+
   if (!store.isAuthenticated) {
     return <Navigate to="/admin/login" replace />;
   }
@@ -641,7 +648,19 @@ function ExperienceTab({
   );
 }
 
-function MessagesTab({ store }: { store: ContentStoreValue }) {
+function MessagesTab({ store }: { store: LoadedStore }) {
+  const deferredNote = !store.isDeferredLoaded ? (
+    <p className="text-xs text-slate-400">
+      {store.isDeferredLoading ? 'Loading messages…' : store.deferredError ?? 'Messages unavailable.'}{' '}
+      <button
+        type="button"
+        className="underline hover:text-blue-500"
+        onClick={() => void store.loadDeferredData(true)}
+      >
+        Retry
+      </button>
+    </p>
+  ) : null;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -650,6 +669,7 @@ function MessagesTab({ store }: { store: ContentStoreValue }) {
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Visitor inquiries submitted through the contact form.
           </p>
+          {deferredNote}
         </div>
         <Button
           variant="outline"
@@ -785,7 +805,7 @@ function TestimonialsTab({
   );
 }
 
-function ProfileTab({ store }: { store: ContentStoreValue }) {
+function ProfileTab({ store }: { store: LoadedStore }) {
   const { profile } = store.data;
   const [avatarPreview, setAvatarPreview] = useState(profile.avatar);
   const {
@@ -1213,7 +1233,22 @@ function ProfileTab({ store }: { store: ContentStoreValue }) {
   );
 }
 
-function AnalyticsTab({ store }: { store: ContentStoreValue }) {
+function AnalyticsTab({ store }: { store: LoadedStore }) {
+  if (!store.isDeferredLoaded) {
+    return (
+      <div className="space-y-8">
+        <h2 className="font-display text-2xl font-bold">Analytics</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+          <p className="text-sm text-slate-500">
+            {store.isDeferredLoading ? 'Loading analytics…' : store.deferredError ?? 'Analytics unavailable.'}
+          </p>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => void store.loadDeferredData(true)}>
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-8">
       <h2 className="font-display text-2xl font-bold">Analytics</h2>
