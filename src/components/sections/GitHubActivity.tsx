@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   Github,
@@ -75,15 +75,36 @@ export function getCachedGitHubActivity(): GitHubActivityData | null {
   return githubCache.data;
 }
 
+// In-flight guard: a single request is shared by StrictMode's double-invoked
+// effect and by any concurrent mount, mirroring the ContentProvider's dedupe
+// pattern so ordinary mounting cannot fire duplicate GitHub requests.
+let githubInFlight: Promise<GitHubActivityData> | null = null;
+
+function loadGitHubActivity(): Promise<GitHubActivityData> {
+  if (githubInFlight) return githubInFlight;
+
+  githubInFlight = (async () => {
+    try {
+      const response = await fetch('/api/github-activity');
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.error || 'Failed to load GitHub activity');
+      }
+
+      const data = json as GitHubActivityData;
+      githubCache = { data, fetchedAt: Date.now() };
+      return data;
+    } finally {
+      githubInFlight = null;
+    }
+  })();
+
+  return githubInFlight;
+}
+
 export async function refreshGitHubActivity(): Promise<void> {
-  const response = await fetch('/api/github-activity');
-  const json = await response.json();
-
-  if (!response.ok) {
-    throw new Error(json.error || 'Failed to load GitHub activity');
-  }
-
-  githubCache = { data: json as GitHubActivityData, fetchedAt: Date.now() };
+  await loadGitHubActivity();
 }
 
 export function clearGitHubCache(): void {
@@ -118,38 +139,25 @@ export function GitHubActivity() {
 
     let cancelled = false;
 
-    const fetchActivity = async () => {
-      try {
-        const response = await fetch('/api/github-activity');
-        const json = await response.json();
-
-        if (!response.ok) {
-          throw new Error(json.error || 'Failed to load GitHub activity');
-        }
-
-        const data = json as GitHubActivityData;
-        githubCache = { data, fetchedAt: Date.now() };
+    // Shared loader: joins the in-flight request if one exists instead of
+    // starting a second one (StrictMode double-invoke / concurrent mounts).
+    loadGitHubActivity()
+      .then((data) => {
+        if (cancelled) return;
         cachedRef.current = data;
-
-        if (!cancelled) {
-          setActivity(data);
-          setError(null);
-        }
-      } catch (err: unknown) {
-        const message = err && typeof err === 'object' && 'message' in err
-          ? (err as { message: string }).message
-          : 'Unable to load GitHub activity';
-        if (!cancelled) {
-          setError(message);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchActivity();
+        setActivity(data);
+        setError(null);
+        setLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        const message =
+          err && typeof err === 'object' && 'message' in err
+            ? (err as { message: string }).message
+            : 'Unable to load GitHub activity';
+        setError(message);
+        setLoading(false);
+      });
 
     return () => {
       cancelled = true;
@@ -279,25 +287,12 @@ export function GitHubActivity() {
 
             <div className="grid grid-cols-12 gap-1 sm:grid-cols-18 md:grid-cols-24">
               {contributionDays.map((day, idx) => {
-                const fallbackColors = [
-                  'rgb(241 245 249)',
-                  'rgb(187 247 208)',
-                  'rgb(134 239 172)',
-                  'rgb(74 222 128)',
-                  'rgb(34 197 94)',
-                ];
-
-                const backgroundColor = activity
-                  ? day.color
-                  : fallbackColors[day % fallbackColors.length];
-
-                const title = activity
-                  ? `${day.count} contributions on ${day.date}`
-                  : `${day} contributions`;
+                const backgroundColor = day.color;
+                const title = `${day.count} contributions on ${day.date}`;
 
                 return (
                   <motion.div
-                    key={activity ? day.date : idx}
+                    key={day.date}
                     initial={{
                       opacity: 0,
                       scale: 0,
