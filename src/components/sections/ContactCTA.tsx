@@ -7,6 +7,8 @@ import { useProfile } from '@/hooks/useContentStore';
 export function ContactCTA() {
   const profile = useProfile();
 
+  if (!profile) return null;
+
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8">
       <motion.div
@@ -33,14 +35,14 @@ export function ContactCTA() {
               Start a Conversation
             </Button>
           </Link>
-          <a href={`mailto:${data.profile.email}`}>
+          <a href={`mailto:${profile.email}`}>
             <Button
               size="lg"
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10"
               leftIcon={<Mail className="h-5 w-5" />}
             >
-              {data.profile.email}
+              {profile.email}
             </Button>
           </a>
         </div>
