@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useSkills } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 
 export function Skills() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { skills } = data;
+  const skills = useSkills();
 
   const categories = Array.from(new Set(skills.map((s) => s.category)));
 

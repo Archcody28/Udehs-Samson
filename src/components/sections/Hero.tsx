@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { TypingText } from '@/components/ui/TypingText';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 
 // Three.js canvas splits out of the critical Home chunk.
 const ParticleField = lazy(() =>
@@ -13,9 +13,8 @@ const ParticleField = lazy(() =>
 );
 
 export function Hero() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { profile } = data;
+  const profile = useProfile();
+  if (!profile) return null;
 
   const stats = [
     { value: profile.yearsOfExperience ?? 0, suffix: '+', label: 'Years Experience' },

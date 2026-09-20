@@ -3,7 +3,7 @@ import { SEO } from '@/components/layout/SEO';
 import { AboutIntro } from '@/components/sections/AboutIntro';
 import { Timeline } from '@/components/sections/Timeline';
 import { Skills } from '@/components/sections/Skills';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile, useProfileCollections } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Award, BookOpen, GraduationCap, Lightbulb, Target } from 'lucide-react';
 
@@ -15,10 +15,9 @@ const philosophyStyles = [
 ];
 
 export function About() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const education = data.profile.education ?? [];
-  const certifications = data.profile.certifications ?? [];
+  const profile = useProfile();
+  const { education, certifications, achievements, philosophy } = useProfileCollections();
+  if (!profile) return null;
 
   return (
     <>
@@ -113,7 +112,7 @@ export function About() {
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
                 <Award className="h-6 w-6 text-emerald-500" /> Achievements
               </h3>
-              {data.profile.achievements.map((achievement, index) => (
+              {achievements.map((achievement, index) => (
                 <Card key={`${achievement.title}-${index}`} hover>
                   <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
                     {achievement.year}
@@ -122,7 +121,7 @@ export function About() {
                   <p className="text-slate-600 dark:text-slate-400">{achievement.description}</p>
                 </Card>
               ))}
-              {data.profile.achievements.length === 0 && (
+              {achievements.length === 0 && (
                 <Card hover>
                   <p className="text-sm text-slate-500 dark:text-slate-400">No achievements added yet.</p>
                 </Card>
@@ -134,7 +133,7 @@ export function About() {
                 <Lightbulb className="h-6 w-6 text-amber-500" /> Philosophy
               </h3>
               <div className="space-y-4">
-                {data.profile.philosophy.map((item, index) => {
+                {philosophy.map((item, index) => {
                   const style = philosophyStyles[index % philosophyStyles.length];
                   return (
                     <Card key={`${item.title}-${index}`} hover>
@@ -150,7 +149,7 @@ export function About() {
                     </Card>
                   );
                 })}
-                {data.profile.philosophy.length === 0 && (
+                {philosophy.length === 0 && (
                   <Card hover>
                     <p className="text-sm text-slate-500 dark:text-slate-400">No philosophy items added yet.</p>
                   </Card>

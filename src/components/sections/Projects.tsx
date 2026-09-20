@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ExternalLink, Github } from 'lucide-react';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useFeaturedProjects } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
 export function Projects() {
-  const { featuredProjects } = useContentStore();
+  const featuredProjects = useFeaturedProjects();
 
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8">

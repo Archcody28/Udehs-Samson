@@ -7,7 +7,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { NotFound } from '@/pages/NotFound';
 import { AppLoader } from '@/components/common/AppLoader';
 import { AppError } from '@/components/common/AppError';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useContentStatus } from '@/hooks/useContentStore';
 
 // Home stays eager (critical first paint). Everything else splits into
 // on-demand route chunks so the admin stack (react-hook-form/zod/recharts)
@@ -79,7 +79,7 @@ function LayoutRoute() {
 }
 
 export default function App() {
-  const { data, isHydrated, isLoading, loadError, loadData } = useContentStore();
+  const { data, isHydrated, isLoading, loadError, loadData } = useContentStatus();
 
   // Loading boundary: public tree renders only with real hydrated data.
   // data is null until the first successful hydration — never fake defaults.

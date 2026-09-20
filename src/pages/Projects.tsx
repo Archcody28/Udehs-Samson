@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ExternalLink, Github, Search } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { usePublishedProjects } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export function Projects() {
-  const { publishedProjects } = useContentStore();
+  const publishedProjects = usePublishedProjects();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
 

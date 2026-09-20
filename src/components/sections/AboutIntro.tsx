@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Award, Briefcase, GraduationCap, Users } from 'lucide-react';
 
 export function AboutIntro() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { profile } = data;
+  const profile = useProfile();
+  if (!profile) return null;
 
   const highlights = [
     { icon: Briefcase, label: 'Years Experience', value: `${profile.yearsOfExperience ?? 0}+` },

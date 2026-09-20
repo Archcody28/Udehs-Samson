@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock } from 'lucide-react';
-import { useContentStore } from '@/hooks/useContentStore';
+import { usePublishedBlogPosts } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 
 export function Blogs() {
-  const { publishedBlogPosts } = useContentStore();
+  const publishedBlogPosts = usePublishedBlogPosts();
   const posts = publishedBlogPosts.slice(0, 3);
 
   return (

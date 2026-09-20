@@ -2,11 +2,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 
 export function ContactCTA() {
-  const { data } = useContentStore();
-  if (!data) return null;
+  const profile = useProfile();
 
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8">

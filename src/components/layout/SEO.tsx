@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { siteConfig } from '@/lib/data';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 
 interface SEOProps {
   title?: string;
@@ -25,8 +25,7 @@ export function SEO({
   dateModified,
   author,
 }: SEOProps) {
-  const { data } = useContentStore();
-  const profile = data?.profile;
+  const profile = useProfile();
 
   const fullTitle = title ? `${title} | ${siteConfig.name}` : `${siteConfig.name} - ${siteConfig.title}`;
   const fullUrl = `${siteConfig.url}${pathname}`;

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { usePublishedBlogPosts } from '@/hooks/useContentStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
@@ -76,12 +76,11 @@ function parseMarkdown(content: string) {
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { data } = useContentStore();
-  if (!data) return null;
+  const publishedBlogPosts = usePublishedBlogPosts();
 
   const post = useMemo(
-    () => data.blogPosts.find((p) => p.slug === slug && p.status === 'published'),
-    [data.blogPosts, slug]
+    () => publishedBlogPosts.find((p) => p.slug === slug && p.status === 'published'),
+    [publishedBlogPosts, slug]
   );
 
   const toc = useMemo(() => {

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Clock, Search } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { usePublishedBlogPosts } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 
 export function Blog() {
-  const { publishedBlogPosts } = useContentStore();
+  const publishedBlogPosts = usePublishedBlogPosts();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
 

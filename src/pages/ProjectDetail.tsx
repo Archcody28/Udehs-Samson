@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, ExternalLink, Github } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { usePublishedProjects, useContentActions } from '@/hooks/useContentStore';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -12,12 +12,14 @@ import { formatDate } from '@/lib/utils';
 export function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { data, publishedProjects, recordProjectView } = useContentStore();
-  if (!data) return null;
+  const publishedProjects = usePublishedProjects();
+  const { recordProjectView } = useContentActions();
 
+  // Published-only collection is the authoritative source: no separate
+  // raw `data.projects` subscription needed.
   const project = useMemo(
-    () => data.projects.find((p) => p.slug === slug && p.status === 'published'),
-    [data.projects, slug]
+    () => publishedProjects.find((p) => p.slug === slug && p.status === 'published'),
+    [publishedProjects, slug]
   );
 
   const related = useMemo(
@@ -28,11 +30,15 @@ export function ProjectDetail() {
     [publishedProjects, project]
   );
 
+  // Stable identifier dependency (slug), not the whole project object:
+  // avoids re-recording views when unrelated store state changes the
+  // projects array identity / project object identity.
+  const projectId = project?.id;
   useEffect(() => {
-    if (project) {
-      recordProjectView(project.id);
+    if (projectId) {
+      recordProjectView(projectId);
     }
-  }, [project, recordProjectView]);
+  }, [projectId, recordProjectView]);
 
   if (!project) {
     return (

@@ -14,7 +14,7 @@ import {
   MessageCircle,
 } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile, useContentActions } from '@/hooks/useContentStore';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
 import { Button } from '@/components/ui/Button';
@@ -30,9 +30,9 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export function Contact() {
-  const { data, addMessage } = useContentStore();
-  if (!data) return null;
-  const { profile } = data;
+  const profile = useProfile();
+  const { addMessage } = useContentActions();
+  if (!profile) return null;
 
   const {
     register,

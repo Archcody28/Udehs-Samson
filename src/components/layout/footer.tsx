@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Code2, Facebook, Github, Linkedin, Twitter } from 'lucide-react';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 
 const footerLinks = [
   {
@@ -26,9 +26,8 @@ const footerLinks = [
 ];
 
 export function Footer() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { profile } = data;
+  const profile = useProfile();
+  if (!profile) return null;
 
   return (
     <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">

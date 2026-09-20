@@ -1,18 +1,20 @@
 import { motion } from 'framer-motion';
 import { Download, Printer } from 'lucide-react';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile, useSkills, useExperiences, useProfileCollections } from '@/hooks/useContentStore';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { formatDate } from '@/lib/utils';
 
 export function Resume() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { profile, skills, experiences } = data;
+  const profile = useProfile();
+  const skills = useSkills();
+  const experiences = useExperiences();
+  const collections = useProfileCollections();
+  if (!profile) return null;
   const education = profile.education ?? [];
   const certifications = profile.certifications ?? [];
-  const achievements = profile.achievements ?? [];
+  const achievements = collections.achievements;
 
   return (
     <>

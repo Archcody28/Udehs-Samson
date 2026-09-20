@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
 import { Quote, Star } from 'lucide-react';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useTestimonials } from '@/hooks/useContentStore';
 import { Card } from '@/components/ui/Card';
 import { getInitials } from '@/lib/utils';
 
@@ -10,9 +10,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 export function Testimonials() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { testimonials } = data;
+  const testimonials = useTestimonials();
 
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8">

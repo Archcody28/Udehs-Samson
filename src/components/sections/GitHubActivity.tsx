@@ -10,13 +10,10 @@ import {
 } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useProfile } from '@/hooks/useContentStore';
 
-const fallbackContributions = [
-  1, 3, 2, 4, 0, 2, 5, 3, 4, 1, 0, 2, 3, 5, 4, 2, 1, 3, 4, 0, 2, 5, 3, 4,
-  2, 1, 3, 0, 4, 5, 2, 3, 1, 4, 2, 0, 3, 5, 4, 2, 1, 3, 0, 4, 2, 5, 3, 1,
-  4, 2, 0, 3, 1, 5, 4, 2, 3, 0, 1, 4, 2, 5, 3, 4, 1, 2, 0, 3, 4, 5, 2, 1,
-];
+// F32a.6 static-data audit: removed the fabricated heatmap placeholder that
+// rendered fake contribution data before the real fetch resolved.
 
 type ContributionDay = {
   date: string;
@@ -62,8 +59,10 @@ type GitHubActivityData = {
 };
 
 export function GitHubActivity() {
-  const { data } = useContentStore();
-  const githubUrl = data?.profile.github;
+  // Profile-only subscription: independent GitHub fetch, no coupling to
+  // other portfolio state changes.
+  const profile = useProfile();
+  const githubUrl = profile?.github;
 
   const [activity, setActivity] = useState<GitHubActivityData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -94,9 +93,12 @@ export function GitHubActivity() {
     fetchActivity();
   }, []);
 
+  // No fabricated fallback: render nothing/empty until real GitHub data
+  // arrives (or show the error state). The grid simply stays empty during
+  // the brief fetch window.
   const contributionDays = useMemo(() => {
     if (!activity) {
-      return fallbackContributions;
+      return [];
     }
 
     return activity.user.contributionsCollection.contributionCalendar.weeks.flatMap(

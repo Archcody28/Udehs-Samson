@@ -676,21 +676,26 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, [loadData, loadDeferredData]);
 
   // Derived data (empty until hydration — never fake defaults)
+  // Deps target the specific collections so unrelated state changes (e.g.
+  // deferred messages/analytics merge) do not recompute these.
+  const projectsCollection = data?.projects;
+  const blogPostsCollection = data?.blogPosts;
+  const messagesCollection = data?.messages;
   const publishedProjects = useMemo(
-    () => data?.projects.filter((p) => p.status === 'published') ?? [],
-    [data]
+    () => projectsCollection?.filter((p) => p.status === 'published') ?? [],
+    [projectsCollection]
   );
   const featuredProjects = useMemo(
     () => publishedProjects.filter((p) => p.featured),
     [publishedProjects]
   );
   const publishedBlogPosts = useMemo(
-    () => data?.blogPosts.filter((b) => b.status === 'published') ?? [],
-    [data]
+    () => blogPostsCollection?.filter((b) => b.status === 'published') ?? [],
+    [blogPostsCollection]
   );
   const unreadMessageCount = useMemo(
-    () => data?.messages.filter((message) => message.status === 'new').length ?? 0,
-    [data]
+    () => messagesCollection?.filter((message) => message.status === 'new').length ?? 0,
+    [messagesCollection]
   );
 
   const value = useMemo(
@@ -787,4 +792,133 @@ export function useContentStore(): ContentStoreValue {
     throw new Error('useContentStore must be used within <ContentProvider>');
   }
   return ctx;
+}
+
+/* ---------------------------------------------------------------------------
+ * Focused read hooks (F32a.6)
+ *
+ * Each hook subscribes to the smallest slice a component needs. Because the
+ * provider memoizes its context value, returning slices of it keeps referential
+ * stability while narrowing what a component's re-render depends on in intent.
+ * Presentation components should prefer these over useContentStore().
+ * ------------------------------------------------------------------------- */
+
+/** Hydration/lifecycle flags only (App shell, loading boundaries). */
+export function useContentStatus() {
+  const { data, isLoading, isHydrated, loadError, loadData } = useContentStore();
+  return { data, isLoading, isHydrated, loadError, loadData };
+}
+
+/** Profile only (Hero, Footer, SEO, AboutIntro, About, Resume, Contact). */
+export function useProfile(): Profile | null {
+  return useContentStore().data?.profile ?? null;
+}
+
+/** Skills collection. */
+export function useSkills(): Skill[] {
+  return useContentStore().data?.skills ?? [];
+}
+
+/** Experiences collection (Timeline, Resume). */
+export function useExperiences(): Experience[] {
+  return useContentStore().data?.experiences ?? [];
+}
+
+/** Testimonials collection. */
+export function useTestimonials(): Testimonial[] {
+  return useContentStore().data?.testimonials ?? [];
+}
+
+/** Authoritative published projects (public pages). */
+export function usePublishedProjects(): Project[] {
+  return useContentStore().publishedProjects;
+}
+
+/** Featured subset of published projects (Home Projects section). */
+export function useFeaturedProjects(): Project[] {
+  return useContentStore().featuredProjects;
+}
+
+/** Authoritative published blog posts (public pages). */
+export function usePublishedBlogPosts(): BlogPost[] {
+  return useContentStore().publishedBlogPosts;
+}
+
+/** Profile-owned canonical education/certifications/achievements. */
+export function useProfileCollections() {
+  const profile = useProfile();
+  return {
+    education: profile?.education ?? [],
+    certifications: profile?.certifications ?? [],
+    achievements: profile?.achievements ?? [],
+    philosophy: profile?.philosophy ?? [],
+  };
+}
+
+/* ---------------------------------------------------------------------------
+ * Write/admin hook (F32a.6)
+ *
+ * Mutation capabilities are requested explicitly. Public presentation
+ * components never receive these. The exception is addMessage: visitors
+ * submit the contact form, so it is intentionally part of the public write
+ * surface — expose it via useContentActions() where needed.
+ * ------------------------------------------------------------------------- */
+
+export interface ContentActions {
+  /** Public write: visitor contact-form submission. */
+  addMessage: ContentStoreValue['addMessage'];
+  /** Analytics writes (fire-and-forget side effects). */
+  recordProjectView: ContentStoreValue['recordProjectView'];
+  recordPageView: ContentStoreValue['recordPageView'];
+  /** Admin-only content mutations. */
+  updateProfile: ContentStoreValue['updateProfile'];
+  addProject: ContentStoreValue['addProject'];
+  updateProject: ContentStoreValue['updateProject'];
+  deleteProject: ContentStoreValue['deleteProject'];
+  addBlogPost: ContentStoreValue['addBlogPost'];
+  updateBlogPost: ContentStoreValue['updateBlogPost'];
+  deleteBlogPost: ContentStoreValue['deleteBlogPost'];
+  addSkill: ContentStoreValue['addSkill'];
+  updateSkill: ContentStoreValue['updateSkill'];
+  deleteSkill: ContentStoreValue['deleteSkill'];
+  addExperience: ContentStoreValue['addExperience'];
+  updateExperience: ContentStoreValue['updateExperience'];
+  deleteExperience: ContentStoreValue['deleteExperience'];
+  addTestimonial: ContentStoreValue['addTestimonial'];
+  updateTestimonial: ContentStoreValue['updateTestimonial'];
+  deleteTestimonial: ContentStoreValue['deleteTestimonial'];
+  markMessageRead: ContentStoreValue['markMessageRead'];
+  deleteMessage: ContentStoreValue['deleteMessage'];
+  /** Admin lifecycle: deferred hydration + full reset. */
+  loadDeferredData: ContentStoreValue['loadDeferredData'];
+  resetToDefaults: ContentStoreValue['resetToDefaults'];
+}
+
+export function useContentActions(): ContentActions {
+  const s = useContentStore();
+  return {
+    addMessage: s.addMessage,
+    recordProjectView: s.recordProjectView,
+    recordPageView: s.recordPageView,
+    updateProfile: s.updateProfile,
+    addProject: s.addProject,
+    updateProject: s.updateProject,
+    deleteProject: s.deleteProject,
+    addBlogPost: s.addBlogPost,
+    updateBlogPost: s.updateBlogPost,
+    deleteBlogPost: s.deleteBlogPost,
+    addSkill: s.addSkill,
+    updateSkill: s.updateSkill,
+    deleteSkill: s.deleteSkill,
+    addExperience: s.addExperience,
+    updateExperience: s.updateExperience,
+    deleteExperience: s.deleteExperience,
+    addTestimonial: s.addTestimonial,
+    updateTestimonial: s.updateTestimonial,
+    deleteTestimonial: s.deleteTestimonial,
+    markMessageRead: s.markMessageRead,
+    deleteMessage: s.deleteMessage,
+    loadDeferredData: s.loadDeferredData,
+    resetToDefaults: s.resetToDefaults,
+  };
 }

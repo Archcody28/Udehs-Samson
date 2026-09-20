@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useContentActions } from '@/hooks/useContentStore';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
-  const { recordPageView } = useContentStore();
+  const { recordPageView } = useContentActions();
 
   useEffect(() => {
     recordPageView();

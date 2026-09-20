@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import { useContentStore } from '@/hooks/useContentStore';
+import { useExperiences } from '@/hooks/useContentStore';
 import { formatDate } from '@/lib/utils';
 import { Briefcase } from 'lucide-react';
 
 export function Timeline() {
-  const { data } = useContentStore();
-  if (!data) return null;
-  const { experiences } = data;
+  const experiences = useExperiences();
 
   return (
     <section className="px-4 py-24 sm:px-6 lg:px-8">
