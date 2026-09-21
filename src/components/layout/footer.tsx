@@ -2,29 +2,6 @@ import { Link } from 'react-router-dom';
 import { Code2, Facebook, Github, Linkedin, Twitter } from 'lucide-react';
 import { useProfile } from '@/hooks/useContentStore';
 
-const footerLinks = [
-  {
-    title: 'Navigation',
-    links: [
-      { label: 'Home', href: '/' },
-      { label: 'About', href: '/about' },
-      { label: 'Projects', href: '/projects' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'Services', href: '/services' },
-      { label: 'Contact', href: '/contact' },
-    ],
-  },
-  {
-    title: 'Services',
-    links: [
-      { label: 'Full Stack Development', href: '/services' },
-      { label: 'Frontend Engineering', href: '/services' },
-      { label: 'API Development', href: '/services' },
-      { label: 'Mobile Apps', href: '/services' },
-    ],
-  },
-];
-
 export function Footer() {
   const profile = useProfile();
   if (!profile) return null;

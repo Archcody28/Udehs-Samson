@@ -10,7 +10,7 @@ import type {
   Profile,
   ContactMessage,
 } from '@/types';
-import { generateId, slugify } from '@/lib/utils';
+import { slugify } from '@/lib/utils';
 import { defaultAchievements, defaultPhilosophy } from '@/lib/data';
 import toast from 'react-hot-toast';
 
@@ -34,10 +34,6 @@ function notifyAuthChange() {
 function setAuthToken(token: string | null) {
   authToken = token;
   notifyAuthChange();
-}
-
-function getAuthToken() {
-  return authToken;
 }
 
 // API helper - no auth required
@@ -82,10 +78,12 @@ function seededOrStored<T extends { title: string; description?: string; year?: 
 
 // Fetch all portfolio data
 // Critical public content hydrates the app; messages/analytics are deferred
-// (admin-only) and must never block or fail public hydration.
+// (admin-only) and must never block or fail public hydration. The critical
+// response carries real-but-empty placeholders for the two deferred
+// collections so consumers always see a complete PortfolioData shape.
 type DeferredData = Pick<PortfolioData, 'messages' | 'analytics'>;
 
-async function fetchCriticalData(): Promise<Omit<PortfolioData, 'messages' | 'analytics'>> {
+async function fetchCriticalData(): Promise<PortfolioData> {
   const [profile, projects, blogPosts, skills, experiences, testimonials] =
     await Promise.all([
       apiFetch<Profile>('/api/profile'),
@@ -138,7 +136,6 @@ let criticalPromise: Promise<PortfolioData> | null = null;
 let criticalStarted = false;
 let deferredPromise: Promise<DeferredData> | null = null;
 let deferredStarted = false;
-let deferredLoaded = false;
 
 export interface ContentStoreValue {
   /** Null until the first successful hydration — never fictitious defaults. */
@@ -270,7 +267,6 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     try {
       const deferred = await cycle;
       updateData((prev) => ({ ...prev, messages: deferred.messages, analytics: deferred.analytics }));
-      deferredLoaded = true;
       deferredLoadedRef.current = true;
       setIsDeferredLoaded(true);
     } catch (error) {
@@ -458,7 +454,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const updateSkill = useCallback(async (id: string, updates: Partial<Skill>) => {
     try {
-      const updated = await apiFetch<Skill>(`/api/skills/${id}`, {
+      await apiFetch<Skill>(`/api/skills/${id}`, {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
@@ -500,7 +496,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const updateExperience = useCallback(async (id: string, updates: Partial<Experience>) => {
     try {
-      const updated = await apiFetch<Experience>(`/api/experiences/${id}`, {
+      await apiFetch<Experience>(`/api/experiences/${id}`, {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
@@ -545,7 +541,7 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
   const updateTestimonial = useCallback(async (id: string, updates: Partial<Testimonial>) => {
     try {
-      const updated = await apiFetch<Testimonial>(`/api/testimonials/${id}`, {
+      await apiFetch<Testimonial>(`/api/testimonials/${id}`, {
         method: 'PUT',
         body: JSON.stringify(updates),
       });
@@ -921,4 +917,16 @@ export function useContentActions(): ContentActions {
     loadDeferredData: s.loadDeferredData,
     resetToDefaults: s.resetToDefaults,
   };
+}
+
+/** Test-only: resets all module-level hydration guards and auth state so each
+ * test starts with a clean singleton (no stale promises / flags carried over).
+ * Not called in production — only invoked from the vitest setup `beforeEach`. */
+export function __resetContentStoreGuards(): void {
+  criticalPromise = null;
+  criticalStarted = false;
+  deferredPromise = null;
+  deferredStarted = false;
+  authToken = null;
+  authListeners.clear();
 }

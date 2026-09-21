@@ -37,6 +37,14 @@ When I'm not coding, you'll find me mentoring developers, writing about engineer
   cvUrl: '/resume.pdf',
   achievements: [],
   philosophy: [],
+  // Required by the Profile shape so the admin "reset to defaults" payload
+  // stays a complete Profile document. Seed values mirror the live site.
+  yearsOfExperience: 5,
+  clientSatisfaction: 98,
+  projectsDelivered: 45,
+  happyClients: 30,
+  education: [],
+  certifications: [],
 };
 
 export const defaultProjects: Project[] = [

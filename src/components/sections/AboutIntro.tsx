@@ -56,7 +56,7 @@ export function AboutIntro() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="space-y-4"
           >
-            {highlights.map((item, idx) => (
+            {highlights.map((item) => (
               <Card key={item.label} className="flex items-center gap-4" hover>
                 <div className="rounded-xl bg-blue-50 p-3 dark:bg-blue-900/20">
                   <item.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />

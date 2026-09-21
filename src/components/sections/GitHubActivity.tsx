@@ -23,14 +23,22 @@ let githubCache: {
 
 const GITHUB_CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
 
-type ContributionDay = {
+// Raw GitHub GraphQL shape (contributionCount) is kept distinct from the
+// derived render cell (count) so both are typed precisely.
+type ApiContributionDay = {
   date: string;
   contributionCount: number;
   color: string;
 };
 
 type ContributionWeek = {
-  contributionDays: ContributionDay[];
+  contributionDays: ApiContributionDay[];
+};
+
+type ContributionDay = {
+  date: string;
+  count: number;
+  color: string;
 };
 
 type GitHubRepo = {
@@ -109,6 +117,7 @@ export async function refreshGitHubActivity(): Promise<void> {
 
 export function clearGitHubCache(): void {
   githubCache = null;
+  githubInFlight = null;
 }
 
 export function GitHubActivity() {

@@ -289,6 +289,8 @@ The frontend reads `VITE_API_URL` from the environment to configure the API prox
 npm run dev          # Start Vite dev server
 npm run build        # Build for production
 npm run preview      # Preview production build
+npm run typecheck    # Type-check the app (tsc --noEmit, no build output)
+npm test             # Run frontend smoke tests (vitest run)
 ```
 
 ### Backend
@@ -300,6 +302,23 @@ npm start            # Start server
 npm run seed         # Seed database with defaults
 npm run generate-hash # Generate bcrypt password hash
 ```
+
+### Frontend Quality Checks
+
+Run all three commands before opening a pull request or deploying:
+
+```bash
+npm run typecheck    # tsc --noEmit — type-checks src/, vite.config.ts and vitest.config.ts
+npm test             # vitest run — public-app and hydration-boundary smoke tests
+npm run build        # vite build — production bundle
+```
+
+The smoke tests live in `src/__tests__/` and mount the real `<App/>` with `global.fetch`
+stubbed, so they need no MongoDB, Atlas, GitHub token, or admin credentials. They fail if
+the Home page cannot render (for example a `ReferenceError` from a stale selector
+reference), if a critical endpoint is requested more than once during hydration, if a lazy
+route refetches instead of reusing hydrated data, or if the loading/error boundaries ever
+surface seed content from `src/lib/data.ts` instead of backend data.
 
 ## API Overview
 

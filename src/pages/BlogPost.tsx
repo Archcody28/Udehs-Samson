@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactElement } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, Clock, User } from 'lucide-react';
@@ -10,15 +10,13 @@ import { formatDate } from '@/lib/utils';
 
 function parseMarkdown(content: string) {
   const lines = content.split('\n');
-  const elements: JSX.Element[] = [];
+  const elements: ReactElement[] = [];
   let codeBlock: string[] | null = null;
-  let codeLang = '';
 
   lines.forEach((line, idx) => {
     if (line.startsWith('```')) {
       if (!codeBlock) {
         codeBlock = [];
-        codeLang = line.replace(/```/g, '').trim();
       } else {
         elements.push(
           <pre
@@ -29,7 +27,6 @@ function parseMarkdown(content: string) {
           </pre>
         );
         codeBlock = null;
-        codeLang = '';
       }
       return;
     }

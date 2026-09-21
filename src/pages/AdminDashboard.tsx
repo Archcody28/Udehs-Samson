@@ -18,7 +18,6 @@ import {
   Pencil,
   Trash2,
   Star,
-  Eye,
   X,
 } from 'lucide-react';
 import {
@@ -46,8 +45,6 @@ import type {
   Skill,
   Experience,
   Testimonial,
-  Profile,
-  ContactMessage,
 } from '@/types';
 
 const tabs = [
@@ -142,11 +139,13 @@ const profileSchema = z.object({
   avatar: z.string().optional(),
   cvUrl: z.string().optional(),
   achievements: z.array(z.object({
+    id: z.string().optional(),
     title: z.string().default(''),
     year: z.string().default(''),
     description: z.string().default(''),
   })).default([]),
   philosophy: z.array(z.object({
+    id: z.string().optional(),
     title: z.string().default(''),
     description: z.string().default(''),
   })).default([]),
@@ -173,6 +172,15 @@ const profileSchema = z.object({
 type ProfileForm = z.infer<typeof profileSchema>;
 
 type LoadedStore = ContentStoreValue & { data: NonNullable<ContentStoreValue['data']> };
+
+// Profile subdocuments (achievements/philosophy/education/certifications) are
+// Mongoose subdocuments whose `_id` maps to `id` on the client. The form schema
+// keeps `id` optional so new rows can be added; merging back onto the profile
+// must therefore always yield a concrete `id`, reusing the previous id at the
+// same position when the row is not brand new.
+function withStableIds<T extends { id?: string }>(items: T[], previous: { id?: string }[]) {
+  return items.map((item, index) => ({ ...item, id: item.id ?? previous[index]?.id ?? '' }));
+}
 
 export function AdminDashboard() {
   const navigate = useNavigate();
@@ -734,7 +742,7 @@ function MessagesTab({ store }: { store: LoadedStore }) {
                 </Button>
                 <Button
                   size="sm"
-                  variant="destructive"
+                  variant="danger"
                   onClick={() => {
                     if (confirm('Delete this message?')) {
                       store.deleteMessage(message.id);
@@ -1041,7 +1049,14 @@ function ProfileTab({ store }: { store: LoadedStore }) {
 
   const onSubmit = async (formData: ProfileForm) => {
     try {
-      await store.updateProfile({ ...profile, ...formData });
+      await store.updateProfile({
+        ...profile,
+        ...formData,
+        achievements: withStableIds(formData.achievements, profile.achievements),
+        philosophy: withStableIds(formData.philosophy, profile.philosophy),
+        education: withStableIds(formData.education, profile.education),
+        certifications: withStableIds(formData.certifications, profile.certifications),
+      });
       toast.success('Profile updated');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to update profile';
@@ -1375,6 +1390,7 @@ function ProjectFormModal({
   const onSubmit = async (formData: ProjectForm) => {
     const payload = {
       ...formData,
+      featured: formData.featured ?? false,
       categories: parseList(formData.categories),
       technologies: parseList(formData.technologies),
       images,
@@ -1472,6 +1488,7 @@ function BlogFormModal({
   const onSubmit = async (formData: BlogForm) => {
     const payload = {
       ...formData,
+      featured: formData.featured ?? false,
       categories: parseList(formData.categories),
       tags: parseList(formData.tags),
       coverImage,
