@@ -36,13 +36,23 @@ function setAuthToken(token: string | null) {
   notifyAuthChange();
 }
 
-// API helper - no auth required
+/** Exposed for authenticated multipart uploads (avatar/CV) that bypass apiFetch. */
+export function getAuthToken(): string | null {
+  return authToken;
+}
+
+// API helper - attaches the admin Bearer token when present; public reads are
+// unaffected (no header sent when logged out). FormData bodies keep their
+// browser-generated multipart content type.
 async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
+  const isFormData =
+    typeof FormData !== 'undefined' && options.body instanceof FormData;
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
+    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
     ...(options.headers as Record<string, string>),
   };
 
@@ -152,7 +162,7 @@ export interface ContentStoreValue {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
-  updateProfile: (profile: Profile) => Promise<void>;
+  updateProfile: (profile: Profile, options?: { avatarUrl?: string }) => Promise<void>;
   addProject: (project: Omit<Project, 'id' | 'slug'>) => Promise<Project | undefined>;
   updateProject: (id: string, updates: Partial<Project>) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
@@ -316,15 +326,20 @@ export function ContentProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Profile
-  const updateProfile = useCallback(async (profile: Profile) => {
+  const updateProfile = useCallback(async (profile: Profile, options: { avatarUrl?: string } = {}) => {
+    // The avatar owns its own upload path (POST /api/profile/avatar) and is
+    // never sent inline here — this keeps base64 out of the profile write.
+    // A freshly uploaded URL can be merged locally via options.avatarUrl.
+    const { avatar: _currentAvatar, ...profileWithoutAvatar } = profile;
+    void _currentAvatar;
     try {
       const updated = await apiFetch<Profile>('/api/profile', {
         method: 'PUT',
-        body: JSON.stringify(profile),
+        body: JSON.stringify(profileWithoutAvatar),
       });
       updateData((prev) => ({
         ...prev,
-        profile: updated,
+        profile: options.avatarUrl ? { ...updated, avatar: options.avatarUrl } : updated,
         // Keep top-level mirrors consistent with canonical profile collections.
         education: updated.education ?? [],
         certifications: updated.certifications ?? [],

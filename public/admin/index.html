@@ -43,6 +43,13 @@
         <nav class="space-y-1 px-4 pb-6" id="nav"></nav>
       </aside>
       <main class="ml-64 p-4 lg:p-8">
+        <div class="mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100">
+          This legacy static admin keeps its own browser-local draft data and is
+          disconnected from the live site database. It cannot upload avatars —
+          any profile picture chosen here is a local preview only and is never
+          sent to the API. Manage the live profile (including avatars) at
+          <a href="/admin/login" class="font-semibold underline">/admin/login</a>.
+        </div>
         <div id="tab-projects" class="tab-pane">
           <div class="mb-6 flex items-center justify-between">
             <h2 class="font-display text-2xl font-bold">Projects</h2>
@@ -414,13 +421,17 @@
       document.getElementById('profileImage').onchange = e => {
         const file = e.target.files[0]; if(!file) return;
         const reader = new FileReader();
-        reader.onload = ev => { pendingAvatar = ev.target.result; document.getElementById('profilePreview').src = pendingAvatar; };
+        // Local preview only: this page never writes to the API, so the avatar
+        // saved here can never reintroduce a base64 payload into MongoDB.
+        reader.onload = ev => { pendingAvatar = null; document.getElementById('profilePreview').src = ev.target.result; };
         reader.readAsDataURL(file);
       };
       document.getElementById('profileForm').onsubmit = e => {
         e.preventDefault(); const f=e.target;
-        data.profile = { name:f.name.value, title:f.title.value, tagline:f.tagline.value, bio:f.bio.value, email:f.email.value, phone:f.phone.value, avatar: pendingAvatar || data.profile.avatar || '/images/profile.jpg' };
-        pendingAvatar = null; save(); alert('Profile saved.');
+        // Browser-local draft data only — no API writes. Keeps the previous
+        // local value; it can never write base64 into the public payload.
+        data.profile = { name:f.name.value, title:f.title.value, tagline:f.tagline.value, bio:f.bio.value, email:f.email.value, phone:f.phone.value, avatar: data.profile.avatar || '/images/profile.jpg' };
+        pendingAvatar = null; save(); alert('Profile saved locally (not published to the live site).');
       };
 
       function openProjectForm(id){

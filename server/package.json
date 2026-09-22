@@ -9,6 +9,7 @@
     "start": "node src/index.js",
     "seed": "node src/seed.js",
     "generate-hash": "node scripts/generate-hash.js",
+    "migrate-avatar": "node src/migrate-avatar.js",
     "migrate-session-index": "node scripts/migrate-session-index.js"
   },
   "dependencies": {

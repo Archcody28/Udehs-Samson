@@ -30,7 +30,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { SEO } from '@/components/layout/SEO';
-import { useContentStore, type ContentStoreValue } from '@/hooks/useContentStore';
+import { useContentStore, getAuthToken, type ContentStoreValue } from '@/hooks/useContentStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
@@ -981,8 +981,9 @@ function ProfileTab({ store }: { store: LoadedStore }) {
       const formData = new FormData();
       formData.append('cv', file);
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/profile/cv`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/profile/cv`, {
         method: 'POST',
+        headers: getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {},
         body: formData,
       });
 
@@ -1005,6 +1006,14 @@ function ProfileTab({ store }: { store: LoadedStore }) {
   const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
     try {
       const dataUrl = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
@@ -1012,7 +1021,7 @@ function ProfileTab({ store }: { store: LoadedStore }) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-      const compressed = await new Promise<string>((resolve) => {
+      const compressed = await new Promise<Blob | null>((resolve) => {
         const img = new Image();
         img.onload = () => {
           const maxSize = 400;
@@ -1031,32 +1040,75 @@ function ProfileTab({ store }: { store: LoadedStore }) {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           if (!ctx) {
-            resolve(dataUrl);
+            resolve(null);
             return;
           }
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.7));
+          canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
         };
-        img.onerror = () => resolve(dataUrl);
+        img.onerror = () => resolve(null);
         img.src = dataUrl;
       });
-      setAvatarPreview(compressed);
-      setValue('avatar', compressed, { shouldDirty: true });
+      // Preview stays instant; the canonical persisted avatar is the hosted URL
+      // returned by the authenticated upload route (never a data: URI).
+      const previousPreview = avatarPreview.startsWith('blob:') ? avatarPreview : null;
+      const localPreview = compressed ? URL.createObjectURL(compressed) : dataUrl;
+      setAvatarPreview(localPreview);
+      if (previousPreview && previousPreview !== localPreview) URL.revokeObjectURL(previousPreview);
+      const uploadBody: Blob | null = compressed;
+      if (!uploadBody) {
+        // Compression failed: roll back to the last known-good avatar value.
+        if (localPreview.startsWith('blob:')) URL.revokeObjectURL(localPreview);
+        setAvatarPreview(profile.avatar);
+        toast.error('Could not process that image');
+        return;
+      }
+      const formData = new FormData();
+      formData.append('avatar', uploadBody, 'avatar.jpg');
+      const token = getAuthToken();
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/profile/avatar`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+      if (!response.ok) {
+        // The persisted document is untouched on upload failure: every return
+        // below rolls the preview back onto the last known-good avatar value.
+        const errorData = await response.json().catch(() => ({}));
+        if (localPreview.startsWith('blob:')) URL.revokeObjectURL(localPreview);
+        setAvatarPreview(profile.avatar);
+        throw new Error(errorData.error || 'Avatar upload failed');
+      }
+      const updatedProfile = await response.json();
+      const avatarUrl = updatedProfile.avatar as string;
+      if (localPreview.startsWith('blob:')) URL.revokeObjectURL(localPreview);
+      setAvatarPreview(avatarUrl);
+      setValue('avatar', avatarUrl, { shouldDirty: true });
+      toast.success('Avatar uploaded');
     } catch (error) {
-      console.error('Failed to process image:', error);
+      const message = error instanceof Error ? error.message : 'Failed to upload avatar';
+      toast.error(message);
+      console.error('Avatar upload error:', error);
     }
   };
 
   const onSubmit = async (formData: ProfileForm) => {
     try {
-      await store.updateProfile({
-        ...profile,
-        ...formData,
-        achievements: withStableIds(formData.achievements, profile.achievements),
-        philosophy: withStableIds(formData.philosophy, profile.philosophy),
-        education: withStableIds(formData.education, profile.education),
-        certifications: withStableIds(formData.certifications, profile.certifications),
-      });
+      // Avatar uploads persist immediately via POST /api/profile/avatar.
+      // Merge that URL locally so saving other fields never clobbers it.
+      const avatarUrl = formData.avatar ?? profile.avatar;
+      await store.updateProfile(
+        {
+          ...profile,
+          ...formData,
+          avatar: avatarUrl,
+          achievements: withStableIds(formData.achievements, profile.achievements),
+          philosophy: withStableIds(formData.philosophy, profile.philosophy),
+          education: withStableIds(formData.education, profile.education),
+          certifications: withStableIds(formData.certifications, profile.certifications),
+        },
+        { avatarUrl },
+      );
       toast.success('Profile updated');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to update profile';

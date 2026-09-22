@@ -260,13 +260,19 @@ let pendingAvatar = null;
 document.getElementById('profileImage').onchange = e => {
   const file = e.target.files[0]; if(!file) return;
   const reader = new FileReader();
-  reader.onload = ev => { pendingAvatar = ev.target.result; document.getElementById('profilePreview').src = pendingAvatar; };
+  // Local preview only: this legacy static admin keeps its own
+  // browser-local draft data (localStorage) and never writes to the API, so
+  // the avatar saved here can never reintroduce a base64 payload into MongoDB.
+  reader.onload = ev => { pendingAvatar = null; document.getElementById('profilePreview').src = ev.target.result; };
   reader.readAsDataURL(file);
 };
 document.getElementById('profileForm').onsubmit = e => {
   e.preventDefault(); const f=e.target;
-  data.profile = { name:f.name.value, title:f.title.value, tagline:f.tagline.value, bio:f.bio.value, email:f.email.value, phone:f.phone.value, avatar: pendingAvatar || data.profile.avatar || '/images/profile.jpg' };
-  pendingAvatar = null; save(); alert('Profile saved.');
+  // Legacy static admin: browser-local draft data only — no API writes. The
+  // avatar field here keeps the previous local value; it can never write
+  // base64 into MongoDB or the public /api/profile payload.
+  data.profile = { name:f.name.value, title:f.title.value, tagline:f.tagline.value, bio:f.bio.value, email:f.email.value, phone:f.phone.value, avatar: data.profile.avatar || '/images/profile.jpg' };
+  pendingAvatar = null; save(); alert('Profile saved locally (not published to the live site).');
 };
 
 function openProjectForm(id){
