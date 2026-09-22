@@ -19,7 +19,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: false,
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    include: ['src/**/*.{test,spec}.{ts,tsx}', 'server/src/**/*.{test,spec}.js'],
     setupFiles: ['./src/__tests__/setup.ts'],
     restoreMocks: true,
     // jsdom browser APIs are threaded through the small setup file so every

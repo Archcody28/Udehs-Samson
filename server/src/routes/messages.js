@@ -1,13 +1,15 @@
 import express from 'express';
 import Message from '../models/Message.js';
 import { validateObjectId } from '../middleware/validate.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
-// All message operations are public except POST (public contact form)
+// Boundary: POST is the public contact form; everything else (listing,
+// read-state updates, deletion) is admin-only message administration.
 
-// GET all messages (public)
-router.get('/', async (req, res) => {
+// GET all messages (admin — message administration; deferred data load)
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const messages = await Message.find().sort({ createdAt: -1 });
     res.json(messages);
@@ -26,8 +28,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update message (public)
-router.put('/:id', validateObjectId('id'), async (req, res) => {
+// PUT update message (admin — read-state marking)
+router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const message = await Message.findByIdAndUpdate(
       req.params.id,
@@ -43,8 +45,8 @@ router.put('/:id', validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE message (public)
-router.delete('/:id', validateObjectId('id'), async (req, res) => {
+// DELETE message (admin)
+router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const message = await Message.findByIdAndDelete(req.params.id);
     if (!message) {

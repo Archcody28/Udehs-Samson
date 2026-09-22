@@ -1,6 +1,7 @@
 import express from 'express';
 import Testimonial from '../models/Testimonial.js';
 import { validateObjectId } from '../middleware/validate.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create testimonial (public)
-router.post('/', async (req, res) => {
+// POST create testimonial (admin)
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const testimonial = await Testimonial.create(req.body);
     res.status(201).json(testimonial);
@@ -24,8 +25,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update testimonial (public)
-router.put('/:id', validateObjectId('id'), async (req, res) => {
+// PUT update testimonial (admin)
+router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const testimonial = await Testimonial.findByIdAndUpdate(
       req.params.id,
@@ -41,8 +42,8 @@ router.put('/:id', validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE testimonial (public)
-router.delete('/:id', validateObjectId('id'), async (req, res) => {
+// DELETE testimonial (admin)
+router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const testimonial = await Testimonial.findByIdAndDelete(req.params.id);
     if (!testimonial) {

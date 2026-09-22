@@ -1,6 +1,7 @@
 import express from 'express';
 import Skill from '../models/Skill.js';
 import { validateObjectId } from '../middleware/validate.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create skill (public)
-router.post('/', async (req, res) => {
+// POST create skill (admin)
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const skill = await Skill.create(req.body);
     res.status(201).json(skill);
@@ -24,8 +25,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update skill (public)
-router.put('/:id', validateObjectId('id'), async (req, res) => {
+// PUT update skill (admin)
+router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const skill = await Skill.findByIdAndUpdate(
       req.params.id,
@@ -41,8 +42,8 @@ router.put('/:id', validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE skill (public)
-router.delete('/:id', validateObjectId('id'), async (req, res) => {
+// DELETE skill (admin)
+router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const skill = await Skill.findByIdAndDelete(req.params.id);
     if (!skill) {

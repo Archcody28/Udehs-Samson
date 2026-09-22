@@ -1,5 +1,6 @@
 import express from 'express';
 import Analytics from '../models/Analytics.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
@@ -21,8 +22,9 @@ async function getOrCreateAnalytics() {
   return analytics;
 }
 
-// GET analytics (public)
-router.get('/', async (req, res) => {
+// GET analytics (admin — analytics administration; deferred data load).
+// The public tracking writes below stay open so every visitor can be counted.
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const analytics = await getOrCreateAnalytics();
 

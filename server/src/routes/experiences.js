@@ -1,6 +1,7 @@
 import express from 'express';
 import Experience from '../models/Experience.js';
 import { validateObjectId } from '../middleware/validate.js';
+import requireAdmin from '../middleware/requireAdmin.js';
 
 const router = express.Router();
 
@@ -14,8 +15,8 @@ router.get('/', async (req, res) => {
   }
 });
 
-// POST create experience (public)
-router.post('/', async (req, res) => {
+// POST create experience (admin)
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const experience = await Experience.create(req.body);
     res.status(201).json(experience);
@@ -24,8 +25,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT update experience (public)
-router.put('/:id', validateObjectId('id'), async (req, res) => {
+// PUT update experience (admin)
+router.put('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const experience = await Experience.findByIdAndUpdate(
       req.params.id,
@@ -41,8 +42,8 @@ router.put('/:id', validateObjectId('id'), async (req, res) => {
   }
 });
 
-// DELETE experience (public)
-router.delete('/:id', validateObjectId('id'), async (req, res) => {
+// DELETE experience (admin)
+router.delete('/:id', requireAdmin, validateObjectId('id'), async (req, res) => {
   try {
     const experience = await Experience.findByIdAndDelete(req.params.id);
     if (!experience) {

@@ -74,8 +74,8 @@ function validateProfileInput(sanitized) {
   return null;
 }
 
-// PUT update profile (public)
-router.put('/', async (req, res) => {
+// PUT update profile (admin — content administration)
+router.put('/', requireAdmin, async (req, res) => {
   try {
     const updates = req.body;
     // Whitelist allowed fields to prevent mass assignment
@@ -104,7 +104,7 @@ router.put('/', async (req, res) => {
 });
 
 // POST upload CV (admin) — stores the resulting Cloudinary URL in Profile.cvUrl
-router.post('/cv', upload.single('cv'), async (req, res) => {
+router.post('/cv', requireAdmin, upload.single('cv'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
