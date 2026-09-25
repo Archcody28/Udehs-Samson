@@ -41,16 +41,16 @@ export function Projects() {
           className="mb-12 text-center"
         >
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            My <span className="gradient-text">Projects</span>
+            My Projects
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Explore a collection of real-world applications, experiments, and open-source work.
           </p>
         </motion.div>
 
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
             <Input
               placeholder="Search projects, technologies..."
               value={search}
@@ -64,9 +64,7 @@ export function Projects() {
                 key={cat}
                 onClick={() => setCategory(cat)}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                  category === cat
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                  category === cat ? 'bg-accent text-white' : 'bg-elevated text-ink hover:bg-line'
                 }`}
               >
                 {cat}
@@ -89,7 +87,7 @@ export function Projects() {
                   <img
                     src={project.images[0] || '/images/placeholder.jpg'}
                     alt={project.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover"
                   />
                   {project.featured && (
                     <div className="absolute left-4 top-4">
@@ -105,10 +103,10 @@ export function Projects() {
                       </Badge>
                     ))}
                   </div>
-                  <h3 className="mb-2 font-display text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  <h3 className="mb-2 font-display text-xl font-semibold transition-colors group-hover:text-accent-ink">
                     {project.title}
                   </h3>
-                  <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="mb-4 flex-1 text-sm leading-relaxed text-muted">
                     {project.description}
                   </p>
                   <div className="flex items-center gap-3">
@@ -122,7 +120,7 @@ export function Projects() {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:text-slate-400"
+                        className="rounded-lg border border-line p-2 text-muted transition-colors hover:border-accent hover:text-accent-ink"
                         aria-label="GitHub"
                       >
                         <Github className="h-4 w-4" />
@@ -133,7 +131,7 @@ export function Projects() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:text-slate-400"
+                        className="rounded-lg border border-line p-2 text-muted transition-colors hover:border-accent hover:text-accent-ink"
                         aria-label="Live demo"
                       >
                         <ExternalLink className="h-4 w-4" />
@@ -148,7 +146,7 @@ export function Projects() {
 
         {filtered.length === 0 && (
           <div className="py-24 text-center">
-            <p className="text-lg text-slate-500 dark:text-slate-400">No projects match your search.</p>
+            <p className="text-lg text-subtle">No projects match your search.</p>
             <Button
               variant="outline"
               className="mt-4"

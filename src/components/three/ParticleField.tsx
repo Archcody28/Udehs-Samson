@@ -10,10 +10,10 @@ function Particles() {
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const colorPalette = [
-      new THREE.Color('#3B82F6'),
       new THREE.Color('#7C3AED'),
-      new THREE.Color('#10B981'),
-      new THREE.Color('#FFFFFF'),
+      new THREE.Color('#A78BFA'),
+      new THREE.Color('#737373'),
+      new THREE.Color('#E4E4E7'),
     ];
 
     for (let i = 0; i < count; i++) {
@@ -64,12 +64,10 @@ export function ParticleField() {
 
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.22),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(139,92,246,0.2),_transparent_38%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(120deg,_rgba(255,255,255,0.04),_transparent_55%)]" />
       {stars.map((star) => (
         <span
           key={star.id}
-          className="absolute rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.9)] animate-pulse"
+          className="absolute rounded-full bg-line animate-pulse"
           style={{
             top: star.top,
             left: star.left,

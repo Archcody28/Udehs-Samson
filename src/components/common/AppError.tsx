@@ -6,15 +6,15 @@ interface AppErrorProps {
 export function AppError({ message, onRetry }: AppErrorProps) {
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-slate-950"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
       role="alert"
       aria-live="assertive"
     >
       <div className="mx-4 max-w-md text-center">
         {/* Error icon */}
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-900/20">
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-danger-soft">
           <svg
-            className="h-10 w-10 text-red-500"
+            className="h-10 w-10 text-danger-ink"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -30,20 +30,20 @@ export function AppError({ message, onRetry }: AppErrorProps) {
         </div>
 
         {/* Error content */}
-        <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
+        <h1 className="font-display text-2xl font-bold text-ink">
           Unable to load portfolio
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+        <p className="mt-3 text-sm leading-relaxed text-muted">
           We couldn't retrieve the latest portfolio data. Please check your connection and try again.
         </p>
 
         {/* Technical detail (collapsed) */}
         {message && (
           <details className="mt-4 text-left">
-            <summary className="cursor-pointer text-xs text-slate-400 hover:text-slate-500">
+            <summary className="cursor-pointer text-xs text-subtle hover:text-subtle">
               Technical details
             </summary>
-            <pre className="mt-2 overflow-auto rounded-lg bg-slate-100 p-3 text-xs text-slate-600 dark:bg-slate-900 dark:text-slate-400">
+            <pre className="mt-2 overflow-auto rounded-lg bg-elevated p-3 text-xs text-muted">
               {message}
             </pre>
           </details>
@@ -52,7 +52,7 @@ export function AppError({ message, onRetry }: AppErrorProps) {
         {/* Retry button */}
         <button
           onClick={onRetry}
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2"
         >
           <svg
             className="h-4 w-4"

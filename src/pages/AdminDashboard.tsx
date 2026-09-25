@@ -205,7 +205,7 @@ export function AdminDashboard() {
     if (store.loadError) {
       return (
         <div className="mx-auto max-w-xl px-4 pt-32 text-center">
-          <p className="text-sm text-red-500">Failed to load content: {store.loadError}</p>
+          <p className="text-sm text-danger-ink">Failed to load content: {store.loadError}</p>
           <Button className="mt-4" onClick={() => void store.loadData(true)}>
             Retry
           </Button>
@@ -213,7 +213,7 @@ export function AdminDashboard() {
       );
     }
     return (
-      <div className="mx-auto max-w-xl px-4 pt-32 text-center text-sm text-slate-500">
+      <div className="mx-auto max-w-xl px-4 pt-32 text-center text-sm text-subtle">
         Loading content…
       </div>
     );
@@ -236,7 +236,7 @@ export function AdminDashboard() {
     <>
       <SEO title="Admin Dashboard" noindex />
       <div className="flex min-h-[calc(100vh-5rem)] flex-col md:flex-row">
-        <aside className="border-b border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-900/50 md:w-64 md:border-b-0 md:border-r">
+        <aside className="border-b border-line bg-surface p-4 md:w-64 md:border-b-0 md:border-r">
           <div className="mb-6 flex items-center justify-between md:block">
             <h2 className="font-display text-lg font-bold">Admin</h2>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="md:mt-4 md:w-full">
@@ -250,15 +250,13 @@ export function AdminDashboard() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-600 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800'
+                  activeTab === tab.id ? 'bg-accent text-white' : 'text-muted hover:bg-elevated'
                 }`}
               >
                 <tab.icon className="h-4 w-4" />
                 {tab.label}
                 {tab.id === 'messages' && store.unreadMessageCount > 0 ? (
-                  <span className="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-semibold text-white">
+                  <span className="ml-auto rounded-full bg-danger-soft px-2 py-0.5 text-[10px] font-semibold text-danger-ink">
                     {store.unreadMessageCount}
                   </span>
                 ) : null}
@@ -352,9 +350,9 @@ function OverviewTab({
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60"
+            className="rounded-2xl border border-line bg-surface p-6"
           >
-            <p className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</p>
+            <p className="text-sm text-subtle">{stat.label}</p>
             <p className="font-display text-3xl font-bold">{stat.value}</p>
           </div>
         ))}
@@ -372,19 +370,19 @@ function OverviewTab({
             {store.data.projects.slice(0, 5).map((p) => (
               <div
                 key={p.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60"
+                className="flex items-center justify-between rounded-xl border border-line bg-surface p-4"
               >
                 <div>
                   <p className="font-medium">{p.title}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-subtle">
                     {p.status} &middot; {p.categories.join(', ')}
                   </p>
                 </div>
                 <div className="flex gap-1">
-                  {p.featured && <Star className="h-4 w-4 text-amber-400" />}
+                  {p.featured && <Star className="h-4 w-4 text-warning-ink" />}
                   <button
                     onClick={() => setModal({ type: 'project', data: p })}
-                    className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="rounded-lg p-2 text-subtle hover:bg-elevated"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -405,17 +403,17 @@ function OverviewTab({
             {store.data.blogPosts.slice(0, 5).map((b) => (
               <div
                 key={b.id}
-                className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60"
+                className="flex items-center justify-between rounded-xl border border-line bg-surface p-4"
               >
                 <div>
                   <p className="font-medium">{b.title}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-subtle">
                     {b.status} &middot; {formatDate(b.publishedAt)}
                   </p>
                 </div>
                 <button
                   onClick={() => setModal({ type: 'blog', data: b })}
-                  className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="rounded-lg p-2 text-subtle hover:bg-elevated"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -447,28 +445,28 @@ function ProjectsTab({
         {store.data.projects.map((p) => (
           <div
             key={p.id}
-            className="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60 sm:flex-row sm:items-center"
+            className="flex flex-col justify-between gap-4 rounded-xl border border-line bg-surface p-4 sm:flex-row sm:items-center"
           >
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-medium">{p.title}</p>
-                {p.featured && <Star className="h-4 w-4 text-amber-400" />}
+                {p.featured && <Star className="h-4 w-4 text-warning-ink" />}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-subtle">
                 {p.status} &middot; {p.categories.join(', ')} &middot; {formatDate(p.completionDate)}
               </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => store.updateProject(p.id, { featured: !p.featured })}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg border border-line p-2 text-subtle hover:bg-elevated"
                 title="Toggle featured"
               >
-                <Star className={`h-4 w-4 ${p.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
+                <Star className={`h-4 w-4 ${p.featured ? 'fill-warning text-warning-ink' : 'text-subtle'}`} />
               </button>
               <button
                 onClick={() => setModal({ type: 'project', data: p })}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg border border-line p-2 text-subtle hover:bg-elevated"
               >
                 <Pencil className="h-4 w-4" />
               </button>
@@ -476,7 +474,7 @@ function ProjectsTab({
                 onClick={() => {
                   if (confirm('Delete this project?')) store.deleteProject(p.id);
                 }}
-                className="rounded-lg border border-slate-200 p-2 text-red-500 hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-900/20"
+                className="rounded-lg border border-line p-2 text-danger-ink hover:bg-danger-soft"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -507,27 +505,27 @@ function BlogTab({
         {store.data.blogPosts.map((b) => (
           <div
             key={b.id}
-            className="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60 sm:flex-row sm:items-center"
+            className="flex flex-col justify-between gap-4 rounded-xl border border-line bg-surface p-4 sm:flex-row sm:items-center"
           >
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-medium">{b.title}</p>
-                {b.featured && <Star className="h-4 w-4 text-amber-400" />}
+                {b.featured && <Star className="h-4 w-4 text-warning-ink" />}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-subtle">
                 {b.status} &middot; {formatDate(b.publishedAt)} &middot; {b.readingTime} min read
               </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => store.updateBlogPost(b.id, { featured: !b.featured })}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg border border-line p-2 text-subtle hover:bg-elevated"
               >
-                <Star className={`h-4 w-4 ${b.featured ? 'fill-amber-400 text-amber-400' : ''}`} />
+                <Star className={`h-4 w-4 ${b.featured ? 'fill-warning text-warning-ink' : 'text-subtle'}`} />
               </button>
               <button
                 onClick={() => setModal({ type: 'blog', data: b })}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg border border-line p-2 text-subtle hover:bg-elevated"
               >
                 <Pencil className="h-4 w-4" />
               </button>
@@ -535,7 +533,7 @@ function BlogTab({
                 onClick={() => {
                   if (confirm('Delete this post?')) store.deleteBlogPost(b.id);
                 }}
-                className="rounded-lg border border-slate-200 p-2 text-red-500 hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-900/20"
+                className="rounded-lg border border-line p-2 text-danger-ink hover:bg-danger-soft"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -566,17 +564,17 @@ function SkillsTab({
         {store.data.skills.map((s) => (
           <div
             key={s.id}
-            className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60"
+            className="rounded-xl border border-line bg-surface p-4"
           >
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-medium">{s.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{s.category}</p>
+                <p className="text-xs text-subtle">{s.category}</p>
               </div>
               <div className="flex gap-1">
                 <button
                   onClick={() => setModal({ type: 'skill', data: s })}
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="rounded-lg p-1.5 text-subtle hover:bg-elevated"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -584,15 +582,15 @@ function SkillsTab({
                   onClick={() => {
                     if (confirm('Delete this skill?')) store.deleteSkill(s.id);
                   }}
-                  className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="rounded-lg p-1.5 text-danger-ink hover:bg-danger-soft"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-elevated">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                className="h-full rounded-full bg-accent"
                 style={{ width: `${s.proficiency}%` }}
               />
             </div>
@@ -622,13 +620,13 @@ function ExperienceTab({
         {store.data.experiences.map((e) => (
           <div
             key={e.id}
-            className="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60 sm:flex-row sm:items-center"
+            className="flex flex-col justify-between gap-4 rounded-xl border border-line bg-surface p-4 sm:flex-row sm:items-center"
           >
             <div>
               <p className="font-medium">
                 {e.role} {e.current && <Badge variant="success">Current</Badge>}
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-subtle">
                 {e.company} &middot; {e.location} &middot; {formatDate(e.startDate)} -{' '}
                 {e.current ? 'Present' : e.endDate ? formatDate(e.endDate) : ''}
               </p>
@@ -636,7 +634,7 @@ function ExperienceTab({
             <div className="flex gap-2">
               <button
                 onClick={() => setModal({ type: 'experience', data: e })}
-                className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg border border-line p-2 text-subtle hover:bg-elevated"
               >
                 <Pencil className="h-4 w-4" />
               </button>
@@ -644,7 +642,7 @@ function ExperienceTab({
                 onClick={() => {
                   if (confirm('Delete this experience?')) store.deleteExperience(e.id);
                 }}
-                className="rounded-lg border border-slate-200 p-2 text-red-500 hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-900/20"
+                className="rounded-lg border border-line p-2 text-danger-ink hover:bg-danger-soft"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -658,11 +656,11 @@ function ExperienceTab({
 
 function MessagesTab({ store }: { store: LoadedStore }) {
   const deferredNote = !store.isDeferredLoaded ? (
-    <p className="text-xs text-slate-400">
+    <p className="text-xs text-subtle">
       {store.isDeferredLoading ? 'Loading messages…' : store.deferredError ?? 'Messages unavailable.'}{' '}
       <button
         type="button"
-        className="underline hover:text-blue-500"
+        className="underline hover:text-accent-ink"
         onClick={() => void store.loadDeferredData(true)}
       >
         Retry
@@ -674,7 +672,7 @@ function MessagesTab({ store }: { store: LoadedStore }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-display text-2xl font-bold">Messages</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-subtle">
             Visitor inquiries submitted through the contact form.
           </p>
           {deferredNote}
@@ -696,39 +694,39 @@ function MessagesTab({ store }: { store: LoadedStore }) {
 
       <div className="grid gap-4">
         {store.data.messages.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
+          <div className="rounded-2xl border border-line bg-surface p-8 text-center text-subtle">
             No messages yet. Visitor submissions will appear here.
           </div>
         ) : (
           store.data.messages.map((message) => (
             <div
               key={message.id}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/70"
+              className="rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-muted/40"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{message.subject}</p>
-                    <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                    <p className="text-lg font-semibold text-ink">{message.subject}</p>
+                    <span className="rounded-full bg-elevated px-2 py-1 text-xs font-semibold uppercase tracking-wide text-subtle">
                       {message.status}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                    From <span className="font-medium text-slate-900 dark:text-slate-100">{message.name}</span> ·{' '}
-                    <a href={`mailto:${message.email}`} className="text-blue-600 hover:underline dark:text-blue-400">
+                  <p className="mt-2 text-sm text-subtle">
+                    From <span className="font-medium text-ink">{message.name}</span> ·{' '}
+                    <a href={`mailto:${message.email}`} className="text-accent-ink hover:underline">
                       {message.email}
                     </a>
                   </p>
                 </div>
                 <div className="space-y-2 text-right sm:text-left">
-                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500">Received</p>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <p className="text-xs uppercase tracking-[0.2em] text-subtle">Received</p>
+                  <p className="text-sm font-medium text-ink">
                     {new Date(message.createdAt).toLocaleString()}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300">
+              <div className="mt-4 rounded-2xl border border-line bg-surface p-4 text-sm text-ink">
                 {message.message}
               </div>
 
@@ -779,20 +777,20 @@ function TestimonialsTab({
         {store.data.testimonials.map((t) => (
           <div
             key={t.id}
-            className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60"
+            className="rounded-xl border border-line bg-surface p-4"
           >
-            <p className="text-sm italic text-slate-600 dark:text-slate-400">"{t.content}"</p>
+            <p className="text-sm italic text-muted">"{t.content}"</p>
             <div className="mt-4 flex items-center justify-between">
               <div>
                 <p className="font-medium">{t.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-subtle">
                   {t.role}, {t.company}
                 </p>
               </div>
               <div className="flex gap-1">
                 <button
                   onClick={() => setModal({ type: 'testimonial', data: t })}
-                  className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  className="rounded-lg p-1.5 text-subtle hover:bg-elevated"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -800,7 +798,7 @@ function TestimonialsTab({
                   onClick={() => {
                     if (confirm('Delete this testimonial?')) store.deleteTestimonial(t.id);
                   }}
-                  className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="rounded-lg p-1.5 text-danger-ink hover:bg-danger-soft"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -1123,12 +1121,12 @@ function ProfileTab({ store }: { store: LoadedStore }) {
         <Input label="Name" error={errors.name?.message} {...register('name')} />
         <Input label="Title" error={errors.title?.message} {...register('title')} />
         <div className="md:col-span-2">
-          <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Profile picture</label>
-          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
+          <label className="mb-2 block text-sm font-medium text-ink">Profile picture</label>
+          <div className="flex flex-col gap-3 rounded-2xl border border-line bg-surface p-4">
             {avatarPreview ? (
               <img src={avatarPreview} alt="Avatar preview" className="h-24 w-24 rounded-full object-cover" />
             ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-slate-100 text-sm text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-elevated text-sm text-subtle">
                 No image
               </div>
             )}
@@ -1136,7 +1134,7 @@ function ProfileTab({ store }: { store: LoadedStore }) {
               type="file"
               accept="image/*"
               onChange={handleAvatarChange}
-              className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="block w-full rounded-xl border border-line bg-background px-3 py-2 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
             />
           </div>
         </div>
@@ -1154,20 +1152,20 @@ function ProfileTab({ store }: { store: LoadedStore }) {
         <Input label="Facebook URL" error={errors.facebook?.message} {...register('facebook')} />
         <Input label="CV URL" error={errors.cvUrl?.message} {...register('cvUrl')} className="md:col-span-2" />
         <div className="md:col-span-2">
-          <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Upload CV (PDF)</label>
+          <label className="mb-2 block text-sm font-medium text-ink">Upload CV (PDF)</label>
           <input
             type="file"
             accept=".pdf,application/pdf"
             onChange={handleCvUpload}
-            className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="block w-full rounded-xl border border-line bg-background px-3 py-2 text-sm text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
           />
           {watch('cvUrl') && (
-            <p className="mt-1 text-xs text-slate-500">Current: {watch('cvUrl')}</p>
+            <p className="mt-1 text-xs text-subtle">Current: {watch('cvUrl')}</p>
           )}
         </div>
 
       {/* Professional Statistics */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <h3 className="mb-4 font-display text-lg font-semibold">Professional Statistics</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Years of Experience" type="number" error={errors.yearsOfExperience?.message} {...register('yearsOfExperience')} />
@@ -1178,114 +1176,114 @@ function ProfileTab({ store }: { store: LoadedStore }) {
       </div>
 
       {/* Education */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Education</h3>
           <Button type="button" variant="outline" size="sm" onClick={addEducation}>Add Education</Button>
         </div>
         <div className="space-y-4">
           {getValues('education').map((_, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <div key={index} className="rounded-xl border border-line p-4">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Education #{index + 1}</span>
-                <button type="button" onClick={() => removeEducation(index)} className="text-red-500 hover:text-red-600">
+                <span className="text-sm font-medium text-muted">Education #{index + 1}</span>
+                <button type="button" onClick={() => removeEducation(index)} className="text-danger-ink hover:text-danger-ink">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input placeholder="Degree" value={getValues(`education.${index}.degree`)} onChange={(e) => updateEducation(index, 'degree', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Institution" value={getValues(`education.${index}.institution`)} onChange={(e) => updateEducation(index, 'institution', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Year" value={getValues(`education.${index}.year`)} onChange={(e) => updateEducation(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Description" value={getValues(`education.${index}.description`)} onChange={(e) => updateEducation(index, 'description', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Degree" value={getValues(`education.${index}.degree`)} onChange={(e) => updateEducation(index, 'degree', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Institution" value={getValues(`education.${index}.institution`)} onChange={(e) => updateEducation(index, 'institution', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Year" value={getValues(`education.${index}.year`)} onChange={(e) => updateEducation(index, 'year', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Description" value={getValues(`education.${index}.description`)} onChange={(e) => updateEducation(index, 'description', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
               </div>
             </div>
           ))}
           {getValues('education').length === 0 && (
-            <p className="text-center text-sm text-slate-500">No education records. Click "Add Education" to add one.</p>
+            <p className="text-center text-sm text-subtle">No education records. Click "Add Education" to add one.</p>
           )}
         </div>
       </div>
 
       {/* Certifications */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Certifications</h3>
           <Button type="button" variant="outline" size="sm" onClick={addCertification}>Add Certification</Button>
         </div>
         <div className="space-y-4">
           {getValues('certifications').map((_, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <div key={index} className="rounded-xl border border-line p-4">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Certification #{index + 1}</span>
-                <button type="button" onClick={() => removeCertification(index)} className="text-red-500 hover:text-red-600">
+                <span className="text-sm font-medium text-muted">Certification #{index + 1}</span>
+                <button type="button" onClick={() => removeCertification(index)} className="text-danger-ink hover:text-danger-ink">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input placeholder="Name" value={getValues(`certifications.${index}.name`)} onChange={(e) => updateCertification(index, 'name', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Issuer" value={getValues(`certifications.${index}.issuer`)} onChange={(e) => updateCertification(index, 'issuer', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Year" value={getValues(`certifications.${index}.year`)} onChange={(e) => updateCertification(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="URL" value={getValues(`certifications.${index}.url`)} onChange={(e) => updateCertification(index, 'url', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Name" value={getValues(`certifications.${index}.name`)} onChange={(e) => updateCertification(index, 'name', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Issuer" value={getValues(`certifications.${index}.issuer`)} onChange={(e) => updateCertification(index, 'issuer', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Year" value={getValues(`certifications.${index}.year`)} onChange={(e) => updateCertification(index, 'year', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="URL" value={getValues(`certifications.${index}.url`)} onChange={(e) => updateCertification(index, 'url', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
               </div>
             </div>
           ))}
           {getValues('certifications').length === 0 && (
-            <p className="text-center text-sm text-slate-500">No certifications. Click "Add Certification" to add one.</p>
+            <p className="text-center text-sm text-subtle">No certifications. Click "Add Certification" to add one.</p>
           )}
         </div>
       </div>
 
       {/* Achievements */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Achievements</h3>
           <Button type="button" variant="outline" size="sm" onClick={addAchievement}>Add Achievement</Button>
         </div>
         <div className="space-y-4">
           {(watchedAchievements ?? []).map((achievement, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <div key={index} className="rounded-xl border border-line p-4">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Achievement #{index + 1}</span>
-                <button type="button" onClick={() => removeAchievement(index)} className="text-red-500 hover:text-red-600" aria-label="Remove achievement">
+                <span className="text-sm font-medium text-muted">Achievement #{index + 1}</span>
+                <button type="button" onClick={() => removeAchievement(index)} className="text-danger-ink hover:text-danger-ink" aria-label="Remove achievement">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <input placeholder="Title" value={achievement.title} onChange={(e) => updateAchievement(index, 'title', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Year" value={achievement.year} onChange={(e) => updateAchievement(index, 'year', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <input placeholder="Description" value={achievement.description} onChange={(e) => updateAchievement(index, 'description', e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm sm:col-span-2 dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Title" value={achievement.title} onChange={(e) => updateAchievement(index, 'title', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Year" value={achievement.year} onChange={(e) => updateAchievement(index, 'year', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <input placeholder="Description" value={achievement.description} onChange={(e) => updateAchievement(index, 'description', e.target.value)} className="rounded-lg border border-line px-3 py-2 text-sm sm:col-span-2 bg-surface" />
               </div>
             </div>
           ))}
           {(watchedAchievements ?? []).length === 0 && (
-            <p className="text-center text-sm text-slate-500">No achievements added yet. Click "Add Achievement" to add one.</p>
+            <p className="text-center text-sm text-subtle">No achievements added yet. Click "Add Achievement" to add one.</p>
           )}
         </div>
       </div>
 
       {/* Philosophy */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-display text-lg font-semibold">Philosophy</h3>
           <Button type="button" variant="outline" size="sm" onClick={addPhilosophy}>Add Philosophy</Button>
         </div>
         <div className="space-y-4">
           {(watchedPhilosophy ?? []).map((item, index) => (
-            <div key={index} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <div key={index} className="rounded-xl border border-line p-4">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Philosophy #{index + 1}</span>
-                <button type="button" onClick={() => removePhilosophy(index)} className="text-red-500 hover:text-red-600" aria-label="Remove philosophy item">
+                <span className="text-sm font-medium text-muted">Philosophy #{index + 1}</span>
+                <button type="button" onClick={() => removePhilosophy(index)} className="text-danger-ink hover:text-danger-ink" aria-label="Remove philosophy item">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
               <div className="space-y-3">
-                <input placeholder="Title" value={item.title} onChange={(e) => updatePhilosophy(index, 'title', e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
-                <textarea placeholder="Description" rows={3} value={item.description} onChange={(e) => updatePhilosophy(index, 'description', e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900" />
+                <input placeholder="Title" value={item.title} onChange={(e) => updatePhilosophy(index, 'title', e.target.value)} className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
+                <textarea placeholder="Description" rows={3} value={item.description} onChange={(e) => updatePhilosophy(index, 'description', e.target.value)} className="w-full rounded-lg border border-line px-3 py-2 text-sm bg-surface" />
               </div>
             </div>
           ))}
           {(watchedPhilosophy ?? []).length === 0 && (
-            <p className="text-center text-sm text-slate-500">No philosophy items added yet. Click "Add Philosophy" to add one.</p>
+            <p className="text-center text-sm text-subtle">No philosophy items added yet. Click "Add Philosophy" to add one.</p>
           )}
         </div>
       </div>
@@ -1305,8 +1303,8 @@ function AnalyticsTab({ store }: { store: LoadedStore }) {
     return (
       <div className="space-y-8">
         <h2 className="font-display text-2xl font-bold">Analytics</h2>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
-          <p className="text-sm text-slate-500">
+        <div className="rounded-2xl border border-line bg-surface p-6">
+          <p className="text-sm text-subtle">
             {store.isDeferredLoading ? 'Loading analytics…' : store.deferredError ?? 'Analytics unavailable.'}
           </p>
           <Button variant="outline" size="sm" className="mt-4" onClick={() => void store.loadDeferredData(true)}>
@@ -1319,22 +1317,22 @@ function AnalyticsTab({ store }: { store: LoadedStore }) {
   return (
     <div className="space-y-8">
       <h2 className="font-display text-2xl font-bold">Analytics</h2>
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <h3 className="mb-6 font-display font-semibold">Page Views (Last 7 Days)</h3>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={store.data.analytics.pageViews}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" opacity={0.6} />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="views" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="views" fill="#7C3AED" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60">
+      <div className="rounded-2xl border border-line bg-surface p-6">
         <h3 className="mb-6 font-display font-semibold">Project Views</h3>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -1345,7 +1343,7 @@ function AnalyticsTab({ store }: { store: LoadedStore }) {
                 views: pv.views,
               }))}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2A" opacity={0.6} />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
@@ -1374,7 +1372,7 @@ function ImageUpload({
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Images</label>
+      <label className="block text-sm font-medium text-ink">Images</label>
       <div className="flex flex-wrap gap-3">
         {images.map((img, idx) => (
           <div key={idx} className="relative h-20 w-20 overflow-hidden rounded-lg">
@@ -1382,13 +1380,13 @@ function ImageUpload({
             <button
               type="button"
               onClick={() => onChange(images.filter((_, i) => i !== idx))}
-              className="absolute right-0 top-0 rounded-bl-lg bg-red-500 p-1 text-white"
+              className="absolute right-0 top-0 rounded-bl-lg bg-danger-soft p-1 text-danger-ink"
             >
               <X className="h-3 w-3" />
             </button>
           </div>
         ))}
-        <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border border-dashed border-slate-300 text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
+        <label className="flex h-20 w-20 cursor-pointer items-center justify-center rounded-lg border border-dashed border-line text-subtle hover:bg-surface">
           <Plus className="h-6 w-6" />
           <input type="file" accept="image/*" multiple className="hidden" onChange={handleFile} />
         </label>
@@ -1478,8 +1476,8 @@ function ProjectFormModal({
           ]}
           {...register('status')}
         />
-        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-          <input type="checkbox" {...register('featured')} className="h-4 w-4 rounded border-slate-300" />
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input type="checkbox" {...register('featured')} className="h-4 w-4 rounded border-line" />
           Featured project
         </label>
       </div>
@@ -1573,8 +1571,8 @@ function BlogFormModal({
           ]}
           {...register('status')}
         />
-        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-          <input type="checkbox" {...register('featured')} className="h-4 w-4 rounded border-slate-300" />
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input type="checkbox" {...register('featured')} className="h-4 w-4 rounded border-line" />
           Featured post
         </label>
       </div>
@@ -1690,12 +1688,12 @@ function ExperienceFormModal({
         <Input label="Start Date" type="date" error={errors.startDate?.message} {...register('startDate')} />
         <Input label="End Date" type="date" disabled={current} {...register('endDate')} />
       </div>
-      <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+      <label className="flex items-center gap-2 text-sm text-ink">
         <input
           type="checkbox"
           checked={current}
           onChange={(e) => setCurrent(e.target.checked)}
-          className="h-4 w-4 rounded border-slate-300"
+          className="h-4 w-4 rounded border-line"
         />
         Current role
       </label>

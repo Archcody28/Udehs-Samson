@@ -46,7 +46,7 @@ export function ProjectDetail() {
     return (
       <div className="mx-auto max-w-7xl px-4 pt-32 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-3xl font-bold">Project not found</h1>
-        <p className="mt-4 text-slate-600 dark:text-slate-400">
+        <p className="mt-4 text-muted">
           The project you're looking for doesn't exist or has been removed.
         </p>
         <Button className="mt-6" onClick={() => navigate('/projects')}>
@@ -68,7 +68,7 @@ export function ProjectDetail() {
       <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-accent-ink"
         >
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
@@ -87,12 +87,12 @@ export function ProjectDetail() {
           </div>
 
           <h1 className="font-display text-3xl font-bold sm:text-5xl">{project.title}</h1>
-          <p className="mt-4 max-w-3xl text-lg text-slate-600 dark:text-slate-400">
+          <p className="mt-4 max-w-3xl text-lg text-muted">
             {project.description}
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            <span className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+            <span className="flex items-center gap-2 text-sm text-subtle">
               <Calendar className="h-4 w-4" /> Completed {formatDate(project.completionDate)}
             </span>
             <div className="flex gap-3">
@@ -121,7 +121,7 @@ export function ProjectDetail() {
           className="mt-10 grid gap-8 lg:grid-cols-3"
         >
           <div className="lg:col-span-2 space-y-8">
-            <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div className="overflow-hidden rounded-2xl border border-line">
               <img
                 src={project.images[0] || '/images/placeholder.jpg'}
                 alt={project.title}
@@ -130,7 +130,7 @@ export function ProjectDetail() {
             </div>
 
             {project.videoUrl && (
-              <div className="aspect-video overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="aspect-video overflow-hidden rounded-2xl border border-line">
                 <video
                   src={project.videoUrl}
                   controls
@@ -141,7 +141,7 @@ export function ProjectDetail() {
             )}
 
             <Card className="prose dark:prose-invert max-w-none">
-              <div className="whitespace-pre-wrap text-slate-700 dark:text-slate-300">
+              <div className="whitespace-pre-wrap text-ink">
                 {project.content}
               </div>
             </Card>
@@ -149,14 +149,14 @@ export function ProjectDetail() {
             {project.challenges && (
               <Card>
                 <h3 className="mb-3 font-display text-xl font-semibold">Challenges</h3>
-                <p className="text-slate-600 dark:text-slate-400">{project.challenges}</p>
+                <p className="text-muted">{project.challenges}</p>
               </Card>
             )}
 
             {project.solutions && (
               <Card>
                 <h3 className="mb-3 font-display text-xl font-semibold">Solutions</h3>
-                <p className="text-slate-600 dark:text-slate-400">{project.solutions}</p>
+                <p className="text-muted">{project.solutions}</p>
               </Card>
             )}
           </div>
@@ -177,17 +177,17 @@ export function ProjectDetail() {
               <h3 className="mb-4 font-display text-lg font-semibold">Project Info</h3>
               <ul className="space-y-3 text-sm">
                 <li className="flex justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Status</span>
+                  <span className="text-subtle">Status</span>
                   <Badge variant={project.status === 'published' ? 'success' : 'warning'}>
                     {project.status}
                   </Badge>
                 </li>
                 <li className="flex justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Completed</span>
+                  <span className="text-subtle">Completed</span>
                   <span>{formatDate(project.completionDate)}</span>
                 </li>
                 <li className="flex justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Categories</span>
+                  <span className="text-subtle">Categories</span>
                   <span>{project.categories.join(', ')}</span>
                 </li>
               </ul>
@@ -209,10 +209,10 @@ export function ProjectDetail() {
                         className="h-12 w-12 rounded-lg object-cover"
                       />
                       <div>
-                        <p className="text-sm font-medium transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                        <p className="text-sm font-medium transition-colors group-hover:text-accent-ink">
                           {p.title}
                         </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-subtle">
                           {p.categories.join(', ')}
                         </p>
                       </div>

@@ -20,12 +20,12 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       aria-modal="true"
     >
       <div
-        className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-background/80"
         onClick={onClose}
       />
       <div
         className={cn(
-          'relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900',
+          'relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-line bg-surface p-6',
           className
         )}
       >
@@ -33,7 +33,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
           {title && <h3 className="text-lg font-semibold">{title}</h3>}
           <button
             onClick={onClose}
-            className="ml-auto rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="ml-auto rounded-lg p-1 text-subtle hover:bg-elevated hover:text-ink"
             aria-label="Close"
           >
             <X className="h-5 w-5" />

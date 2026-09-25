@@ -291,6 +291,7 @@ npm run build        # Build for production
 npm run preview      # Preview production build
 npm run typecheck    # Type-check the app (tsc --noEmit, no build output)
 npm test             # Run frontend smoke tests (vitest run)
+npm run check:design # Visual-system guardrails (palette + contrast)
 ```
 
 ### Backend
@@ -319,6 +320,54 @@ the Home page cannot render (for example a `ReferenceError` from a stale selecto
 reference), if a critical endpoint is requested more than once during hydration, if a lazy
 route refetches instead of reusing hydrated data, or if the loading/error boundaries ever
 surface seed content from `src/lib/data.ts` instead of backend data.
+
+### Visual System Guardrails
+
+The palette is centralized in `src/index.css` and every component consumes semantic
+tokens (`bg-background`, `bg-surface`, `text-ink`, `border-line`, `bg-accent`, ...). Two
+scripts keep it that way:
+
+```bash
+npm run check:palette   # fails on raw Tailwind shades (bg-slate-800, text-blue-500, ...)
+npm run check:contrast  # computes WCAG contrast for every semantic foreground/background pair
+```
+
+`npm run check:design` runs both and is the fastest way to catch a visual regression
+before committing.
+
+### Design System
+
+The interface uses a high-contrast, near-black foundation with a single restrained
+violet accent. All tokens below are defined once in `src/index.css` (light and dark) and
+exposed to Tailwind via `@theme inline`.
+
+| Token | Dark (primary) | Light | Purpose |
+| --- | --- | --- | --- |
+| `--background` | `#0A0A0A` | `#FFFFFF` | Page canvas |
+| `--surface` | `#111111` | `#FAFAFA` | Cards, panels, sections |
+| `--elevated` | `#171717` | `#F4F4F5` | Badges, hovers, inputs |
+| `--line` | `#2A2A2A` | `#E4E4E7` | Decorative hairline borders |
+| `--line-strong` | `#616161` | `#8F8F8F` | Interactive control boundaries (>= 3:1) |
+| `--ink` | `#F5F5F5` | `#0A0A0A` | Primary text |
+| `--ink-muted` | `#A3A3A3` | `#525252` | Secondary text |
+| `--ink-subtle` | `#8A8A8A` | `#6B6B6B` | Metadata, captions |
+| `--accent` | `#7C3AED` | `#6D28D9` | Primary actions, active state, focus ring |
+| `--accent-ink` | `#A78BFA` | `#6D28D9` | Accent text/icons on dark surfaces |
+| `--accent-soft` | `rgba(124,58,237,.14)` | `rgba(124,58,237,.08)` | Accent-tinted backgrounds |
+| `--success` / `--success-ink` / `--success-soft` | `#22C55E` / `#4ADE80` / `rgba(34,197,94,.12)` | greener equivalents | Success states |
+| `--warning` / `--warning-ink` / `--warning-soft` | `#F59E0B` / `#FBBF24` / `rgba(245,158,11,.12)` | amber equivalents | Warnings |
+| `--danger` / `--danger-ink` / `--danger-soft` | `#DC2626` / `#F87171` / `rgba(220,38,38,.14)` | red equivalents | Errors, destructive actions |
+
+Conventions:
+
+* One accent only. Success/warning/danger are reserved for state, never decoration.
+* Hierarchy comes from typography, borders and spacing — not from gradients, glows or
+  glass panels.
+* Cards are `bg-surface` + `border-line` with no shadow; `shadow-sm` is reserved for
+  floating surfaces (navbar on scroll, modals, forms).
+* A single corner radius scale is used (`rounded-xl` controls, `rounded-2xl` panels) and
+  one accent focus ring (`:focus-visible`) covers the whole app.
+
 
 ## API Overview
 

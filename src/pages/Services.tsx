@@ -28,9 +28,9 @@ export function ServicesPage() {
           className="mb-16 text-center"
         >
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            My <span className="gradient-text">Services</span>
+            My Services
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             From concept to deployment, I help teams build fast, scalable, and delightful digital products.
           </p>
         </motion.div>
@@ -47,24 +47,24 @@ export function ServicesPage() {
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
               >
                 <Card className="h-full" hover>
-                  <div className="mb-5 inline-flex rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-4">
+                  <div className="mb-5 inline-flex rounded-2xl bg-accent-soft p-4">
                     {Icon ? (
-                      <Icon className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+                      <Icon className="h-7 w-7 text-accent-ink" />
                     ) : (
                       <div className="h-7 w-7" />
                     )}
                   </div>
                   <h3 className="mb-3 font-display text-xl font-semibold">{service.title}</h3>
-                  <p className="mb-5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="mb-5 text-sm leading-relaxed text-muted">
                     {service.description}
                   </p>
                   <ul className="mb-6 space-y-2">
                     {service.features.map((feature) => (
                       <li
                         key={feature}
-                        className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300"
+                        className="flex items-start gap-2 text-sm text-ink"
                       >
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-success-ink" />
                         {feature}
                       </li>
                     ))}

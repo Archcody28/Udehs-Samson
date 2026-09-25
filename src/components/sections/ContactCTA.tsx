@@ -16,12 +16,12 @@ export function ContactCTA() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="mx-auto max-w-5xl rounded-3xl bg-gradient-to-br from-blue-600 to-purple-700 p-8 text-center text-white shadow-2xl shadow-blue-500/25 sm:p-12 lg:p-16"
+        className="mx-auto max-w-5xl rounded-2xl border border-line bg-surface p-8 text-center sm:p-12 lg:p-16"
       >
         <h2 className="font-display text-3xl font-bold sm:text-4xl">
           Let's Build Something Amazing Together
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-blue-100">
+        <p className="mx-auto mt-4 max-w-2xl text-muted">
           Have a project in mind? I'm always open to discussing new opportunities, creative ideas,
           or ways to help your team ship faster.
         </p>
@@ -29,7 +29,6 @@ export function ContactCTA() {
           <Link to="/contact">
             <Button
               size="lg"
-              className="bg-white text-blue-700 hover:bg-blue-50"
               rightIcon={<ArrowRight className="h-5 w-5" />}
             >
               Start a Conversation
@@ -39,7 +38,6 @@ export function ContactCTA() {
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
               leftIcon={<Mail className="h-5 w-5" />}
             >
               {profile.email}

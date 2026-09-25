@@ -248,21 +248,21 @@ export function GitHubActivity() {
           className="mb-16 text-center"
         >
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            GitHub <span className="gradient-text">Activity</span>
+            GitHub Activity
           </h2>
 
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             A snapshot of my open-source contributions and community impact.
           </p>
 
           {loading && (
-            <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-4 text-sm text-subtle">
               Loading GitHub activity…
             </p>
           )}
 
           {error && (
-            <p className="mt-4 text-sm text-red-500 dark:text-red-400">
+            <p className="mt-4 text-sm text-danger-ink">
               Could not load GitHub activity.
             </p>
           )}
@@ -276,7 +276,7 @@ export function GitHubActivity() {
                   Contribution Graph
                 </h3>
 
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className="text-sm text-subtle">
                   {activity
                     ? `${activity.user.name}'s GitHub contribution calendar`
                     : 'Loading contribution activity'}
@@ -287,7 +287,7 @@ export function GitHubActivity() {
                 href={githubUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline dark:text-blue-400"
+                className="inline-flex items-center gap-2 text-sm text-accent-ink hover:underline"
               >
                 <Github className="h-4 w-4" />
                 View Profile
@@ -349,7 +349,7 @@ export function GitHubActivity() {
                 }}
               >
                 <Card className="flex h-full flex-col items-center justify-center text-center">
-                  <stat.icon className="mb-3 h-6 w-6 text-blue-500" />
+                  <stat.icon className="mb-3 h-6 w-6 text-accent-ink" />
 
                   <div className="font-display text-2xl font-bold">
                     <AnimatedCounter
@@ -358,7 +358,7 @@ export function GitHubActivity() {
                     />
                   </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-subtle">
                     {stat.label}
                   </p>
                 </Card>
@@ -381,18 +381,18 @@ export function GitHubActivity() {
                   className="block space-y-3"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="font-semibold text-ink">
                       {repo.name}
                     </p>
 
-                    <ExternalLink className="h-4 w-4 text-slate-400" />
+                    <ExternalLink className="h-4 w-4 text-subtle" />
                   </div>
 
-                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="text-sm leading-relaxed text-muted">
                     {repo.description ?? 'Open-source repository'}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="flex flex-wrap gap-2 text-xs text-subtle">
                     <span>
                       {repo.stargazerCount} stars
                     </span>

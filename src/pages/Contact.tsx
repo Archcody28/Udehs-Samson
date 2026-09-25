@@ -71,9 +71,9 @@ export function Contact() {
           className="mb-16 text-center"
         >
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            Get in <span className="gradient-text">Touch</span>
+            Get in Touch
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Have a project, opportunity, or question? I'd love to hear from you.
           </p>
         </motion.div>
@@ -130,13 +130,13 @@ export function Contact() {
                 href={link.href}
                 target={link.href.startsWith('http') ? '_blank' : undefined}
                 rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
-                className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-blue-800"
+                className="flex items-center gap-4 rounded-xl border border-line bg-surface p-4 transition-colors hover:border-accent"
               >
-                <div className="rounded-xl bg-blue-50 p-2.5 dark:bg-blue-900/20">
-                  <link.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <div className="rounded-xl bg-accent-soft p-2.5">
+                  <link.icon className="h-5 w-5 text-accent-ink" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{link.label}</p>
+                  <p className="text-xs text-subtle">{link.label}</p>
                   <p className="text-sm font-medium">{link.value}</p>
                 </div>
               </a>

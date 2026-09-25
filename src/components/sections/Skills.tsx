@@ -19,9 +19,9 @@ export function Skills() {
           className="mb-16 text-center"
         >
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            Technical <span className="gradient-text">Skills</span>
+            Technical Skills
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Tools and technologies I use to build scalable, performant products.
           </p>
         </motion.div>
@@ -46,13 +46,13 @@ export function Skills() {
                           <span className="text-sm font-medium">{skill.name}</span>
                           <Badge variant="primary">{skill.proficiency}%</Badge>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-elevated">
                           <motion.div
                             initial={{ width: 0 }}
                             whileInView={{ width: `${skill.proficiency}%` }}
                             viewport={{ once: true }}
                             transition={{ duration: 1, ease: 'easeOut' }}
-                            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                            className="h-full rounded-full bg-accent"
                           />
                         </div>
                       </div>

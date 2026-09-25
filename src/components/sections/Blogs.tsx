@@ -23,9 +23,9 @@ export function Blogs() {
         >
           <div>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Latest <span className="gradient-text">Articles</span>
+              Latest Articles
             </h2>
-            <p className="mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+            <p className="mt-4 max-w-2xl text-muted">
               Thoughts on engineering, design systems, and building products at scale.
             </p>
           </div>
@@ -55,16 +55,16 @@ export function Blogs() {
                     />
                   </div>
                   <div className="p-6">
-                    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-subtle">
                       <span>{formatDate(post.publishedAt)}</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" /> {post.readingTime} min read
                       </span>
                     </div>
-                    <h3 className="mb-3 font-display text-lg font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="mb-3 font-display text-lg font-semibold transition-colors group-hover:text-accent-ink">
                       {post.title}
                     </h3>
-                    <p className="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                    <p className="mb-4 text-sm leading-relaxed text-muted">
                       {post.excerpt}
                     </p>
                     <div className="flex flex-wrap gap-2">

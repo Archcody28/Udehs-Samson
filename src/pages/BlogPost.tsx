@@ -21,7 +21,7 @@ function parseMarkdown(content: string) {
         elements.push(
           <pre
             key={idx}
-            className="my-6 overflow-x-auto rounded-xl bg-slate-950 p-4 text-sm text-slate-100"
+            className="my-6 overflow-x-auto rounded-xl bg-elevated p-4 text-sm text-ink"
           >
             <code>{codeBlock.join('\n')}</code>
           </pre>
@@ -60,7 +60,7 @@ function parseMarkdown(content: string) {
       elements.push(<div key={idx} className="h-4" />);
     } else {
       elements.push(
-        <p key={idx} className="leading-relaxed text-slate-700 dark:text-slate-300">
+        <p key={idx} className="leading-relaxed text-ink">
           {line}
         </p>
       );
@@ -92,7 +92,7 @@ export function BlogPost() {
     return (
       <div className="mx-auto max-w-7xl px-4 pt-32 text-center sm:px-6 lg:px-8">
         <h1 className="font-display text-3xl font-bold">Article not found</h1>
-        <p className="mt-4 text-slate-600 dark:text-slate-400">
+        <p className="mt-4 text-muted">
           The article you're looking for doesn't exist or has been removed.
         </p>
         <Button className="mt-6" onClick={() => navigate('/blog')}>
@@ -116,7 +116,7 @@ export function BlogPost() {
       <div className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 lg:px-8">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-accent-ink"
         >
           <ArrowLeft className="h-4 w-4" /> Back
         </button>
@@ -137,7 +137,7 @@ export function BlogPost() {
 
           <h1 className="font-display text-3xl font-bold sm:text-5xl">{post.title}</h1>
 
-          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-subtle">
             <span className="flex items-center gap-1">
               <User className="h-4 w-4" /> {post.author}
             </span>
@@ -160,14 +160,14 @@ export function BlogPost() {
           )}
 
           {toc.length > 0 && (
-            <div className="mb-10 rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-800 dark:bg-slate-900/50">
+            <div className="mb-10 rounded-2xl border border-line bg-surface p-6">
               <h3 className="mb-4 font-display font-semibold">Table of Contents</h3>
               <ul className="space-y-2">
                 {toc.map((heading) => (
                   <li key={heading}>
                     <a
                       href={`#${heading.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="text-sm text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400"
+                      className="text-sm text-muted transition-colors hover:text-accent-ink"
                     >
                       {heading}
                     </a>

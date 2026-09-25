@@ -23,9 +23,9 @@ export function Testimonials() {
           className="mb-16 text-center"
         >
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            Client <span className="gradient-text">Testimonials</span>
+            Client Testimonials
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Feedback from people I've had the pleasure of working with.
           </p>
         </motion.div>
@@ -44,13 +44,13 @@ export function Testimonials() {
           {testimonials.map((testimonial) => (
             <SwiperSlide key={testimonial.id} className="pb-12">
               <Card className="h-full" hover>
-                <div className="mb-4 flex items-center gap-1 text-amber-400">
+                <div className="mb-4 flex items-center gap-1 text-warning-ink">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-current" />
                   ))}
                 </div>
-                <Quote className="mb-4 h-8 w-8 text-blue-500/30" />
-                <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                <Quote className="mb-4 h-8 w-8 text-accent-ink/30" />
+                <p className="mb-6 flex-1 text-sm leading-relaxed text-ink">
                   "{testimonial.content}"
                 </p>
                 <div className="flex items-center gap-3">
@@ -61,13 +61,13 @@ export function Testimonials() {
                       className="h-11 w-11 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-xs font-bold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-xs font-bold text-white">
                       {getInitials(testimonial.name)}
                     </div>
                   )}
                   <div>
                     <p className="text-sm font-semibold">{testimonial.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-subtle">
                       {testimonial.role}, {testimonial.company}
                     </p>
                   </div>

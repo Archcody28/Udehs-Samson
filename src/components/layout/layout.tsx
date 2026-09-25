@@ -27,7 +27,7 @@ export function Layout({ children }: LayoutProps) {
   }, [pathname, recordPageView]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-background text-ink transition-colors">
       <Navbar />
       <main className="pt-20">{children}</main>
       <Footer />

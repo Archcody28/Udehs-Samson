@@ -21,9 +21,9 @@ export function Projects() {
         >
           <div>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Featured <span className="gradient-text">Projects</span>
+              Featured Projects
             </h2>
-            <p className="mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+            <p className="mt-4 max-w-2xl text-muted">
               A selection of production-grade applications I've designed, built, and shipped.
             </p>
           </div>
@@ -62,10 +62,10 @@ export function Projects() {
                       </Badge>
                     ))}
                   </div>
-                  <h3 className="mb-2 font-display text-xl font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  <h3 className="mb-2 font-display text-xl font-semibold transition-colors group-hover:text-accent-ink">
                     {project.title}
                   </h3>
-                  <p className="mb-4 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  <p className="mb-4 flex-1 text-sm leading-relaxed text-muted">
                     {project.description}
                   </p>
                   <div className="flex items-center gap-3">
@@ -79,7 +79,7 @@ export function Projects() {
                         href={project.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:text-slate-400"
+                        className="rounded-lg border border-line p-2 text-muted transition-colors hover:border-accent hover:text-accent-ink"
                         aria-label="GitHub"
                       >
                         <Github className="h-4 w-4" />
@@ -90,7 +90,7 @@ export function Projects() {
                         href={project.liveUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-lg border border-slate-200 p-2 text-slate-600 transition-colors hover:border-blue-500 hover:text-blue-600 dark:border-slate-700 dark:text-slate-400"
+                        className="rounded-lg border border-line p-2 text-muted transition-colors hover:border-accent hover:text-accent-ink"
                         aria-label="Live demo"
                       >
                         <ExternalLink className="h-4 w-4" />

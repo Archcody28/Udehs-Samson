@@ -8,7 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:palette": "node scripts/check-palette.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:design": "npm run check:palette && npm run check:contrast",
+    "check:build-css": "node scripts/check-build-css.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.2.0",

@@ -25,9 +25,9 @@ export function AboutIntro() {
           className="mb-16 text-center"
         >
           <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            About <span className="gradient-text">Me</span>
+            About Me
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             A glimpse into my journey, values, and the expertise I bring to every project.
           </p>
         </motion.div>
@@ -40,7 +40,7 @@ export function AboutIntro() {
             transition={{ duration: 0.6 }}
             className="lg:col-span-2"
           >
-            <div className="prose prose-lg max-w-none text-slate-700 dark:prose-invert dark:text-slate-300">
+            <div className="prose prose-lg max-w-none text-ink dark:prose-invert">
               {profile?.bio?.split('\n\n')?.map((paragraph, idx) => (
                 <p key={idx} className="mb-6 leading-relaxed">
                   {paragraph}
@@ -58,11 +58,11 @@ export function AboutIntro() {
           >
             {highlights.map((item) => (
               <Card key={item.label} className="flex items-center gap-4" hover>
-                <div className="rounded-xl bg-blue-50 p-3 dark:bg-blue-900/20">
-                  <item.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div className="rounded-xl bg-accent-soft p-3">
+                  <item.icon className="h-6 w-6 text-accent-ink" />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">{item.label}</p>
+                  <p className="text-sm text-subtle">{item.label}</p>
                   <p className="font-display font-semibold">{item.value}</p>
                 </div>
               </Card>

@@ -28,7 +28,7 @@ const AdminDashboard = lazy(() =>
 function RouteFallback() {
   return (
     <div
-      className="mx-auto max-w-7xl px-4 py-32 text-center text-sm text-slate-500 dark:text-slate-400"
+      className="mx-auto max-w-7xl px-4 py-32 text-center text-sm text-subtle"
       role="status"
       aria-live="polite"
     >

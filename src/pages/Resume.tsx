@@ -28,7 +28,7 @@ export function Resume() {
         >
           <div>
             <h1 className="font-display text-4xl font-bold sm:text-5xl">Resume</h1>
-            <p className="mt-2 text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-muted">
               Download or print a copy of my professional resume.
             </p>
           </div>
@@ -44,11 +44,11 @@ export function Resume() {
           </div>
         </motion.div>
 
-        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900/60 sm:p-12">
-          <header className="border-b border-slate-200 pb-8 dark:border-slate-800">
+        <div className="overflow-hidden rounded-2xl border border-line bg-surface p-8 sm:p-12">
+          <header className="border-b border-line pb-8">
             <h2 className="font-display text-3xl font-bold">{profile.name}</h2>
-            <p className="text-lg text-blue-600 dark:text-blue-400">{profile.title}</p>
-            <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-lg text-accent-ink">{profile.title}</p>
+            <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted">
               <span>{profile.location}</span>
               <span>{profile.email}</span>
               <span>{profile.phone}</span>
@@ -58,7 +58,7 @@ export function Resume() {
 
           <section className="mt-8">
             <h3 className="mb-4 font-display text-xl font-semibold">Professional Summary</h3>
-            <p className="leading-relaxed text-slate-700 dark:text-slate-300">{profile.bio}</p>
+            <p className="leading-relaxed text-ink">{profile.bio}</p>
           </section>
 
           <section className="mt-8">
@@ -68,14 +68,14 @@ export function Resume() {
                 <div key={exp.id}>
                   <div className="flex flex-col justify-between sm:flex-row sm:items-center">
                     <h4 className="font-semibold">{exp.role}</h4>
-                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                    <span className="text-sm text-subtle">
                       {formatDate(exp.startDate)} - {exp.current ? 'Present' : exp.endDate ? formatDate(exp.endDate) : ''}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-muted">
                     {exp.company} &middot; {exp.location}
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                  <p className="mt-2 text-sm leading-relaxed text-ink">
                     {exp.description}
                   </p>
                 </div>
@@ -100,7 +100,7 @@ export function Resume() {
               {education.map((edu) => (
                 <div key={edu.id}>
                   <h4 className="font-semibold">{edu.degree}</h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-muted">
                     {edu.institution} &middot; {edu.year}
                   </p>
                 </div>
@@ -114,7 +114,7 @@ export function Resume() {
               {certifications.map((cert) => (
                 <div key={cert.id}>
                   <h4 className="font-semibold">{cert.name}</h4>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-muted">
                     {cert.issuer} &middot; {cert.year}
                   </p>
                 </div>
@@ -124,7 +124,7 @@ export function Resume() {
 
           <section className="mt-8">
             <h3 className="mb-4 font-display text-xl font-semibold">Achievements</h3>
-            <ul className="list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
+            <ul className="list-disc space-y-2 pl-5 text-ink">
               {achievements.map((a) => (
                 <li key={a.id}>
                   <span className="font-medium">{a.title}</span> ({a.year}) - {a.description}

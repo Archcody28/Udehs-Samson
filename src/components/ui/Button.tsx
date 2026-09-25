@@ -22,14 +22,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   const variants = {
-    primary:
-      'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-500 hover:to-purple-500 shadow-lg shadow-blue-500/25',
-    secondary:
-      'bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700',
-    outline:
-      'border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800',
-    ghost: 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800',
-    danger: 'bg-red-600 text-white hover:bg-red-500',
+    primary: 'bg-accent text-white hover:bg-accent-hover',
+    secondary: 'bg-elevated text-ink hover:bg-line',
+    outline: 'border border-line text-ink hover:bg-elevated',
+    ghost: 'text-muted hover:bg-elevated hover:text-ink',
+    danger: 'bg-danger text-white hover:bg-danger/90',
   };
 
   const sizes = {
@@ -41,7 +38,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed',
+        'inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-60 disabled:cursor-not-allowed',
         variants[variant],
         sizes[size],
         className

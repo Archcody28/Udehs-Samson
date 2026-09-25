@@ -9,9 +9,9 @@ import { Award, BookOpen, GraduationCap, Lightbulb, Target } from 'lucide-react'
 
 // Presentation-only icon/color styling for philosophy cards (matches original design)
 const philosophyStyles = [
-  { Icon: Target, bg: 'bg-blue-50 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400' },
-  { Icon: Lightbulb, bg: 'bg-purple-50 dark:bg-purple-900/20', text: 'text-purple-600 dark:text-purple-400' },
-  { Icon: Award, bg: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600 dark:text-emerald-400' },
+  { Icon: Target, bg: 'bg-accent-soft', text: 'text-accent-ink' },
+  { Icon: Lightbulb, bg: 'bg-accent-soft', text: 'text-accent-ink' },
+  { Icon: Award, bg: 'bg-success-soft', text: 'text-success-ink' },
 ];
 
 export function About() {
@@ -30,9 +30,9 @@ export function About() {
           className="mb-12 text-center"
         >
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            About <span className="gradient-text">Me</span>
+            About Me
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Engineer, designer, and lifelong learner passionate about building impactful products.
           </p>
         </motion.div>
@@ -52,23 +52,23 @@ export function About() {
             className="mb-16 text-center"
           >
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Education & <span className="gradient-text">Credentials</span>
+              Education & Credentials
             </h2>
           </motion.div>
 
           <div className="grid gap-8 md:grid-cols-2">
             <div>
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
-                <GraduationCap className="h-6 w-6 text-blue-500" /> Education
+                <GraduationCap className="h-6 w-6 text-accent-ink" /> Education
               </h3>
               <div className="space-y-4">
                 {education.map((edu) => (
                   <Card key={edu.id} hover>
-                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{edu.year}</p>
+                    <p className="text-sm font-medium text-accent-ink">{edu.year}</p>
                     <h4 className="font-display text-lg font-semibold">{edu.degree}</h4>
-                    <p className="text-slate-600 dark:text-slate-400">{edu.institution}</p>
+                    <p className="text-muted">{edu.institution}</p>
                     {edu.description && (
-                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{edu.description}</p>
+                      <p className="mt-2 text-sm text-muted">{edu.description}</p>
                     )}
                   </Card>
                 ))}
@@ -77,14 +77,14 @@ export function About() {
 
             <div>
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
-                <BookOpen className="h-6 w-6 text-purple-500" /> Certifications
+                <BookOpen className="h-6 w-6 text-accent-ink" /> Certifications
               </h3>
               <div className="space-y-4">
                 {certifications.map((cert) => (
                   <Card key={cert.id} hover>
-                    <p className="text-sm font-medium text-purple-600 dark:text-purple-400">{cert.year}</p>
+                    <p className="text-sm font-medium text-accent-ink">{cert.year}</p>
                     <h4 className="font-display text-lg font-semibold">{cert.name}</h4>
-                    <p className="text-slate-600 dark:text-slate-400">{cert.issuer}</p>
+                    <p className="text-muted">{cert.issuer}</p>
                   </Card>
                 ))}
               </div>
@@ -103,34 +103,34 @@ export function About() {
             className="mb-16 text-center"
           >
             <h2 className="font-display text-3xl font-bold sm:text-4xl">
-              Achievements & <span className="gradient-text">Philosophy</span>
+              Achievements & Philosophy
             </h2>
           </motion.div>
 
           <div className="grid gap-8 lg:grid-cols-2">
             <div className="space-y-4">
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
-                <Award className="h-6 w-6 text-emerald-500" /> Achievements
+                <Award className="h-6 w-6 text-success-ink" /> Achievements
               </h3>
               {achievements.map((achievement, index) => (
                 <Card key={`${achievement.title}-${index}`} hover>
-                  <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+                  <p className="text-sm font-medium text-success-ink">
                     {achievement.year}
                   </p>
                   <h4 className="font-display text-lg font-semibold">{achievement.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400">{achievement.description}</p>
+                  <p className="text-muted">{achievement.description}</p>
                 </Card>
               ))}
               {achievements.length === 0 && (
                 <Card hover>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">No achievements added yet.</p>
+                  <p className="text-sm text-subtle">No achievements added yet.</p>
                 </Card>
               )}
             </div>
 
             <div>
               <h3 className="mb-6 flex items-center gap-2 font-display text-xl font-semibold">
-                <Lightbulb className="h-6 w-6 text-amber-500" /> Philosophy
+                <Lightbulb className="h-6 w-6 text-warning-ink" /> Philosophy
               </h3>
               <div className="space-y-4">
                 {philosophy.map((item, index) => {
@@ -143,7 +143,7 @@ export function About() {
                         </div>
                         <div>
                           <h4 className="font-display font-semibold">{item.title}</h4>
-                          <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>
+                          <p className="text-sm text-muted">{item.description}</p>
                         </div>
                       </div>
                     </Card>
@@ -151,7 +151,7 @@ export function About() {
                 })}
                 {philosophy.length === 0 && (
                   <Card hover>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">No philosophy items added yet.</p>
+                    <p className="text-sm text-subtle">No philosophy items added yet.</p>
                   </Card>
                 )}
               </div>

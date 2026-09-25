@@ -100,8 +100,8 @@ function initNav(){
   const unread = (data.messages || []).filter(m => !m.read).length;
   document.getElementById('nav').innerHTML = TABS.map(t => {
     let label = t.label;
-    if (t.id === 'messages' && unread > 0) label += ` <span class="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-xs text-white">${unread}</span>`;
-    return `<button onclick="showTab('${t.id}')" class="tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800" data-tab="${t.id}">${label}</button>`;
+    if (t.id === 'messages' && unread > 0) label += ` <span class="ml-1 rounded-full bg-[#DC2626] px-1.5 py-0.5 text-xs text-white">${unread}</span>`;
+    return `<button onclick="showTab('${t.id}')" class="tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-[#525252] hover:bg-[#F4F4F5] dark:text-[#A3A3A3] dark:hover:bg-[#171717]" data-tab="${t.id}">${label}</button>`;
   }).join('');
 }
 function showTab(tab){
@@ -109,7 +109,7 @@ function showTab(tab){
   document.getElementById('tab-'+tab).classList.remove('hidden');
   document.querySelectorAll('.tab-btn').forEach(btn=>{
     const active = btn.dataset.tab===tab;
-    btn.className = active ? 'tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium tab-active' : 'tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800';
+    btn.className = active ? 'tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium tab-active' : 'tab-btn w-full rounded-lg px-4 py-2 text-left text-sm font-medium text-[#525252] hover:bg-[#F4F4F5] dark:text-[#A3A3A3] dark:hover:bg-[#171717]';
   });
 }
 
@@ -117,12 +117,12 @@ function renderAll(){ renderProjects(); renderBlog(); renderSkills(); renderExpe
 
 function renderProjects(){
   document.getElementById('projectsList').innerHTML = data.projects.map(p=>`
-    <div class="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900/60">
-      <div><p class="font-medium">${p.title} ${p.featured?'<span class="ml-2 text-amber-400">★</span>':''}</p><p class="text-xs text-slate-500">${p.status} &middot; ${p.categories}</p></div>
+    <div class="flex flex-col justify-between gap-4 rounded-xl border border-[#E4E4E7] bg-white p-4 sm:flex-row sm:items-center dark:border-[#2A2A2A] dark:bg-[#111111]/60">
+      <div><p class="font-medium">${p.title} ${p.featured?'<span class="ml-2 text-[#D97706]">★</span>':''}</p><p class="text-xs text-[#737373]">${p.status} &middot; ${p.categories}</p></div>
       <div class="flex gap-2">
-        <button onclick="toggleFeatured('${p.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Star</button>
-        <button onclick="editProject('${p.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Edit</button>
-        <button onclick="deleteProject('${p.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 dark:border-slate-700">Del</button>
+        <button onclick="toggleFeatured('${p.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Star</button>
+        <button onclick="editProject('${p.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Edit</button>
+        <button onclick="deleteProject('${p.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#DC2626] dark:border-[#2A2A2A]">Del</button>
       </div>
     </div>`).join('');
 }
@@ -131,12 +131,12 @@ function deleteProject(id){ if(confirm('Delete this project?')){ data.projects=d
 
 function renderBlog(){
   document.getElementById('blogList').innerHTML = data.blog.map(b=>`
-    <div class="flex flex-col justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center dark:border-slate-800 dark:bg-slate-900/60">
-      <div><p class="font-medium">${b.title} ${b.featured?'<span class="ml-2 text-amber-400">★</span>':''}</p><p class="text-xs text-slate-500">${b.status} &middot; ${b.date}</p></div>
+    <div class="flex flex-col justify-between gap-4 rounded-xl border border-[#E4E4E7] bg-white p-4 sm:flex-row sm:items-center dark:border-[#2A2A2A] dark:bg-[#111111]/60">
+      <div><p class="font-medium">${b.title} ${b.featured?'<span class="ml-2 text-[#D97706]">★</span>':''}</p><p class="text-xs text-[#737373]">${b.status} &middot; ${b.date}</p></div>
       <div class="flex gap-2">
-        <button onclick="toggleBlogFeatured('${b.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Star</button>
-        <button onclick="editBlog('${b.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Edit</button>
-        <button onclick="deleteBlog('${b.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 dark:border-slate-700">Del</button>
+        <button onclick="toggleBlogFeatured('${b.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Star</button>
+        <button onclick="editBlog('${b.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Edit</button>
+        <button onclick="deleteBlog('${b.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#DC2626] dark:border-[#2A2A2A]">Del</button>
       </div>
     </div>`).join('');
 }
@@ -145,54 +145,54 @@ function deleteBlog(id){ if(confirm('Delete this post?')){ data.blog=data.blog.f
 
 function renderSkills(){
   document.getElementById('skillsList').innerHTML = data.skills.map(s=>`
-    <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
+    <div class="rounded-xl border border-[#E4E4E7] bg-white p-4 dark:border-[#2A2A2A] dark:bg-[#111111]/60">
       <div class="flex items-start justify-between">
-        <div><p class="font-medium">${s.name}</p><p class="text-xs text-slate-500">${s.category}</p></div>
+        <div><p class="font-medium">${s.name}</p><p class="text-xs text-[#737373]">${s.category}</p></div>
         <div class="flex gap-1">
-          <button onclick="editSkill('${s.id}')" class="rounded-lg border border-slate-200 p-1.5 text-slate-500 dark:border-slate-700">Edit</button>
-          <button onclick="deleteSkill('${s.id}')" class="rounded-lg border border-slate-200 p-1.5 text-red-500 dark:border-slate-700">Del</button>
+          <button onclick="editSkill('${s.id}')" class="rounded-lg border border-[#E4E4E7] p-1.5 text-[#737373] dark:border-[#2A2A2A]">Edit</button>
+          <button onclick="deleteSkill('${s.id}')" class="rounded-lg border border-[#E4E4E7] p-1.5 text-[#DC2626] dark:border-[#2A2A2A]">Del</button>
         </div>
       </div>
-      <div class="mt-3 h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800"><div class="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-500" style="width:${s.proficiency}%"></div></div>
+      <div class="mt-3 h-2 w-full rounded-full bg-[#F4F4F5] dark:bg-[#171717]"><div class="h-full rounded-full bg-[#7C3AED]" style="width:${s.proficiency}%"></div></div>
     </div>`).join('');
 }
 function deleteSkill(id){ if(confirm('Delete this skill?')){ data.skills=data.skills.filter(x=>x.id!==id); save(); renderSkills(); } }
 
 function renderExperience(){
   document.getElementById('experienceList').innerHTML = data.experiences.map(e=>`
-    <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/60">
+    <div class="rounded-xl border border-[#E4E4E7] bg-white p-4 dark:border-[#2A2A2A] dark:bg-[#111111]/60">
       <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
         <div>
-          <p class="font-medium">${e.role} ${e.current?'<span class="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">Current</span>':''}</p>
-          <p class="text-xs text-slate-500">${e.company} &middot; ${e.location} &middot; ${formatDate(e.start)} - ${e.current?'Present':formatDate(e.end)}</p>
+          <p class="font-medium">${e.role} ${e.current?'<span class="ml-2 rounded-full bg-[#16A34A]/10 px-2 py-0.5 text-xs text-[#15803D] dark:bg-[#22C55E]/10 dark:text-[#22C55E]">Current</span>':''}</p>
+          <p class="text-xs text-[#737373]">${e.company} &middot; ${e.location} &middot; ${formatDate(e.start)} - ${e.current?'Present':formatDate(e.end)}</p>
         </div>
         <div class="flex gap-2">
-          <button onclick="editExperience('${e.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Edit</button>
-          <button onclick="deleteExperience('${e.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 dark:border-slate-700">Del</button>
+          <button onclick="editExperience('${e.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Edit</button>
+          <button onclick="deleteExperience('${e.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#DC2626] dark:border-[#2A2A2A]">Del</button>
         </div>
       </div>
-      <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">${e.desc}</p>
+      <p class="mt-2 text-sm text-[#525252] dark:text-[#A3A3A3]">${e.desc}</p>
     </div>`).join('');
 }
 function deleteExperience(id){ if(confirm('Delete this experience?')){ data.experiences=data.experiences.filter(x=>x.id!==id); save(); renderExperience(); } }
 
 function renderMessages(){
   const list = data.messages || [];
-  if(!list.length){ document.getElementById('messagesList').innerHTML = '<p class="text-slate-500">No messages yet.</p>'; return; }
+  if(!list.length){ document.getElementById('messagesList').innerHTML = '<p class="text-[#737373]">No messages yet.</p>'; return; }
   document.getElementById('messagesList').innerHTML = list.slice().reverse().map(m=>`
-    <div class="rounded-xl border ${m.read ? 'border-slate-200 dark:border-slate-800' : 'border-blue-300 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20'} p-4">
+    <div class="rounded-xl border ${m.read ? 'border-[#E4E4E7] dark:border-[#2A2A2A]' : 'border-[#7C3AED]/40 bg-[#7C3AED]/10 dark:border-[#7C3AED]/40 dark:bg-[#7C3AED]/15'} p-4">
       <div class="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
         <div>
-          <p class="font-medium">${m.name} <span class="text-xs font-normal text-slate-500">&lt;${m.email}&gt;</span></p>
-          <p class="text-xs text-slate-500">${m.subject} &middot; ${new Date(m.date).toLocaleString()}</p>
+          <p class="font-medium">${m.name} <span class="text-xs font-normal text-[#737373]">&lt;${m.email}&gt;</span></p>
+          <p class="text-xs text-[#737373]">${m.subject} &middot; ${new Date(m.date).toLocaleString()}</p>
         </div>
         <div class="flex gap-2">
-          <button onclick="toggleRead('${m.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">${m.read ? 'Mark Unread' : 'Mark Read'}</button>
-          <a href="mailto:${m.email}?subject=Re: ${esc(m.subject)}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-600 dark:border-slate-700 dark:text-slate-300">Reply</a>
-          <button onclick="deleteMessage('${m.id}')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 dark:border-slate-700">Del</button>
+          <button onclick="toggleRead('${m.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">${m.read ? 'Mark Unread' : 'Mark Read'}</button>
+          <a href="mailto:${m.email}?subject=Re: ${esc(m.subject)}" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#525252] dark:border-[#2A2A2A] dark:text-[#D4D4D4]">Reply</a>
+          <button onclick="deleteMessage('${m.id}')" class="rounded-lg border border-[#E4E4E7] px-3 py-2 text-xs font-medium text-[#DC2626] dark:border-[#2A2A2A]">Del</button>
         </div>
       </div>
-      <p class="mt-3 whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-300">${esc(m.message)}</p>
+      <p class="mt-3 whitespace-pre-wrap text-sm text-[#3F3F46] dark:text-[#D4D4D4]">${esc(m.message)}</p>
     </div>`).join('');
   initNav();
 }
@@ -280,14 +280,14 @@ function openProjectForm(id){
   document.getElementById('formContent').innerHTML = `
     <h3 class="mb-4 font-display text-xl font-bold">${id?'Edit':'Add'} Project</h3>
     <form id="pForm" class="space-y-4">
-      <input name="title" value="${esc(p.title||'')}" placeholder="Title" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <textarea name="description" placeholder="Description" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">${esc(p.description||'')}</textarea>
-      <textarea name="content" rows="4" placeholder="Content" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">${esc(p.content||'')}</textarea>
-      <input name="categories" value="${esc(p.categories||'')}" placeholder="Categories (comma separated)" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="tech" value="${esc(p.tech||'')}" placeholder="Technologies (comma separated)" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <select name="status" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900"><option value="draft">Draft</option><option value="published" ${p.status==='published'?'selected':''}>Published</option></select>
+      <input name="title" value="${esc(p.title||'')}" placeholder="Title" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <textarea name="description" placeholder="Description" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">${esc(p.description||'')}</textarea>
+      <textarea name="content" rows="4" placeholder="Content" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">${esc(p.content||'')}</textarea>
+      <input name="categories" value="${esc(p.categories||'')}" placeholder="Categories (comma separated)" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="tech" value="${esc(p.tech||'')}" placeholder="Technologies (comma separated)" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <select name="status" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]"><option value="draft">Draft</option><option value="published" ${p.status==='published'?'selected':''}>Published</option></select>
       <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" ${p.featured?'checked':''}> Featured</label>
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-2 text-white">Save</button>
+      <button type="submit" class="w-full rounded-xl bg-[#7C3AED] hover:bg-[#5B21B6] dark:hover:bg-[#8446F0] py-2 text-white">Save</button>
     </form>`;
   showModal(); document.getElementById('pForm').onsubmit = e => handleProjectSubmit(e,id,p);
 }
@@ -304,14 +304,14 @@ function openBlogForm(id){
   document.getElementById('formContent').innerHTML = `
     <h3 class="mb-4 font-display text-xl font-bold">${id?'Edit':'Add'} Blog Post</h3>
     <form id="bForm" class="space-y-4">
-      <input name="title" value="${esc(b.title||'')}" placeholder="Title" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <textarea name="excerpt" placeholder="Excerpt" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">${esc(b.excerpt||'')}</textarea>
-      <textarea name="content" rows="4" placeholder="Content" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">${esc(b.content||'')}</textarea>
-      <input name="categories" value="${esc(b.categories||'')}" placeholder="Categories" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="tags" value="${esc(b.tags||'')}" placeholder="Tags" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <select name="status" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900"><option value="draft">Draft</option><option value="published" ${b.status==='published'?'selected':''}>Published</option></select>
+      <input name="title" value="${esc(b.title||'')}" placeholder="Title" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <textarea name="excerpt" placeholder="Excerpt" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">${esc(b.excerpt||'')}</textarea>
+      <textarea name="content" rows="4" placeholder="Content" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">${esc(b.content||'')}</textarea>
+      <input name="categories" value="${esc(b.categories||'')}" placeholder="Categories" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="tags" value="${esc(b.tags||'')}" placeholder="Tags" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <select name="status" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]"><option value="draft">Draft</option><option value="published" ${b.status==='published'?'selected':''}>Published</option></select>
       <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" ${b.featured?'checked':''}> Featured</label>
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-2 text-white">Save</button>
+      <button type="submit" class="w-full rounded-xl bg-[#7C3AED] hover:bg-[#5B21B6] dark:hover:bg-[#8446F0] py-2 text-white">Save</button>
     </form>`;
   showModal(); document.getElementById('bForm').onsubmit = e => handleBlogSubmit(e,id,b);
 }
@@ -328,10 +328,10 @@ function openSkillForm(id){
   document.getElementById('formContent').innerHTML = `
     <h3 class="mb-4 font-display text-xl font-bold">${id?'Edit':'Add'} Skill</h3>
     <form id="sForm" class="space-y-4">
-      <input name="name" value="${esc(s.name||'')}" placeholder="Skill name" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="category" value="${esc(s.category||'')}" placeholder="Category" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="proficiency" type="number" min="0" max="100" value="${s.proficiency||50}" placeholder="Proficiency 0-100" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-2 text-white">Save</button>
+      <input name="name" value="${esc(s.name||'')}" placeholder="Skill name" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="category" value="${esc(s.category||'')}" placeholder="Category" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="proficiency" type="number" min="0" max="100" value="${s.proficiency||50}" placeholder="Proficiency 0-100" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <button type="submit" class="w-full rounded-xl bg-[#7C3AED] hover:bg-[#5B21B6] dark:hover:bg-[#8446F0] py-2 text-white">Save</button>
     </form>`;
   showModal(); document.getElementById('sForm').onsubmit = e => {
     e.preventDefault(); const f=e.target;
@@ -347,16 +347,16 @@ function openExperienceForm(id){
   document.getElementById('formContent').innerHTML = `
     <h3 class="mb-4 font-display text-xl font-bold">${id?'Edit':'Add'} Experience</h3>
     <form id="eForm" class="space-y-4">
-      <input name="role" value="${esc(ex.role||'')}" placeholder="Role" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="company" value="${esc(ex.company||'')}" placeholder="Company" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-      <input name="location" value="${esc(ex.location||'')}" placeholder="Location" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
+      <input name="role" value="${esc(ex.role||'')}" placeholder="Role" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="company" value="${esc(ex.company||'')}" placeholder="Company" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+      <input name="location" value="${esc(ex.location||'')}" placeholder="Location" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
       <div class="grid gap-4 sm:grid-cols-2">
-        <input name="start" type="date" value="${ex.start||''}" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
-        <input name="end" type="date" value="${ex.end||''}" class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">
+        <input name="start" type="date" value="${ex.start||''}" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
+        <input name="end" type="date" value="${ex.end||''}" class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">
       </div>
       <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="current" ${ex.current?'checked':''}> Current role</label>
-      <textarea name="desc" rows="3" placeholder="Description" required class="w-full rounded-xl border border-slate-300 px-4 py-2 dark:border-slate-700 dark:bg-slate-900">${esc(ex.desc||'')}</textarea>
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-2 text-white">Save</button>
+      <textarea name="desc" rows="3" placeholder="Description" required class="w-full rounded-xl border border-[#8F8F8F] px-4 py-2 dark:border-[#616161] dark:bg-[#111111]">${esc(ex.desc||'')}</textarea>
+      <button type="submit" class="w-full rounded-xl bg-[#7C3AED] hover:bg-[#5B21B6] dark:hover:bg-[#8446F0] py-2 text-white">Save</button>
     </form>`;
   showModal(); document.getElementById('eForm').onsubmit = e => {
     e.preventDefault(); const f=e.target;

@@ -44,9 +44,9 @@ export function Blog() {
           className="mb-12 text-center"
         >
           <h1 className="font-display text-4xl font-bold sm:text-5xl">
-            Blog & <span className="gradient-text">Insights</span>
+            Blog & Insights
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-600 dark:text-slate-400">
+          <p className="mx-auto mt-4 max-w-2xl text-muted">
             Deep dives into engineering, design systems, and product development.
           </p>
         </motion.div>
@@ -65,18 +65,18 @@ export function Blog() {
                   <img
                     src={featured.coverImage || '/images/blog-placeholder.jpg'}
                     alt={featured.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="flex flex-col justify-center p-8">
                   <Badge variant="primary" className="mb-4 w-fit">
                     Featured
                   </Badge>
-                  <h2 className="mb-4 font-display text-2xl font-bold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400 sm:text-3xl">
+                  <h2 className="mb-4 font-display text-2xl font-bold transition-colors group-hover:text-accent-ink sm:text-3xl">
                     {featured.title}
                   </h2>
-                  <p className="mb-6 text-slate-600 dark:text-slate-400">{featured.excerpt}</p>
-                  <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+                  <p className="mb-6 text-muted">{featured.excerpt}</p>
+                  <div className="flex items-center gap-4 text-sm text-subtle">
                     <span>{formatDate(featured.publishedAt)}</span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-4 w-4" /> {featured.readingTime} min read
@@ -90,7 +90,7 @@ export function Blog() {
 
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" />
             <Input
               placeholder="Search articles, tags..."
               value={search}
@@ -104,9 +104,7 @@ export function Blog() {
                 key={cat}
                 onClick={() => setCategory(cat)}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                  category === cat
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
+                  category === cat ? 'bg-accent text-white' : 'bg-elevated text-ink hover:bg-line'
                 }`}
               >
                 {cat}
@@ -130,20 +128,20 @@ export function Blog() {
                     <img
                       src={post.coverImage || '/images/blog-placeholder.jpg'}
                       alt={post.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                   <div className="p-6">
-                    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-subtle">
                       <span>{formatDate(post.publishedAt)}</span>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" /> {post.readingTime} min read
                       </span>
                     </div>
-                    <h3 className="mb-3 font-display text-lg font-semibold transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                    <h3 className="mb-3 font-display text-lg font-semibold transition-colors group-hover:text-accent-ink">
                       {post.title}
                     </h3>
-                    <p className="mb-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                    <p className="mb-4 text-sm leading-relaxed text-muted">
                       {post.excerpt}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -162,7 +160,7 @@ export function Blog() {
 
         {filtered.length === 0 && (
           <div className="py-24 text-center">
-            <p className="text-lg text-slate-500 dark:text-slate-400">No articles found.</p>
+            <p className="text-lg text-subtle">No articles found.</p>
             <Button
               variant="outline"
               className="mt-4"

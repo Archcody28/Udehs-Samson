@@ -46,7 +46,7 @@ export function TypingText({
   return (
     <span className={className}>
       {display}
-      <span className="animate-pulse text-blue-500">|</span>
+      <span className="animate-pulse text-accent-ink">|</span>
     </span>
   );
 }
